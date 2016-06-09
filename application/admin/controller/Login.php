@@ -1,0 +1,99 @@
+<?php
+/**
+*
+* 版权所有：春燕网络<www.mychunyan.com>
+* 作    者：寒川<admin@huikon.cn>
+* 日    期：2016-06-06
+* 功能说明：后台用户登录控制器。
+*
+**/
+namespace app\admin\controller;
+use think\Controller;
+use think\Cookie;
+use think\Config;
+use think\Db;
+use think\Input;
+use org\Verify;
+
+class Login extends Controller {
+	
+    public function index(){
+		
+		$auth = Cookie::get('auth');
+		list($identifier, $token) = explode(',', $auth);
+		if (ctype_alnum($identifier) && ctype_alnum($token)) {
+			$user = Db::name('user')->field('uid,username,identifier,token,salt')->where(['identifier'=>$identifier,'token'=>$token])->find();
+			if($user){
+				if($token == $user['token'] && $user['identifier'] == password($user['uid'].md5($user['username'].$user['salt']))){
+					return $this -> success('您已登录，正在跳转！',url('admin/index/index'));
+				}
+			}
+		}
+		
+		$this->setting();
+		return $this->fetch();
+    }
+	
+	public function login(){
+		
+		$verify = Input::post('verify');
+		if (!$this->check_verify($verify,'login')) {
+			return $this -> error('验证码错误！',url("login/index"));
+		}
+		
+		$username = Input::post('username');
+		$password = Input::post('password');
+		$remember = Input::post('remember');
+		
+		if ($username=='') {
+			return $this -> error('用户名不能为空！',url('login/index'));
+		} elseif ($password=='') {
+			return $this -> error('密码必须！',url('login/index'));
+		}
+		
+		$user = Db::name('user')->field('uid,username')->where(array('username'=>$username,'password'=>password($password))) -> find();
+		if($user){
+			$token = password(uniqid(rand(), TRUE));
+			$salt = random(10);
+			$identifier = password($user['uid'].md5($user['username'].$salt));
+			$auth = $identifier.','.$token;
+			Db::name('user')->where(array('uid'=>$user['uid']))->update(array('identifier'=>$identifier,'token'=>$token,'salt'=>$salt));
+			if($remember){
+				Cookie::set('auth',$auth,3600*24*365);
+			}else{
+				Cookie::set('auth',$auth);
+			}
+			addlog('登录成功。',$user['username']);
+			return $this -> success('恭喜，登录成功！',url('admin/index/index'));
+
+		}else{
+			return $this -> error('用户名或密码错误，请稍后再试！',url('login/index'));
+		}
+    }
+	
+	protected function setting(){
+		$setting = Db::name('setting')->select();
+		$config = array();
+		foreach($setting as $k=>$v){
+			$config[$v['k']] = $v['v'];
+		}
+		Config::set($config);
+	}
+	
+	public function verify() {
+		$config = array(
+			'fontSize' => 14, // 验证码字体大小
+			'length' => 4, // 验证码位数
+			'useNoise' => false, // 关闭验证码杂点
+			'imageW'=>100,
+			'imageH'=>30,
+		);
+		$verify = new Verify($config);
+		$verify -> entry('login');
+	}
+	
+	function check_verify($code, $id = '') {
+		$verify = new Verify();
+		return $verify -> check($code, $id);
+	}
+}

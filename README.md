@@ -1,1 +1,1 @@
-#cycms
+CYAdmin，基于ThinkPHP5的通用后台管理系统。
