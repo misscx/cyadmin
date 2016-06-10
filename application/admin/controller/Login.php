@@ -7,30 +7,31 @@
 * 功能说明：后台用户登录控制器。
 *
 **/
-namespace app\admin\controller;
-use think\Controller;
-use think\Cookie;
-use think\Config;
-use think\Db;
-use think\Input;
+namespace app\admin\Controller;
+
+use app\admin\controller\Common;
+use \think\Controller;
+use \think\Cookie;
+use \think\Db;
+use \think\Input;
 use org\Verify;
 
-class Login extends Controller {
+class Login extends Common {
 	
     public function index(){
 		
 		$auth = Cookie::get('auth');
-		list($identifier, $token) = explode(',', $auth);
-		if (ctype_alnum($identifier) && ctype_alnum($token)) {
-			$user = Db::name('user')->field('uid,username,identifier,token,salt')->where(['identifier'=>$identifier,'token'=>$token])->find();
-			if($user){
-				if($token == $user['token'] && $user['identifier'] == password($user['uid'].md5($user['username'].$user['salt']))){
-					return $this -> success('您已登录，正在跳转！',url('admin/index/index'));
+		if($auth) {
+			list($identifier, $token) = explode(',', $auth);
+			if (ctype_alnum($identifier) && ctype_alnum($token)) {
+				$user = Db::name('user')->alias('u')->join('__USER_GROUP__ g','u.ugid=g.id')->where("u.identifier='{$identifier}' and u.token='{$token}' and u.status=1 and g.status=1")->field('u.*,g.title,g.auth')->find();
+				if($user){
+					if($token == $user['token'] && $user['identifier'] == password($user['uid'].md5($user['username'].$user['salt']))){
+						return $this -> success('您已登录，正在跳转！',url('admin/index/index'));
+					}
 				}
 			}
 		}
-		
-		$this->setting();
 		return $this->fetch();
     }
 	
@@ -50,8 +51,7 @@ class Login extends Controller {
 		} elseif ($password=='') {
 			return $this -> error('密码必须！',url('login/index'));
 		}
-		
-		$user = Db::name('user')->field('uid,username')->where(array('username'=>$username,'password'=>password($password))) -> find();
+		$user = Db::name('user')->field('uid,username')->where(['status'=>1,'username'=>$username,'password'=>password($password)]) -> find();
 		if($user){
 			$token = password(uniqid(rand(), TRUE));
 			$salt = random(10);
@@ -71,16 +71,8 @@ class Login extends Controller {
 		}
     }
 	
-	protected function setting(){
-		$setting = Db::name('setting')->select();
-		$config = array();
-		foreach($setting as $k=>$v){
-			$config[$v['k']] = $v['v'];
-		}
-		Config::set($config);
-	}
-	
 	public function verify() {
+		
 		$config = array(
 			'fontSize' => 14, // 验证码字体大小
 			'length' => 4, // 验证码位数
@@ -92,7 +84,7 @@ class Login extends Controller {
 		$verify -> entry('login');
 	}
 	
-	function check_verify($code, $id = '') {
+	protected function check_verify($code, $id = '') {
 		$verify = new Verify();
 		return $verify -> check($code, $id);
 	}
