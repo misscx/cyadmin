@@ -3,7 +3,7 @@
 *
 * 版权所有：春燕网络<www.mychunyan.com>
 * 作    者：寒川<admin@huikon.cn>
-* 日    期：2016-06-06
+* 日    期：2016-06-11
 * 功能说明：后台公用控制器。
 *
 **/
@@ -31,27 +31,26 @@ class Common extends Controller{
 			$config[$v['k']] = $v['v'];
 		}
 		Config::set($config);
-
-		//菜单
-		$current_menu = [];
-		$menu = Db::name('menu')->field('id,pid,title,url,icon')->where("status=1 and id in({$this->user['auth']})")->order('o ASC')->select();
-		foreach($menu as $k=>$v){
-			if($this->url == $v['url']) {
-				$current_menu = $v;//当前菜单
-				break;
+		
+		if($this->user['auth']){
+			//菜单
+			$menu = Db::name('menu')->field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user['auth']})")->order('o ASC')->select();	
+			$menu = $this->getMenu($menu);
+			$this->assign('menu',$menu);
+			//当前菜单
+			$current_menu = Db::name('menu')->field('id,pid,title,url,icon,tips')->where(['url'=>$this->url])->find();
+			if($current_menu['pid']<>0){
+				//$current_menu['parent'] = Db::name('menu')->field('id,pid,title,url,icon,tips')->where(['id'=>$current_menu['pid']])->find();
+				$current_menu['parent'] = Db::name('menu')->alias('c')->join('__MENU__ p','p.id=c.pid','left')->where("c.id='{$current_menu['pid']}'")->field('c.pid,c.pid,c.title,c.url,c.icon,p.pid as ppid')->find();
+			}else{
+				$current_menu['parent'] = ['pid'=>false,'ppid'=>false];
 			}
+			$this->assign('current_menu',$current_menu);
+			//print_r($current_menu);
+			//echo Db::getLastSql();
+			$this->assign('user',$this->user);
 		}
 		
-		$menu = $this->getMenu($menu);
-		
-		if($current_menu['pid']<>0){
-			$current_menu['parent'] = Db::name('menu')->field('id,pid,title,url,icon')->where(['id'=>$current_menu['pid']])->find();
-		}
-		
-		
-		$this->assign('user',$this->user);
-		$this->assign('menu',$menu);
-		$this->assign('current_menu',$current_menu);
 	}
 	
 	protected function auth(){
@@ -64,7 +63,7 @@ class Common extends Controller{
 		
 		//登录后无需验证的页面
 		$no_need_to_check = [
-			'index/index',//首页
+			//'index/index',//首页
 		];
 		
 		$status = false;
@@ -100,7 +99,7 @@ class Common extends Controller{
 		
 		//验证页面权限
 		$current_url_id = Db::name('menu')->field('id')->where(['url'=>$this->url])->find();
-		if(in_array($current_url_id['id'],$auth)){
+		if(in_array($current_url_id['id'],explode(',',$this->user['auth']))){
 			return true;
 		}else{
 			return $this -> error('您无权访问此页！');

@@ -4,11 +4,11 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="{$Think.config.url}{:url('admin/index/index')}">首页</a>
 							</li>
-							{notempty name="$current_menu.parent"}
+							{if condition="$current_menu.pid neq 0"}
 							<li>
 								<a href="{$Think.config.url}{:url($current_menu['parent']['url'])}">{$current_menu.parent.title}</a>
 							</li>
-							{/notempty}
+							{/if}
 							<li class="active">{$current_menu.title}</li>
 						</ul><!-- /.breadcrumb -->
 

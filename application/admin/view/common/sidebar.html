@@ -38,7 +38,7 @@
 
 				<ul class="nav nav-list">
 					{volist name="menu" id="v"}
-						<li {if condition="$current_menu['id'] eq $v['id']"} class="active {notempty name="v.children"}open{/notempty}"{/if}>
+						<li {if condition="($current_menu['id'] eq $v['id']) or ($v['id'] eq $current_menu['pid']) or ($v['id'] eq $current_menu['parent']['pid']) or ($v['id'] eq $current_menu['parent']['ppid'])"} class="active {notempty name="v.children"}open{/notempty}"{/if}>
 						<a href="{empty name="v.children"}{:url($v['url'])}{else /}#{/empty}" {notempty name="v.children"}class="dropdown-toggle"{/notempty}>
 							<i class="{$v.icon}"></i>
 							<span class="menu-text">
@@ -52,7 +52,7 @@
 						{notempty name="v.children"}
 						<ul class="submenu">
 							{volist name="v.children" id="vv"}
-							<li {if condition="$current_menu['id'] eq $vv['id']"} class="active {notempty name="vv.children"}open{/notempty}"{/if}>
+							<li {if condition="($current_menu['id'] eq $vv['id']) or ($vv['id'] eq $current_menu['pid']) or ($vv['id'] eq $current_menu['parent']['pid']) or ($vv['id'] eq $current_menu['parent']['ppid'])"} class="active {notempty name="vv.children"}open{/notempty}"{/if}>
 								<a href="{empty name="vv.children"}{:url($vv['url'])}{else /}#{/empty}" {notempty name="vv.children"}class="dropdown-toggle"{/notempty}>
 									<i class="{$vv.icon}"></i>
 									{$vv.title}
@@ -62,7 +62,7 @@
 								{notempty name="vv.children"}
 								<ul class="submenu">
 									{volist name="vv.children" id="vvv"}
-									<li {if condition="$current_menu['id'] eq $vvv['id']"} class="active {notempty name="vvv.children"}open{/notempty}"{/if}>
+									<li {if condition="($current_menu['id'] eq $vvv['id']) or ($vvv['id'] eq $current_menu['pid']) or ($vvv['id'] eq $current_menu['parent']['pid']) or ($v['id'] eq $current_menu['parent']['ppid'])"} class="active {notempty name="vvv.children"}open{/notempty}"{/if}>
 										<a href="{empty name="vvv.children"}{:url($vvv['url'])}{else /}#{/empty}" {notempty name="vvv.children"}class="dropdown-toggle"{/notempty}>
 											<i class="{$vvv.icon}"></i>
 											{$vvv.title}
@@ -72,7 +72,7 @@
 										{notempty name="vvv.children"}
 										<ul class="submenu">
 											{volist name="vvv.children" id="vvvv"}
-											<li {if condition="$current_menu['id'] eq $vvvv['id']"} class="active {notempty name="vvvv.children"}open{/notempty}"{/if}>
+											<li {if condition="($current_menu['id'] eq $vvvv['id']) or ($vvvv['id'] eq $current_menu['pid']) or ($vvvv['id'] eq $current_menu['parent']['pid']) or ($vvvv['id'] eq $current_menu['parent']['ppid'])"} class="active {notempty name="vvvv.children"}open{/notempty}"{/if}>
 												<a href="{empty name="vvvv.children"}{:url($vvvv['url'])}{else /}#{/empty}">
 													<i class="{$vvvv.icon}"></i>
 													{$vvvv.title}

@@ -1,3 +1,12 @@
+						{notempty name="$current_menu.tips"}
+						<div class="alert alert-block alert-success">
+							<button type="button" class="close" data-dismiss="alert">
+								<i class="ace-icon fa fa-times"></i>
+							</button>
+							<i class="ace-icon fa fa-bullhorn green"></i>
+							{$current_menu.tips}
+						</div>
+						{/notempty}
 						<div class="ace-settings-container" id="ace-settings-container">
 							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
 								<i class="ace-icon fa fa-cog bigger-130"></i>

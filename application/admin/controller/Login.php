@@ -67,6 +67,7 @@ class Login extends Common {
 			return $this -> success('恭喜，登录成功！',url('admin/index/index'));
 
 		}else{
+			addlog('用户或密码错误。',$username);
 			return $this -> error('用户名或密码错误，请稍后再试！',url('login/index'));
 		}
     }
