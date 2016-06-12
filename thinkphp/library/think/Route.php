@@ -61,7 +61,10 @@ class Route
     private static $bind = [];
     // 当前分组
     private static $group;
+    // 当前参数
     private static $option = [];
+    // 路由别名
+    private static $alias = [];
 
     /**
      * 注册或者获取URL映射规则
@@ -148,21 +151,31 @@ class Route
             self::domain($rule['__domain__']);
             unset($rule['__domain__']);
         }
+
         // 检查变量规则
         if (isset($rule['__pattern__'])) {
             self::pattern($rule['__pattern__']);
             unset($rule['__pattern__']);
         }
+
         // 检查路由映射
         if (isset($rule['__map__'])) {
             self::map($rule['__map__']);
             unset($rule['__map__']);
         }
+
+        // 检查路由别名
+        if (isset($rule['__alias__'])) {
+            self::alias($rule['__alias__']);
+            unset($rule['__alias__']);
+        }
+
         // 检查资源路由
         if (isset($rule['__rest__'])) {
             self::resource($rule['__rest__']);
             unset($rule['__rest__']);
         }
+
         $type = strtoupper($type);
         foreach ($rule as $key => $val) {
             if (is_numeric($key)) {
@@ -413,7 +426,7 @@ class Route
     }
 
     /**
-     * 注册别名路由
+     * 注册控制器路由 操作方法对应不同的请求后缀
      * @access public
      * @param string $rule 路由规则
      * @param string $route 路由地址
@@ -421,10 +434,29 @@ class Route
      * @param array $pattern 变量规则
      * @return void
      */
-    public static function alias($rule, $route = '', $option = [], $pattern = [])
+    public static function controller($rule, $route = '', $option = [], $pattern = [])
     {
         foreach (self::$methodPrefix as $type => $val) {
             self::$type($rule . '/:action', $route . '/' . $val . ':action', $option, $pattern);
+        }
+    }
+
+    /**
+     * 注册别名路由
+     * @access public
+     * @param string|array $rule 路由别名
+     * @param string $route 路由地址
+     * @param array $option 路由参数
+     * @return void
+     */
+    public static function alias($rule = null, $route = '', $option = [])
+    {
+        if (is_null($rule)) {
+            return self::$alias;
+        } elseif (is_array($rule)) {
+            self::$alias = array_merge(self::$alias, $rule);
+        } else {
+            self::$alias[$rule] = $option ? [$route, $option] : $route;
         }
     }
 
@@ -590,19 +622,39 @@ class Route
      */
     public static function check($request, $url, $depr = '/', $checkDomain = false)
     {
-        // 检测域名部署
-        if ($checkDomain) {
-            self::checkDomain($request);
-        }
-
         // 分隔符替换 确保路由定义使用统一的分隔符
         if ('/' != $depr) {
             $url = str_replace($depr, '/', $url);
         }
 
         if (isset(self::$map[$url])) {
-            // URL映射
+            // URL映射（完整静态URL匹配）
             return self::parseUrl(self::$map[$url], $depr);
+        }
+
+        if (strpos($url, '/') && isset(self::$alias[strstr($url, '/', true)])) {
+            // 路由别名
+            $array = explode('/', $url, 2);
+            $item  = self::$alias[$array[0]];
+
+            if (is_array($item)) {
+                list($rule, $option) = $item;
+            } else {
+                $rule = $item;
+            }
+            // 参数有效性检查
+            if (isset($option) && !self::checkOption($option, $url, $request)) {
+                // 路由不匹配
+            } elseif (0 === strpos($rule, '\\')) {
+                // 路由到类
+                return self::bindToClass($array[1], substr($rule, 1));
+            } elseif (0 === strpos($url, '@')) {
+                // 路由到控制器类
+                return self::bindToController($array[1], substr($rule, 1));
+            } else {
+                // 路由到模块/控制器
+                return self::bindToModule($array[1], $rule);
+            }
         }
 
         // 获取当前请求类型的路由规则
@@ -613,6 +665,10 @@ class Route
             $rules = array_merge(self::$rules['*'], $rules);
         }
 
+        // 检测域名部署
+        if ($checkDomain) {
+            self::checkDomain($request);
+        }
         // 检测URL绑定
         $return = self::checkUrlBind($url, $rules);
         if ($return) {
@@ -713,20 +769,10 @@ class Route
             switch (self::$bind['type']) {
                 case 'class':
                     // 绑定到类
-                    $array = explode('/', $url, 2);
-                    if (!empty($array[1])) {
-                        self::parseUrlParams($array[1]);
-                    }
-                    return ['type' => 'method', 'method' => [self::$bind['class'], $array[0] ?: Config::get('default_action')], 'params' => []];
+                    return self::bindToClass($url, self::$bind['class']);
                 case 'namespace':
                     // 绑定到命名空间
-                    $array  = explode('/', $url, 3);
-                    $class  = !empty($array[0]) ? $array[0] : Config::get('default_controller');
-                    $method = !empty($array[1]) ? $array[1] : Config::get('default_action');
-                    if (!empty($array[2])) {
-                        self::parseUrlParams($array[2]);
-                    }
-                    return ['type' => 'method', 'method' => [self::$bind['namespace'] . '\\' . $class, $method], 'params' => []];
+                    return self::bindToNamespace($url, self::$bind['namespace']);
                 case 'module':
                     // 如果有模块/控制器绑定 针对路由到 模块/控制器 有效
                     $url = self::$bind['module'] . '/' . $url;
@@ -740,6 +786,74 @@ class Route
             }
         }
         return false;
+    }
+
+    /**
+     * 绑定到类
+     * @access public
+     * @param string $url URL地址
+     * @param string $class 类名（带命名空间）
+     * @return array
+     */
+    public static function bindToClass($url, $class)
+    {
+        $array = explode('/', $url, 2);
+        if (!empty($array[1])) {
+            self::parseUrlParams($array[1]);
+        }
+        return ['type' => 'method', 'method' => [$class, $array[0] ?: Config::get('default_action')], 'params' => []];
+    }
+
+    /**
+     * 绑定到命名空间
+     * @access public
+     * @param string $url URL地址
+     * @param string $namespace 命名空间
+     * @return array
+     */
+    public static function bindToNamespace($url, $namespace)
+    {
+        $array  = explode('/', $url, 3);
+        $class  = !empty($array[0]) ? $array[0] : Config::get('default_controller');
+        $method = !empty($array[1]) ? $array[1] : Config::get('default_action');
+        if (!empty($array[2])) {
+            self::parseUrlParams($array[2]);
+        }
+        return ['type' => 'method', 'method' => [$namespace . '\\' . $class, $method], 'params' => []];
+    }
+
+    /**
+     * 绑定到控制器类
+     * @access public
+     * @param string $url URL地址
+     * @param string $module 模块名
+     * @return array
+     */
+    public static function bindToController($url, $controller)
+    {
+        $array  = explode('/', $url, 2);
+        $action = !empty($array[0]) ? $array[0] : Config::get('default_action');
+        if (!empty($array[1])) {
+            self::parseUrlParams($array[1]);
+        }
+        return ['type' => 'method', 'method' => [$controller, $action], 'params' => []];
+    }
+
+    /**
+     * 绑定到模块/控制器
+     * @access public
+     * @param string $url URL地址
+     * @param string $class 控制器类名（带命名空间）
+     * @return array
+     */
+    public static function bindToModule($url, $controller)
+    {
+        $array  = explode('/', $url, 2);
+        $action = !empty($array[0]) ? $array[0] : Config::get('default_action');
+        if (!empty($array[1])) {
+            self::parseUrlParams($array[1]);
+        }
+        return ['type' => 'module', 'module' => $controller . '/' . $action, 'params' => []];
     }
 
     /**
@@ -757,7 +871,7 @@ class Route
             || (isset($option['ext']) && false === stripos($option['ext'], $request->ext())) // 伪静态后缀检测
              || (isset($option['domain']) && !in_array($option['domain'], [$_SERVER['HTTP_HOST'], self::$subDomain])) // 域名检测
              || (!empty($option['https']) && !$request->isSsl()) // https检测
-             || (!empty($option['before_behavior']) && false === Hook::exec($option['before_behavior'], $url)) // 行为检测
+             || (!empty($option['before_behavior']) && false === Hook::exec($option['before_behavior'], '', $url)) // 行为检测
              || (!empty($option['callback']) && is_callable($option['callback']) && false === call_user_func($option['callback'])) // 自定义检测
         ) {
             return false;
@@ -786,6 +900,8 @@ class Route
             $url  = str_replace($depr, '/', $url);
             $rule = str_replace($depr, '/', $rule);
         }
+
+        $rule = ltrim($rule, '/');
         $len1 = substr_count($url, '/');
         $len2 = substr_count($rule, '/');
         // 多余参数是否合并
@@ -808,7 +924,7 @@ class Route
                     if ($option['after_behavior'] instanceof \Closure) {
                         $result = call_user_func_array($option['after_behavior'], [$route]);
                     } else {
-                        $result = Hook::exec($option['after_behavior'], $route);
+                        $result = Hook::exec($option['after_behavior'], '', $route);
                     }
                     // 路由规则重定向
                     if ($result instanceof Response) {
@@ -1039,7 +1155,8 @@ class Route
             $result = ['type' => 'redirect', 'url' => $url, 'status' => (is_array($route) && isset($route[1])) ? $route[1] : 301];
         } elseif (0 === strpos($url, '\\')) {
             // 路由到方法
-            $result = ['type' => 'method', 'method' => is_array($route) ? [$url, $route[1]] : $url, 'params' => $matches];
+            $method = strpos($url, '@') ? explode('@', $url) : $url;
+            $result = ['type' => 'method', 'method' => $method, 'params' => $matches];
         } elseif (0 === strpos($url, '@')) {
             // 路由到控制器
             $result = ['type' => 'controller', 'controller' => substr($url, 1), 'params' => $matches];
@@ -1065,7 +1182,7 @@ class Route
      * @param array $var 变量
      * @return void
      */
-    private static function parseUrlParams($url, $var)
+    private static function parseUrlParams($url, $var = [])
     {
         if ($url) {
             if (Config::get('url_param_type')) {

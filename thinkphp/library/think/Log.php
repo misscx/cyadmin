@@ -22,12 +22,16 @@ class Log
 
     // 日志信息
     protected static $log = [];
+    // 配置参数
+    protected static $config = [];
     // 日志类型
     protected static $type = ['log', 'error', 'info', 'sql', 'notice', 'alert'];
     // 日志写入驱动
-    protected static $driver = null;
+    protected static $driver;
     // 通知发送驱动
-    protected static $alarm = null;
+    protected static $alarm;
+    // 当前日志授权key
+    protected static $key;
 
     /**
      * 日志初始化
@@ -35,8 +39,9 @@ class Log
      */
     public static function init($config = [])
     {
-        $type  = isset($config['type']) ? $config['type'] : 'File';
-        $class = (!empty($config['namespace']) ? $config['namespace'] : '\\think\\log\\driver\\') . ucwords($type);
+        $type         = isset($config['type']) ? $config['type'] : 'File';
+        $class        = (!empty($config['namespace']) ? $config['namespace'] : '\\think\\log\\driver\\') . ucwords($type);
+        self::$config = $config;
         unset($config['type']);
         self::$driver = new $class($config);
         // 记录初始化信息
@@ -58,12 +63,13 @@ class Log
     }
 
     /**
-     * 获取全部日志信息
+     * 获取日志信息
+     * @param string $type 信息类型
      * @return array
      */
-    public static function getLog()
+    public static function getLog($type = '')
     {
-        return self::$log;
+        return $type ? self::$log[$type] : self::$log;
     }
 
     /**
@@ -77,7 +83,7 @@ class Log
         if (!is_string($msg)) {
             $msg = var_export($msg, true);
         }
-        self::$log[] = ['type' => $type, 'msg' => $msg];
+        self::$log[$type][] = $msg;
     }
 
     /**
@@ -87,6 +93,30 @@ class Log
     public static function clear()
     {
         self::$log = [];
+    }
+
+    /**
+     * 当前日志记录的授权key
+     * @param string  $key  授权key
+     * @return void
+     */
+    public static function key($key)
+    {
+        self::$key = $key;
+    }
+
+    /**
+     * 检查日志写入权限
+     * @param array  $config  当前日志配置参数
+     * @return bool
+     */
+    public static function check($config)
+    {
+
+        if (self::$key && !empty($config['allow_key']) && !in_array(self::$key, $config['allow_key'])) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -100,6 +130,10 @@ class Log
                 self::init(Config::get('log'));
             }
 
+            if (!self::check(self::$config)) {
+                // 检测日志写入权限
+                return false;
+            }
             $result = self::$driver->save(self::$log);
 
             if ($result) {
@@ -123,7 +157,7 @@ class Log
             $msg = var_export($msg, true);
         }
         // 封装日志信息
-        $log[] = ['type' => $type, 'msg' => $msg];
+        $log[$type][] = $msg;
 
         // 监听log_write
         Hook::listen('log_write', $log);

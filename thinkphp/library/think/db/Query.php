@@ -96,6 +96,18 @@ class Query
     }
 
     /**
+     * 切换当前的数据库连接
+     * @access public
+     * @param mixed $config
+     * @return $this
+     */
+    public function connect($config)
+    {
+        $this->connection = Db::connect($config);
+        return $this;
+    }
+
+    /**
      * 指定默认的数据表名（不含前缀）
      * @access public
      * @param string $name
@@ -358,11 +370,12 @@ class Query
      * 得到某个字段的值
      * @access public
      * @param string $field 字段名
+     * @param mixed $default 默认值
      * @return mixed
      */
-    public function value($field)
+    public function value($field, $default = null)
     {
-        $result = false;
+        $result = null;
         if (!empty($this->options['cache'])) {
             // 判断查询缓存
             $cache  = $this->options['cache'];
@@ -383,7 +396,7 @@ class Query
             // 清空查询条件
             $this->options = [];
         }
-        return $result;
+        return !is_null($result) ? $result : $default;
     }
 
     /**
@@ -450,7 +463,7 @@ class Query
      */
     public function count($field = '*')
     {
-        return $this->value('COUNT(' . $field . ') AS tp_count');
+        return $this->value('COUNT(' . $field . ') AS tp_count', 0);
     }
 
     /**
@@ -461,8 +474,7 @@ class Query
      */
     public function sum($field = '*')
     {
-        $result = $this->value('SUM(' . $field . ') AS tp_sum');
-        return is_null($result) ? 0 : $result;
+        return $this->value('SUM(' . $field . ') AS tp_sum', 0);
     }
 
     /**
@@ -473,8 +485,7 @@ class Query
      */
     public function min($field = '*')
     {
-        $result = $this->value('MIN(' . $field . ') AS tp_min');
-        return is_null($result) ? 0 : $result;
+        return $this->value('MIN(' . $field . ') AS tp_min', 0);
     }
 
     /**
@@ -485,8 +496,7 @@ class Query
      */
     public function max($field = '*')
     {
-        $result = $this->value('MAX(' . $field . ') AS tp_max');
-        return is_null($result) ? 0 : $result;
+        return $this->value('MAX(' . $field . ') AS tp_max', 0);
     }
 
     /**
@@ -497,8 +507,7 @@ class Query
      */
     public function avg($field = '*')
     {
-        $result = $this->value('AVG(' . $field . ') AS tp_avg');
-        return is_null($result) ? 0 : $result;
+        return $this->value('AVG(' . $field . ') AS tp_avg', 0);
     }
 
     /**
@@ -506,7 +515,7 @@ class Query
      * 支持使用数据库字段和方法
      * @access public
      * @param string|array $field 字段名
-     * @param string $value 字段值
+     * @param mixed $value 字段值
      * @return integer
      */
     public function setField($field, $value = '')
@@ -1368,17 +1377,38 @@ class Query
                     $name  = Loader::parseName(basename(str_replace('\\', '/', $currentModel)));
                     $table = $this->getTable();
                     $alias = isset($info['alias'][$name]) ? $info['alias'][$name] : $name;
-                    $this->table($table)->alias($alias)->field(true, false, $table, $alias);
+                    $this->table($table)->alias($alias);
+                    if (isset($this->options['field'])) {
+                        $field = $this->options['field'];
+                        unset($this->options['field']);
+                    } else {
+                        $field = true;
+                    }
+                    $this->field($field, false, $table, $alias);
                 }
                 // 预载入封装
                 $joinTable = $model->getTable();
                 $joinName  = Loader::parseName(basename(str_replace('\\', '/', $info['model'])));
                 $joinAlias = isset($info['alias'][$joinName]) ? $info['alias'][$joinName] : $joinName;
                 $this->via($joinAlias);
-                $this->join($joinTable . ' ' . $joinAlias, $alias . '.' . $info['localKey'] . '=' . $joinAlias . '.' . $info['foreignKey'])->field(true, false, $joinTable, $joinAlias, $joinName . '__');
+
+                if(Relation::HAS_ONE == $info['type']){
+                    $this->join($joinTable . ' ' . $joinAlias, $alias . '.' . $info['localKey'] . '=' . $joinAlias . '.' . $info['foreignKey'], $info['joinType']);
+                }else{
+                    $this->join($joinTable . ' ' . $joinAlias, $alias . '.' . $info['foreignKey'] . '=' . $joinAlias . '.' . $info['localKey'], $info['joinType']);
+                }
+
                 if ($closure) {
                     // 执行闭包查询
                     call_user_func_array($closure, [ & $this]);
+                    //指定获取关联的字段
+                    //需要在 回调中 调方法 withField 方法，如
+                    // $query->where(['id'=>1])->withField('id,name');
+                    if (!empty($this->options['with_field'])) {
+                        $field = $this->options['with_field'];
+                        unset($this->options['with_field']);
+                    }
+                    $this->field($field, false, $joinTable, $joinAlias, $joinName . '__');
                 }
                 $i++;
             } elseif ($closure) {
@@ -1387,6 +1417,22 @@ class Query
         }
         $this->via();
         $this->options['with'] = $with;
+        return $this;
+    }
+
+    /**
+     * 关联预加载中 获取关联指定字段值
+     * example:
+     * Model::with(['relation' => function($query){
+     *     $query->withField("id,name");
+     * }])
+     *
+     * @param string | array $field 指定获取的字段
+     * @return $this
+     */
+    public function withField($field)
+    {
+        $this->options['with_field'] = $field;
         return $this;
     }
 

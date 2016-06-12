@@ -14,6 +14,7 @@ namespace think;
 use think\Cache;
 use think\Db;
 use think\db\Query;
+use think\Exception;
 use think\Loader;
 use think\model\Relation;
 use think\paginator\Collection as PaginatorCollection;
@@ -37,7 +38,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     // 当前类名称
     protected $class;
     // 回调事件
-    protected static $event = [];
+    private static $event = [];
 
     // 数据表主键 复合主键使用数组定义
     protected $pk;
@@ -63,6 +64,8 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     protected $insert = [];
     // 更新自动完成列表
     protected $update = [];
+    // 是否自动获取字段类型信息
+    protected $autoFetchFieldType = false;
     // 是否需要自动写入时间戳
     protected $autoWriteTimestamp;
     // 创建时间字段
@@ -83,6 +86,8 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     protected $relation;
     // 属性类型
     protected $fieldType = [];
+    // 验证失败是否抛出异常
+    protected $failException = false;
 
     /**
      * 初始化过的模型.
@@ -108,20 +113,50 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         $this->class = get_class($this);
 
         if (empty($this->name)) {
+            // 当前模型名
             $this->name = basename(str_replace('\\', '/', $this->class));
         }
 
-        if (empty($this->fieldType)) {
-            // 获取字段类型信息并缓存
+        if ($this->autoFetchFieldType && empty($this->fieldType)) {
+            // 获取字段类型信息
             $this->fieldType = $this->db()->getTableInfo('', 'type');
         }
 
         if (is_null($this->autoWriteTimestamp)) {
+            // 自动写入时间戳
             $this->autoWriteTimestamp = $this->db()->getConfig('auto_timestamp');
         }
 
         // 执行初始化操作
         $this->initialize();
+    }
+
+    /**
+     * 获取当前模型的数据库查询对象
+     * @access public
+     * @return Query
+     */
+    public function db()
+    {
+        $model = $this->class;
+        if (!isset(self::$links[$model])) {
+            // 设置当前模型 确保查询返回模型对象
+            $query = Db::connect($this->connection)->model($model);
+
+            // 设置当前数据表和模型名
+            if (!empty($this->table)) {
+                $query->setTable($this->table);
+            } else {
+                $query->name($this->name);
+            }
+            // 全局作用域
+            if (method_exists($this, 'base')) {
+                call_user_func_array([$this, 'base'], [ & $query]);
+            }
+            self::$links[$model] = $query;
+        }
+        // 返回当前模型的数据库查询对象
+        return self::$links[$model];
     }
 
     /**
@@ -176,6 +211,23 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             $this->data[$data] = $value;
         }
         return $this;
+    }
+
+    /**
+     * 获取对象原始数据 如果不存在指定字段返回false
+     * @access public
+     * @param string $name 字段名 留空获取全部
+     * @return mixed
+     */
+    public function getData($name = null)
+    {
+        if (is_null($name)) {
+            return $this->data;
+        } elseif (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -269,11 +321,10 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
                     $value = json_encode($value, JSON_FORCE_OBJECT);
                 }
                 break;
-            case 'json':
             case 'array':
-                if (is_array($value)) {
-                    $value = json_encode($value, JSON_UNESCAPED_UNICODE);
-                }
+                $value = (array) $value;
+            case 'json':
+                $value = json_encode($value, JSON_UNESCAPED_UNICODE);
                 break;
         }
         return $value;
@@ -287,17 +338,17 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public function getAttr($name)
     {
-        $value = isset($this->data[$name]) ? $this->data[$name] : null;
+        $value = $this->getData($name);
 
         // 检测属性获取器
         $method = 'get' . Loader::parseName($name, 1) . 'Attr';
         if (method_exists($this, $method)) {
-            return $this->$method($value, $this->data);
-        } elseif (!is_null($value) && isset($this->type[$name])) {
+            $value = $this->$method($value, $this->data);
+        } elseif (isset($this->type[$name])) {
             // 类型转换
             $value = $this->readTransform($value, $this->type[$name]);
-        } elseif (is_null($value) && method_exists($this, $name)) {
-            // 获取关联数据
+        } elseif (false === $value && method_exists($this, $name)) {
+            // 不存在该字段 获取关联数据
             $value = $this->relation()->getRelation($name);
             // 保存关联对象值
             $this->data[$name] = $value;
@@ -351,17 +402,6 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取对象原始数据
-     * @access public
-     * @param string $name 字段名 留空获取全部
-     * @return array
-     */
-    public function getData($name = '')
-    {
-        return array_key_exists($name, $this->data) ? $this->data[$name] : $this->data;
-    }
-
-    /**
      * 设置需要追加的输出属性
      * @access public
      * @param array $append 属性列表
@@ -374,7 +414,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 设置需要隐藏的属性
+     * 设置需要隐藏的输出属性
      * @access public
      * @param array $hidden 属性列表
      * @return $this
@@ -473,9 +513,10 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param array $data 数据
      * @param array $where 更新条件
      * @param bool $getId 新增的时候是否获取id
+     * @param bool $replace 是否replace
      * @return integer
      */
-    public function save($data = [], $where = [], $getId = true)
+    public function save($data = [], $where = [], $getId = true, $replace = false)
     {
         if (!empty($data)) {
             // 数据自动验证
@@ -484,7 +525,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             }
             // 数据对象赋值
             foreach ($data as $key => $value) {
-                $this->setAttr($key, $value);
+                $this->setAttr($key, $value, $data);
             }
             if (!empty($where)) {
                 $this->isUpdate = true;
@@ -558,7 +599,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
                 return false;
             }
 
-            $result = $this->db()->insert($this->data);
+            $result = $this->db()->insert($this->data, $replace);
 
             // 获取自动增长主键
             if ($result && $getId) {
@@ -662,9 +703,9 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 设置自动完成的字段
+     * 设置自动完成的字段（ 规则通过修改器定义）
      * @access public
-     * @param array $fields 需要自动完成的字段（ 规则通过修改器定义）
+     * @param array $fields 需要自动完成的字段
      * @return $this
      */
     public function auto($fields)
@@ -694,6 +735,18 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     }
 
     /**
+     * 设置验证失败后是否抛出异常
+     * @access public
+     * @param bool $fail 是否抛出异常
+     * @return $this
+     */
+    public function failException($fail = true)
+    {
+        $this->failException = $fail;
+        return $this;
+    }
+
+    /**
      * 自动验证数据
      * @access protected
      * @param array $data 验证数据
@@ -719,7 +772,11 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             }
             if (!$validate->check($data)) {
                 $this->error = $validate->getError();
-                return false;
+                if ($this->failException) {
+                    throw new Exception($this->error);
+                } else {
+                    return false;
+                }
             }
             $this->validate = null;
         }
@@ -746,10 +803,11 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public static function event($event, $callback, $override = false)
     {
+        $class = get_called_class();
         if ($override) {
-            static::$event[$event] = [];
+            self::$event[$class][$event] = [];
         }
-        static::$event[$event][] = $callback;
+        self::$event[$class][$event][] = $callback;
     }
 
     /**
@@ -761,8 +819,8 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     protected function trigger($event, &$params)
     {
-        if (isset(static::$event[$event])) {
-            foreach (static::$event[$event] as $callback) {
+        if (isset(self::$event[$this->class][$event])) {
+            foreach (self::$event[$this->class][$event] as $callback) {
                 if (is_callable($callback)) {
                     $result = call_user_func_array($callback, [ & $params]);
                     if (false === $result) {
@@ -778,12 +836,13 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * 写入数据
      * @access public
      * @param array $data 数据数组
+     * @param bool $replace 是否replace
      * @return $this
      */
-    public static function create($data = [])
+    public static function create($data = [], $replace = false)
     {
         $model = new static();
-        $model->isUpdate(false)->save($data);
+        $model->isUpdate(false)->save($data, [], true, $replace);
         return $model;
     }
 
@@ -837,7 +896,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param mixed $data 主键列表或者查询条件（闭包）
      * @param string $with 关联预查询
      * @param bool $cache 是否缓存
-     * @return \think\db\Query
+     * @return Query
      */
     protected static function parseQuery(&$data, $with, $cache)
     {
@@ -888,7 +947,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @access public
      * @param string|array|Closure $name 命名范围名称 逗号分隔
      * @param mixed $params 参数调用
-     * @return \think\Model
+     * @return Model
      */
     public static function scope($name, $params = [])
     {
@@ -919,7 +978,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param string $operator 比较操作符
      * @param integer $count 个数
      * @param string $id 关联表的统计字段
-     * @return \think\Model
+     * @return Model
      */
     public static function has($relation, $operator = '>=', $count = 1, $id = '*')
     {
@@ -942,7 +1001,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @access public
      * @param string $relation 关联方法名
      * @param mixed $where 查询条件（数组或者闭包）
-     * @return \think\Model
+     * @return Model
      */
     public static function hasWhere($relation, $where = [])
     {
@@ -1020,7 +1079,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @access public
      * @param Model $result 数据对象
      * @param string $relation 关联名
-     * @return \think\Model
+     * @return Model
      */
     public function eagerlyResult($result, $relation)
     {
@@ -1034,15 +1093,16 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param string $foreignKey 关联外键
      * @param string $localKey 关联主键
      * @param array  $alias 别名定义
-     * @return \think\db\Query|string
+     * @param string $joinType JOIN类型
+     * @return Relation
      */
-    public function hasOne($model, $foreignKey = '', $localKey = '', $alias = [])
+    public function hasOne($model, $foreignKey = '', $localKey = '', $alias = [], $joinType = 'INNER')
     {
         // 记录当前关联信息
         $model      = $this->parseModel($model);
         $localKey   = $localKey ?: $this->getPk();
         $foreignKey = $foreignKey ?: Loader::parseName($this->name) . '_id';
-        return $this->relation()->hasOne($model, $foreignKey, $localKey, $alias);
+        return $this->relation()->hasOne($model, $foreignKey, $localKey, $alias, $joinType);
     }
 
     /**
@@ -1052,15 +1112,16 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param string $foreignKey 关联外键
      * @param string $otherKey 关联主键
      * @param array  $alias 别名定义
-     * @return \think\db\Query|string
+     * @param string $joinType JOIN类型
+     * @return Relation
      */
-    public function belongsTo($model, $foreignKey = '', $otherKey = '', $alias = [])
+    public function belongsTo($model, $foreignKey = '', $otherKey = '', $alias = [], $joinType = 'INNER')
     {
         // 记录当前关联信息
         $model      = $this->parseModel($model);
         $foreignKey = $foreignKey ?: Loader::parseName(basename(str_replace('\\', '/', $model))) . '_id';
         $otherKey   = $otherKey ?: (new $model)->getPk();
-        return $this->relation()->belongsTo($model, $foreignKey, $otherKey, $alias);
+        return $this->relation()->belongsTo($model, $foreignKey, $otherKey, $alias, $joinType);
     }
 
     /**
@@ -1070,7 +1131,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param string $foreignKey 关联外键
      * @param string $localKey 关联主键
      * @param array  $alias 别名定义
-     * @return \think\db\Query|string
+     * @return Relation
      */
     public function hasMany($model, $foreignKey = '', $localKey = '', $alias = [])
     {
@@ -1090,7 +1151,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param string $throughKey 关联外键
      * @param string $localKey 关联主键
      * @param array  $alias 别名定义
-     * @return \think\db\Query|string
+     * @return Relation
      */
     public function hasManyThrough($model, $through, $foreignKey = '', $throughKey = '', $localKey = '', $alias = [])
     {
@@ -1112,7 +1173,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @param string $foreignKey 关联外键
      * @param string $localKey 当前模型关联键
      * @param array  $alias 别名定义
-     * @return \think\db\Query|string
+     * @return Relation
      */
     public function belongsToMany($model, $table = '', $foreignKey = '', $localKey = '', $alias = [])
     {
@@ -1123,34 +1184,6 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         $foreignKey = $foreignKey ?: $name . '_id';
         $localKey   = $localKey ?: Loader::parseName($this->name) . '_id';
         return $this->relation()->belongsToMany($model, $table, $foreignKey, $localKey, $alias);
-    }
-
-    /**
-     * 获取当前模型的数据库查询对象
-     * @access public
-     * @return \think\db\Query
-     */
-    public function db()
-    {
-        $model = $this->class;
-        if (!isset(self::$links[$model])) {
-            // 设置当前模型 确保查询返回模型对象
-            $query = Db::connect($this->connection)->model($model);
-
-            // 设置当前数据表和模型名
-            if (!empty($this->table)) {
-                $query->setTable($this->table);
-            } else {
-                $query->name($this->name);
-            }
-            // 全局作用域
-            if (method_exists($this, 'base')) {
-                call_user_func_array([$this, 'base'], [ & $query]);
-            }
-            self::$links[$model] = $query;
-        }
-        // 返回当前模型的数据库查询对象
-        return self::$links[$model];
     }
 
     public function __call($method, $args)

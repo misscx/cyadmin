@@ -25,7 +25,7 @@ class Common extends Controller{
 		$this->auth();//权限验证
 
 		//网站设置
-		$setting = Db::name('setting')->select();
+		$setting = Db::name('setting')->field('k,v')->select();
 		$config = array();
 		foreach($setting as $k=>$v){
 			$config[$v['k']] = $v['v'];

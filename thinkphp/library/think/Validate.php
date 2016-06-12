@@ -11,13 +11,14 @@
 
 namespace think;
 
+use think\Exception;
 use think\Input;
 use think\Request;
 
 class Validate
 {
     // 实例
-    protected static $instance = null;
+    protected static $instance;
 
     // 自定义的验证类型
     protected static $type = [];
@@ -1106,5 +1107,15 @@ class Validate
             $scene = [];
         }
         return $scene;
+    }
+
+    public static function __callStatic($method, $params)
+    {
+        $class = new static;
+        if (method_exists($class, $method)) {
+            return call_user_func_array([$class, $method], $params);
+        } else {
+            throw new Exception(__CLASS__ . ':' . $method . ' method not exist');
+        }
     }
 }
