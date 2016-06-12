@@ -79,7 +79,7 @@ class Login extends Common {
 			'length' => 4, // 验证码位数
 			'useNoise' => false, // 关闭验证码杂点
 			'imageW'=>100,
-			'imageH'=>30,
+			'imageH'=>32,
 		);
 		$verify = new Verify($config);
 		$verify -> entry('login');
