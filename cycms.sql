@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-06-13 00:26:00
+-- Generation Time: 2016-06-14 23:29:48
 -- 服务器版本： 10.1.9-MariaDB
 -- PHP Version: 7.0.1
 
@@ -29,39 +29,28 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `cy_log` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `log` varchar(255) NOT NULL,
+  `log` text NOT NULL,
   `ip` varchar(16) NOT NULL,
   `t` int(10) unsigned NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `cy_log`
 --
 
 INSERT INTO `cy_log` (`id`, `username`, `log`, `ip`, `t`) VALUES
-(1, 'admin', '删除菜单，ID：1,2,3,4,5,6,7', '127.0.0.1', 1465639847),
-(2, 'admin', '编辑菜单，ID:8', '127.0.0.1', 1465647648),
-(3, 'admin', '编辑菜单，ID:8', '127.0.0.1', 1465647703),
-(4, 'admin', '编辑菜单，ID:3', '127.0.0.1', 1465648443),
-(5, 'admin', '编辑菜单，ID:3', '127.0.0.1', 1465648453),
-(6, 'admin', '编辑菜单，ID:5', '127.0.0.1', 1465649425),
-(7, 'admin', '编辑菜单，ID:5', '127.0.0.1', 1465649445),
-(8, 'admin', '登录成功。', '127.0.0.1', 1465734143),
-(9, 'admin', '删除自定义变量，ID：test1', '127.0.0.1', 1465739987),
-(10, 'admin', '删除自定义变量，ID：footer,test', '127.0.0.1', 1465740000),
-(11, 'admin', '编辑菜单，变量名:test', '127.0.0.1', 1465741468),
-(12, 'admin', '编辑菜单，变量名:test', '127.0.0.1', 1465741478),
-(13, 'admin', '编辑菜单，变量名:test', '127.0.0.1', 1465741531),
-(14, 'admin', '编辑菜单，变量名:t', '127.0.0.1', 1465741541),
-(15, 'admin', '编辑菜单，变量名:0', '127.0.0.1', 1465741601),
-(16, 'admin', '编辑菜单，变量名:变量名', '127.0.0.1', 1465741908),
-(17, 'admin', '编辑菜单，变量名:test', '127.0.0.1', 1465743102),
-(18, 'admin', '修改网站配置。', '127.0.0.1', 1465745138),
-(19, 'admin', '修改网站配置。', '127.0.0.1', 1465745164),
-(20, 'admin', '修改网站配置。', '127.0.0.1', 1465745177),
-(21, 'admin', '修改网站配置。', '127.0.0.1', 1465748243),
-(22, 'admin', '修改网站配置。', '127.0.0.1', 1465748644),
-(23, 'admin', '编辑菜单，变量名:test', '127.0.0.1', 1465748747);
+(1, 'admin', '优化表：cy_log`,`cy_menu`,`cy_setting`,`cy_user`,`cy_user_group', '127.0.0.1', 1465915675),
+(2, 'admin', '修复表：cy_log`,`cy_menu`,`cy_setting`,`cy_user`,`cy_user_group', '127.0.0.1', 1465915677),
+(3, 'admin', '备份文件删除成功！', '127.0.0.1', 1465916734),
+(4, 'admin', '备份完成！', '127.0.0.1', 1465917159),
+(5, 'admin', '备份完成！', '127.0.0.1', 1465917166),
+(6, 'admin', '备份完成！', '127.0.0.1', 1465917168),
+(7, 'admin', '备份完成！', '127.0.0.1', 1465917172),
+(8, 'admin', '备份完成！', '127.0.0.1', 1465917177),
+(9, 'admin', '优化数据表：cy_log`,`cy_menu`,`cy_setting`,`cy_user`,`cy_user_group', '127.0.0.1', 1465917381),
+(10, 'admin', '修复数据表：cy_log`,`cy_menu`,`cy_setting`,`cy_user`,`cy_user_group', '127.0.0.1', 1465917474),
+(11, 'admin', '修复数据表：cy_log`,`cy_menu`,`cy_setting`,`cy_user`,`cy_user_group', '127.0.0.1', 1465917493),
+(12, 'admin', '删除数据备份：I:\\UPUPW_P7\\vhosts\\cyadmin.com\\db\\20160614-231245-*.sql*', '127.0.0.1', 1465917897);
 
 -- --------------------------------------------------------
 
@@ -78,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `cy_menu` (
   `tips` varchar(255) NOT NULL COMMENT '提示语',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1显示，0隐藏',
   `o` tinyint(4) NOT NULL COMMENT '排序'
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `cy_menu`
@@ -91,8 +80,10 @@ INSERT INTO `cy_menu` (`id`, `pid`, `url`, `title`, `icon`, `tips`, `status`, `o
 (4, 2, 'variable/index', '自定义变量', 'menu-icon fa  fa-circle-o', '秀', 1, 4),
 (5, 0, '#', '系统设置', 'menu-icon fa fa-cog', '大', 1, 5),
 (6, 5, 'setting/index', '网站设置', 'menu-icon fa  fa-info-circle', '', 1, 6),
-(7, 5, 't5/index', '测试', 'menu-icon fa fa-tachometer', '', 1, 7),
-(8, 5, 't/t3', '测试5', 'dddd', 'ffff', 1, 10);
+(7, 5, 'database/backup', '数据库备份', 'menu-icon fa fa-floppy-o', '', 1, 7),
+(8, 5, 'database/recovery', '数据还原', 'menu-icon fa fa-undo', '数据库还原', 1, 10),
+(9, 5, 'database/optimize', '数据优化', '', '', 0, 0),
+(10, 5, 'database/repair', '数据修复', '', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -146,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
 --
 
 INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `password`, `status`, `identifier`, `token`, `salt`) VALUES
-(1, 1, 'admin', 'e62e76cff8e27165bbf2eb429506da72', 1, '062a1b558e1a5816e3a33472852130c6', '22fc35f0452d38c52241232847ab3754', 'BnUEjeDRCV');
+(1, 1, 'admin', 'e62e76cff8e27165bbf2eb429506da72', 1, 'e809ff4654312c20b27a33eb5488ef3b', 'e4e043928902ada7fe4c538f23bc50ff', '9UnEntzaNX');
 
 -- --------------------------------------------------------
 
@@ -216,12 +207,12 @@ ALTER TABLE `cy_user_group`
 -- AUTO_INCREMENT for table `cy_log`
 --
 ALTER TABLE `cy_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `cy_menu`
 --
 ALTER TABLE `cy_menu`
-  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `cy_user`
 --

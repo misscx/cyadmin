@@ -66,49 +66,40 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<div class="row">
-								<form id="export-form" method="post" action="{:url('backup',['act'=>'export'])}">
-									<table class="table table-striped table-bordered">
-										<thead>
-											<tr>
-												<th width="48"><input class="check-all" checked="chedked" type="checkbox" value=""></th>
-												<th width="100">表名</th>
-												<th width="100">数据引擎</th>
-												<th width="100">数据量</th>
-												<th width="100">数据大小</th>
-												<th width="100">创建时间</th>
-												<th width="100">备份状态</th>
-												<th width="100">操作</th>
-											</tr>
-										</thead>
-										<tbody>
-											{volist name="list" id="table"}
-												<tr>
-													<td class="num">
-														<input class="tables" checked="chedked" type="checkbox" name="tables[]" value="{$table.name}">
-													</td>
-													<td>{$table.name}</td>
-													<td>{$table.engine}</td>
-													<td>{$table.rows}</td>
-													<td>{$table.data_length|format_bytes}</td>
-													<td>{$table.create_time}</td>
-													<td class="msg" id="id{$i-1}">未备份</td>
-													<td class="action">
-														<a class="ajax-get no-refresh" href="{:url('Database/optimize?tables='.$table['name'])}">优化表</a>&nbsp;
-														<a class="ajax-get no-refresh" href="{:url('Database/repair?tables='.$table['name'])}">修复表</a>
-													</td>
-												</tr>
-											{/volist}
-										</tbody>
-									</table>
-									</div>
 									<div class="row">
-										<a id="export" class="btn btn-info" href="javascript:;" autocomplete="off">立即备份</a>
-										<a id="optimize" class="btn btn-info" href="{:url('optimize')}">优化表</a>
-										<a id="repair" class="btn btn-info" href="{:url('repair')}">修复表</a>
-										<a class="btn btn-info" href="{:url('recovery')}">数据还原</a>
-									</div>
-								</form>
+									<table class="table table-striped table-bordered">
+									<thead>
+										<tr>
+											<th width="100">备份名称</th>
+											<th width="100">卷数</th>
+											<th width="100">压缩</th>
+											<th width="100">数据大小</th>
+											<th width="100">备份时间</th>
+											<th width="100">状态</th>
+											<th width="100">操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="data"}
+											<tr>
+												<td>{$data.time|date='Ymd-His',###}</td>
+												<td>{$data.part}</td>
+												<td>{$data.compress}</td>
+												<td>{$data.size|format_bytes}</td>
+												<td>{$key}</td>
+												<td>-</td>
+												<td class="action">
+													<a class="db-import" href="{:url('recovery',['act'=>'import','time'=>$data['time']])}">还原</a>&nbsp;
+													<a class="ajax-get confirm" href="{:url('recovery',['act'=>'del','time'=>$data['time']])}">删除</a>
+												</td>
+											</tr>
+										{/volist}
+									</tbody>
+								</table>
+																</div>
+								<div class="row">
+									<a class="btn btn-info" href="{:url('backup')}">数据备份</a>
+								</div>
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->
@@ -137,7 +128,7 @@
 		<script src="{$Think.config.url}/static/admin/js/bootstrap.js"></script>
 
 		<!-- page specific plugin scripts -->
-		<script src="{$Think.config.url}/static/admin/js/bootbox.js"></script>
+
 		<!-- ace scripts -->
 		<script src="{$Think.config.url}/static/admin/js/ace/elements.scroller.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/elements.colorpicker.js"></script>
@@ -163,112 +154,37 @@
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		$(function(){
-				//全选的实现
-			$(".check-all").click(function(){
-				$(".tables").prop("checked", this.checked);
-			});
-			$(".tables").click(function(){
-				var option = $(".tables");
-				option.each(function(i){
-					if(!this.checked){
-						$(".check-all").prop("checked", false);
-						return false;
-					}else{
-						$(".check-all").prop("checked", true);
-					}
-				});
-			});
-			var $form = $("#export-form"), $export = $("#export"), tables, $optimize = $("#optimize"), $repair = $("#repair");
-
-			$optimize.add($repair).click(function(){
-				$.post(this.href, $form.serialize(), function(data){
-					if(data.code){
-						bootbox.dialog({
-							message: data.msg, 
-							buttons: {
-								"success" : {
-									"label" : "确定",
-									"className" : "btn-sm btn-primary"
-								}
-							}
-						});
-					} else {
-						bootbox.dialog({
-							message: data.msg, 
-							buttons: {
-								"success" : {
-									"label" : "确定",
-									"className" : "btn-danger"
-								}
-							}
-						});
-					}
-					setTimeout(function(){
-						$('#top-alert').find('button').click();
-						$(this).removeClass('disabled').prop('disabled',false);
-					},1500);
-				}, "json");
-				return false;
-			});
-
-			$export.click(function(){
-				$export.parent().children().addClass("disabled");
-				$export.html("正在发送备份请求...");
-				$.post(
-					$form.attr("action"),
-					$form.serialize(),
-					function(data){
-						if(data.code){
-							tables = data.tables;
-							$export.html(data.msg + "开始备份，请不要关闭本页面！");
-							backup(data.data.tab);
-							window.onbeforeunload = function(){ return "正在备份数据库，请不要关闭！" }
-						} else {
-							alert(data.msg,'alert-error');
-							$export.parent().children().removeClass("disabled");
-							$export.html("立即备份");
-							setTimeout(function(){
-								$('#top-alert').find('button').click();
-								//$(that).removeClass('disabled').prop('disabled',false);
-							},1500);
-						}
-					},
-					"json"
-				);
-				return false;
-			});
-
-			function backup(tab, status){
-				status && showmsg(tab.id, "开始备份...(0%)");
-				$.get($form.attr("action"), tab, function(data){
-					if(data.code){
-						showmsg(tab.id, data.msg);
-
-						if(!$.isPlainObject(data.data.tab)){
-							$export.parent().children().removeClass("disabled");
-							$export.html("备份完成，点击重新备份");
-							window.onbeforeunload = function(){ return null }
-							return;
-						}
-						backup(data.data.tab, tab.id != data.data.tab.id);
-					} else {
-						alert(data.msg,'alert-error');
-						$export.parent().children().removeClass("disabled");
-						$export.html("立即备份");
-						setTimeout(function(){
-							$('#top-alert').find('button').click();
-							$(that).removeClass('disabled').prop('disabled',false);
-						},1500);
-					}
-				}, "json");
-
-			}
-
-			function showmsg(id, msg){
-				$("#id"+id).html(msg);
-			}
-		});
+        $(".db-import").click(function(){
+            var self = this, code = ".";
+            $.get(self.href, success, "json");
+            window.onbeforeunload = function(){ return "正在还原数据库，请不要关闭！" }
+            return false;
+        
+            function success(data){
+                if(data.code){
+                    if(data.gz){
+                        data.msg += code;
+                        if(code.length === 5){
+                            code = ".";
+                        } else {
+                            code += ".";
+                        }
+                    }
+                    $(self).parent().prev().text(data.msg);
+                    if(data.data.part){
+                        $.get(self.href, 
+                            {"part" : data.data.part, "start" : data.data.start}, 
+                            success, 
+                            "json"
+                        );
+                    }  else {
+                        window.onbeforeunload = function(){ return null; }
+                    }
+                } else {
+                    alert(data.msg);
+                }
+            }
+        });
 		</script>
 	</body>
 </html>
