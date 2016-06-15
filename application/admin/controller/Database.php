@@ -21,6 +21,7 @@ class Database extends Common {
 
     public function backup($act = null) {
 		
+		
 		if($act == 'export'){
 
 			$tables = Input::post();
@@ -32,15 +33,26 @@ class Database extends Common {
 			}
 
 			if(!empty($tables)){//初始化
-				//读取备份配置
-				$config = array(
-					'path'     => realpath(Config::get('DB_PATH')) . DIRECTORY_SEPARATOR,  //路径
+
+				$config = [
+					'hostname'=>Config::get('database.hostname'),
+					'hostport'=>Config::get('database.hostport'),
+					'database'=>Config::get('database.database'),
+					'path'     => ROOT_PATH.Config::get('DB_PATH'),  //路径
 					'part'     => Config::get('DB_PART'),  //分卷大小 20M
 					'compress' => Config::get('DB_COMPRESS'),  //0:不压缩 1:启用压缩
 					'level'    => Config::get('DB_LEVEL'),  //压缩级别, 1:普通 4:一般  9:最高
-				);
+				];
+
+				if(!is_dir($config['path'])){
+					mkdir($config['path'],0777,true);
+				}
+				if(!is_writeable($config['path'])){
+					return $this->error('请检查目录'.$config['path'].'是否具有可写权限。');
+				}
+
 				//检查是否有正在执行的任务
-				$lock = "{$config['path']}backup.lock";
+				$lock = $config['path']. DIRECTORY_SEPARATOR .'backup.lock';
 				if(is_file($lock)){
 					return $this->error('检测到有一个备份任务正在执行，请稍后再试！');
 				} else {
@@ -48,8 +60,6 @@ class Database extends Common {
 					file_put_contents($lock, time());
 				}
 
-				//检查备份目录是否可写 创建备份目录
-				is_writeable($config['path']) || mkdir('./'.C("DB_PATH_NAME").'',0777,true);
 				session('backup_config', $config);
 
 				//生成备份文件信息
@@ -83,7 +93,7 @@ class Database extends Common {
 						$tab = array('id' => $id, 'start' => 0);
 						return $this->success('备份完成！', '', array('tab' => $tab));
 					} else { //备份完成，清空缓存
-						unlink(session('backup_config.path') . 'backup.lock');
+						unlink(session('backup_config.path') . DIRECTORY_SEPARATOR . 'backup.lock');
 						session('backup_tables', null);
 						session('backup_file', null);
 						session('backup_config', null);
@@ -165,19 +175,28 @@ class Database extends Common {
 	public function recovery($act=null,$time=null,$part=null,$start=null) {
 		
 		//读取备份配置
-		$config = array(
-			'path'     => realpath(Config::get('DB_PATH')) . DIRECTORY_SEPARATOR,  //路径
+		$config = [
+			'hostname'=>Config::get('database.hostname'),
+			'hostport'=>Config::get('database.hostport'),
+			'database'=>Config::get('database.database'),
+			'path'     => ROOT_PATH.Config::get('DB_PATH'),  //路径
 			'part'     => Config::get('DB_PART'),  //分卷大小 20M
 			'compress' => Config::get('DB_COMPRESS'),  //0:不压缩 1:启用压缩
 			'level'    => Config::get('DB_LEVEL'),  //压缩级别, 1:普通 4:一般  9:最高
-		);
+		];
+
 		//判断目录是否存在
-		is_writeable($config['path']) || mkdir('./'.Config::get("DB_PATH_NAME").'',0777,true);
-		
+		if(!is_dir($config['path'])){
+			mkdir($config['path'],0777,true);
+		}
+		if(!is_writeable($config['path'])){
+			return $this->error('请检查目录'.$config['path'].'是否具有可写权限。');
+		}
+
 		if($act=='del'){
 			if($time){
 				$name  = date('Ymd-His', $time) . '-*.sql*';
-				$path  = realpath(Config::get('DB_PATH')). DIRECTORY_SEPARATOR . $name;
+				$path  = $config['path']. DIRECTORY_SEPARATOR . $name;
 				array_map("unlink", glob($path));
 				if(count(glob($path))){
 					return $this->success('备份文件删除失败，请检查权限！');
@@ -194,7 +213,7 @@ class Database extends Common {
 			if(is_numeric($time) && is_null($part) && is_null($start)){ //初始化
 				//获取备份文件信息
 				$name  = date('Ymd-His', $time) . '-*.sql*';
-				$path  = realpath(Config::get('DB_PATH')). DIRECTORY_SEPARATOR . $name;
+				$path  = $config['path']. DIRECTORY_SEPARATOR . $name;
 				$files = glob($path);
 				$list  = array();
 				foreach($files as $name){
@@ -216,7 +235,7 @@ class Database extends Common {
 			} elseif(is_numeric($part) && is_numeric($start)) {
 				$list  = session('backup_list');
 				$db = new Data($list[$part], array(
-					'path'     => realpath(Config::get('DB_PATH')) . DIRECTORY_SEPARATOR,
+					'path'     => $config['path']. DIRECTORY_SEPARATOR,
 					'compress' => $list[$part][2]));
 
 				$start = $db->import($start);
@@ -250,9 +269,8 @@ class Database extends Common {
 		
 		
 		//列出备份文件列表
-		$path = realpath(Config::get('DB_PATH'));
 		$flag = \FilesystemIterator::KEY_AS_FILENAME;
-		$glob = new \FilesystemIterator($path,  $flag);
+		$glob = new \FilesystemIterator($config['path'],  $flag);
 
 		$list = array();
 		foreach ($glob as $name => $file) {

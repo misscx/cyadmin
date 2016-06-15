@@ -66,7 +66,7 @@ class Data {
                 $this->create();
             }
         } else {
-            $backuppath = $this->config['path'];
+            $backuppath = $this->config['path']. DIRECTORY_SEPARATOR;
             $filename   = "{$backuppath}{$this->file['name']}-{$this->file['part']}.sql";
             if($this->config['compress']){
                 $filename = "{$filename}.gz";
@@ -86,9 +86,9 @@ class Data {
         $sql  = "-- -----------------------------\n";
         $sql .= "-- Think MySQL Data Transfer \n";
         $sql .= "-- \n";
-        $sql .= "-- Host     : " . Config::get('DB_HOST') . "\n";
-        $sql .= "-- Port     : " . Config::get('DB_PORT') . "\n";
-        $sql .= "-- Database : " . Config::get('DB_NAME') . "\n";
+        $sql .= "-- Host     : " . $this->config['hostname'] . "\n";
+        $sql .= "-- Port     : " . $this->config['hostport'] . "\n";
+        $sql .= "-- Database : " . $this->config['database'] . "\n";
         $sql .= "-- \n";
         $sql .= "-- Part : #{$this->file['part']}\n";
         $sql .= "-- Date : " . date("Y-m-d H:i:s") . "\n";
