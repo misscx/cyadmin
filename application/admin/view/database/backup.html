@@ -225,7 +225,15 @@
 							backup(data.data.tab);
 							window.onbeforeunload = function(){ return "正在备份数据库，请不要关闭！" }
 						} else {
-							alert(data.msg,'alert-error');
+							bootbox.dialog({
+								message: data.msg, 
+								buttons: {
+									"success" : {
+										"label" : "确定",
+										"className" : "btn-danger"
+									}
+								}
+							});
 							$export.parent().children().removeClass("disabled");
 							$export.html("立即备份");
 							setTimeout(function(){
@@ -253,7 +261,15 @@
 						}
 						backup(data.data.tab, tab.id != data.data.tab.id);
 					} else {
-						alert(data.msg,'alert-error');
+						bootbox.dialog({
+							message: data.msg, 
+							buttons: {
+								"success" : {
+									"label" : "确定",
+									"className" : "btn-danger"
+								}
+							}
+						});
 						$export.parent().children().removeClass("disabled");
 						$export.html("立即备份");
 						setTimeout(function(){
