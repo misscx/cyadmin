@@ -13,6 +13,7 @@ namespace app\admin\Controller;
 use app\admin\controller\Common;
 use \think\Db;
 use \think\Input;
+use \think\Request;
 
 class Menu extends Common {
 
@@ -20,6 +21,9 @@ class Menu extends Common {
 		
 		if($act=='del'){
 			
+			if (!Request::instance()->isPost()){
+				return $this->error('参数错误，请重试！');
+			}
 			$ids = Input::post();
 
 			if(!empty($ids)){
@@ -34,7 +38,10 @@ class Menu extends Common {
 		}
 		
 		if($act=='update'){
-
+			
+			if(!Request::instance()->isPost()){
+				return $this->error('参数错误，请重试！');
+			}
 			$id = Input::post('id',0,'intval');
 			$pid = Input::post('pid',0,'intval');
 			$url = Input::post('url');

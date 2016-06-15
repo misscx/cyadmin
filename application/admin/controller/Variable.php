@@ -13,12 +13,16 @@ namespace app\admin\Controller;
 use app\admin\controller\Common;
 use \think\Db;
 use \think\Input;
+use \think\Request;
 
 class Variable extends Common {
 
     public function index($act=null) {
 		
 		if($act == 'del'){
+			if(!Request::instance()->isPost()){
+				return $this->error('参数错误，请重试！');
+			}
 			$ids = Input::post();
 			if(!empty($ids)){
 				$r = Db::name('setting')->where(['type'=>1])->delete($ids['ids']);
@@ -41,7 +45,9 @@ class Variable extends Common {
 		}
 		
 		if($act == 'update'){
-			
+			if(!Request::instance()->isPost()){
+				return $this->error('参数错误，请重试！');
+			}
 			$k = Input::post('k/s');
 			$var = Input::post('var/s');
 			$v = Input::post('v');

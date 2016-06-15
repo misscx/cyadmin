@@ -62,3 +62,20 @@ function format_bytes($size, $delimiter = '') {
 	for ($i = 0; $size >= 1024 && $i < 5; $i++) $size /= 1024;
 	return round($size, 2) . $delimiter . $units[$i];
 }
+
+/**
+ * 函数：性别获取
+ * @param  number $sex      性别
+ * @return string           返回性别
+ */
+function sex($sex=0) {
+	if($sex==0){
+		return '保密';
+	}
+	if($sex==1){
+		return '男';
+	}
+	if($sex==2){
+		return '女';
+	}
+}

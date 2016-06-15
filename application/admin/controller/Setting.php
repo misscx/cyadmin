@@ -14,13 +14,16 @@ use app\admin\controller\Common;
 use \think\Db;
 use \think\Input;
 use \think\Config;
+use \think\Request;
 
 class Setting extends Common {
 
     public function index($act=null) {
 				
 		if($act == 'update'){
-			
+			if(!Request::instance()->isPost()){
+				return $this->error('参数错误，请重试！');
+			}
 			$data = Input::post();
 
 			foreach($data as $k=>$v){
