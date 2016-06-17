@@ -8,6 +8,12 @@
 * 功能说明：模块公共文件。
 *
 **/
+///Admin/Upload/uploadpic/Width/'.$width.'/Height/'.$height.'/BackCall/'.$callBack.'/?url='.$url.'
+function UploadImage($name="image",$width=100,$height=100,$url="2"){
+    echo '<iframe scrolling="no" frameborder="0" border="0" onload="this.height=this.contentWindow.document.body.scrollHeight;this.width=this.contentWindow.document.body.scrollWidth;" width='.$width.' height="'.$height.'"  src="'.url('admin/upload/uploadpic',['name'=>$name,'width'=>$width,'height'=>$height,'url'=>$url]).'"></iframe>
+         <input type="hidden" name="'.$name.'" id="'.$name.'">';
+}
+
 
 /**
  * 函数：加密
