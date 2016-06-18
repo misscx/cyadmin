@@ -81,7 +81,7 @@
 									</div>
 									<div class="space-4"></div>
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-4"> 头像 </label>
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-4"> 用户头像 </label>
 										<div class="col-sm-9">
 											<div class="col-xs-10 col-sm-5">{notempty name="userinfo"}{:UploadImage("avatar",100,100,$userinfo['avatar'])}{else /}{:UploadImage("avatar",100,100,'/static/admin/avatars/avatar2.png')}{/notempty}</div>
 											<span class="help-inline col-xs-12 col-sm-7">

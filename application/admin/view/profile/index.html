@@ -14,7 +14,7 @@
 		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/font-awesome.css" />
 
 		<!-- page specific plugin styles -->
-
+		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/bootstrap-datepicker3.css" />
 		<!-- text fonts -->
 		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-fonts.css" />
 
@@ -66,74 +66,106 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-									<div class="row">
-									<div id="accordion" class="accordion-style1 panel-group col-sm-6">
-												<div class="panel panel-default">
-													<div class="panel-heading">
-														<h4 class="panel-title">
-															<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-																<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-																&nbsp;官方消息
-															</a>
-														</h4>
-													</div>
-
-													<div class="panel-collapse collapse in" id="collapseOne">
-														<div id="officialnews" class="panel-body">
-															<ul>
-															</ul>
-														</div>
-													</div>
-												</div>
-									</div>
-									<div id="accordion-sysinfo" class="accordion-style1 panel-group col-sm-6">
-												<div class="panel panel-default">
-													<div class="panel-heading">
-														<h4 class="panel-title">
-															<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-sysinfo" href="#sysinfo">
-																<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-																&nbsp;站点信息
-															</a>
-														</h4>
-													</div>
-
-													<div class="panel-collapse collapse in" id="sysinfo">
-														<div class="panel-body">
-															<p>PHP版本：<?php echo PHP_VERSION ?>，MySQL版本：{$mysql}</p>
-															<p>服务器：<?php echo php_uname('s');?></p>
-															<p>PHP运行方式：<?php echo php_sapi_name();?></p>
-															<p>服务器IP：<?php echo GetHostByName($_SERVER['SERVER_NAME']);?></p>
-															<p>框架版本：<?php echo THINK_VERSION ?>&nbsp;&nbsp;</p>
-
-														</div>
-													</div>
-												</div>
-									</div>
-								</div>		
-								<table class="table table-striped table-bordered">
-									<thead>
-										<tr>
-											<th class="center">#</th>
-											<th>用户</th>
-											<th>时间</th>
-											<th>IP</th>
-											<th class="col-xs-7">日志内容</th>
-										</tr>
-									</thead>
-									<tbody>
-									{volist name="list" id="val"}
-										<tr>
-											<td>{$val.id}</td>
-											<td>{$val.username}</td>
-											<td>{$val.t|date="Y-m-d H:i:s",###}</td>
-											<td>{$val.ip}</td>
-											<td>{$val.log}</td>
-										</tr>
-									{/volist}
-									</tbody>
-								</table>
 								<div class="row">
-								{$list->render()}
+									<form class="form-horizontal" action="{:url('index',['act'=>'update'])}" method="post">
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="username"> 用户名 </label>
+										<div class="col-sm-9">
+											
+											<input type="text" id="username" class="rcol-xs-10 col-sm-5" readonly="readonly" value="{$user.username ?? ''}">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">不可修改</span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-4"> 用户头像 </label>
+										<div class="col-sm-9">
+											<div class="col-xs-10 col-sm-5">{:UploadImage("avatar",100,100,$user.avatar)}</div>
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">仅支持jpg、gif、png、bmp、jpeg。</span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="sex"> 用户组 </label>
+										<div class="col-sm-9">
+											<select id="sex" name="sex" class="multiselect">
+												<option value="0"{eq name="$user.sex" value="0"} selected="selected"{/eq}>保密</option>
+												<option value="1"{eq name="$user.sex" value="1"} selected="selected"{/eq}>男</option>
+												<option value="2"{eq name="$user.sex" value="2"} selected="selected"{/eq}>女</option>
+											</select>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="password"> 用户密码 </label>
+										<div class="col-sm-9">
+											<input type="password" name="password" id="password" placeholder="用户密码" class="col-xs-10 col-sm-5" value="">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">留空不修改</span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="birthday"> 生日 </label>
+										<div class="col-xs-9 col-sm-9">
+											<div class="input-group col-xs-5">
+												<input class="form-control" id="birthday" name="birthday" value="{$user.birthday|date="Y-m-d",###}" type="text" data-date-format="dd-mm-yyyy" />
+												<span class="input-group-addon">
+													<i class="ace-icon fa fa-calendar bigger-110"></i>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="tel"> 电话号码 </label>
+										<div class="col-sm-9">
+											<input type="text" name="tel" id="tel" placeholder="电话号码" class="col-xs-10 col-sm-5" value="{$user.tel ?? ''}">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="qq"> Q&nbsp;&nbsp;Q </label>
+										<div class="col-sm-9">
+											<input type="text" name="qq" id="qq" placeholder="QQ" class="col-xs-10 col-sm-5" value="{$user.qq ?? ''}">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="email"> E-mail </label>
+										<div class="col-sm-9">
+											<input type="email" name="email" id="email" placeholder="E-mail" class="col-xs-10 col-sm-5" value="{$user.email ?? ''}">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle"></span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="col-md-offset-2 col-md-9">
+										<button id="submit" class="btn btn-info" type="submit">
+											<i class="icon-ok bigger-110"></i>
+											提交
+										</button>
+
+										&nbsp; &nbsp; &nbsp;
+										<button class="btn" type="reset">
+											<i class="icon-undo bigger-110"></i>
+											重置
+										</button>
+									</div>
+								</form>
 								</div>
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
@@ -188,24 +220,19 @@
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.searchbox-autocomplete.js"></script>
 
 		<!-- inline scripts related to this page -->
+		<script src="{$Think.config.url}/static/admin/js/date-time/bootstrap-datepicker.js"></script>
 		<script type="text/javascript">
-		$(function(){
-			$("#officialnews ul").html('<div class="ace-icon fa fa-spinner fa-spin orange"></div>');
-			$.ajax({
-				type: 'GET',
-				url: '{$Think.CONFIG.NEWS_URL}?callback=?',
-				success :function(data){
-					$("#officialnews ul").html("");
-					$.each(data.news, function(i,news){
-						$("#officialnews ul").append("<li>"+news.pre+"<a href=\""+news.url+"\" title=\""+news.title+"\" target=\"_blank\">"+news.title+"</a>"+news.time+"</li>");
-					});
-				},
-				error: function(){
-					$("#officialnews ul").html("服务器不可用，请稍后再试！");
-				},
-				dataType: 'json'
+			$(function(){
+				$('#birthday').datepicker({
+				  format: 'yyyy-mm-dd',
+						weekStart: 1,
+						autoclose: true,
+						todayBtn: 'linked',
+						language: 'cn'
+				 }).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
 			});
-		})
 		</script>
 	</body>
 </html>

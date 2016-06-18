@@ -49,26 +49,30 @@ CREATE TABLE IF NOT EXISTS `cy_menu` (
   `tips` varchar(255) NOT NULL COMMENT '提示语',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1显示，0隐藏',
   `o` tinyint(4) NOT NULL COMMENT '排序'
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `cy_menu`
 --
 
 INSERT INTO `cy_menu` (`id`, `pid`, `url`, `title`, `icon`, `tips`, `status`, `o`) VALUES
-(1, 0, 'index/index', '控制台', 'menu-icon fa fa-tachometer', '', 1, 1),
+(1, 0, 'index/index', '控制台', 'menu-icon fa fa-tachometer', '经常查看操作日志，发现异常以便及时追查原因。', 1, 1),
 (2, 0, '#', '开发选项', 'menu-icon fa fa-cogs', '', 1, 2),
 (3, 2, 'menu/index', '后台菜单', 'menu-icon fa  fa-folder-o', '开发新功能，新增、修改、删除后台菜单。', 1, 3),
-(4, 2, 'variable/index', '自定义变量', 'menu-icon fa  fa-circle-o', '秀', 1, 4),
-(5, 0, '#', '系统设置', 'menu-icon fa fa-cog', '大', 1, 5),
-(6, 5, 'setting/index', '网站设置', 'menu-icon fa  fa-info-circle', '', 1, 6),
-(7, 5, 'database/backup', '数据库备份', 'menu-icon fa fa-floppy-o', '', 1, 7),
-(8, 5, 'database/recovery', '数据还原', 'menu-icon fa fa-undo', '数据库还原', 1, 8),
+(4, 2, 'variable/index', '自定义变量', 'menu-icon fa  fa-circle-o', '可新增、修改、删除后台自定义变量，方便后台模板直接调用', 1, 4),
+(5, 0, '#', '系统设置', 'menu-icon fa fa-cog', '', 1, 5),
+(6, 5, 'setting/index', '网站设置', 'menu-icon fa  fa-info-circle', '网站设置，含自定义变量值的设置。', 1, 6),
+(7, 5, 'database/backup', '数据库备份', 'menu-icon fa fa-floppy-o', '建议定期备份网站数据库，以便网站故障时时行数据回复。', 1, 7),
+(8, 5, 'database/recovery', '数据还原', 'menu-icon fa fa-undo', '将备份在数据库文件还原致数据库。', 1, 8),
 (9, 5, 'database/optimize', '数据优化', '', '', 0, 9),
 (10, 5, 'database/repair', '数据修复', '', '', 0, 10),
-(11, 0, '#', '用户及权限', 'menu-icon fa fa-users', '用户管理，用户组管理', 1, 11),
+(11, 0, '#', '用户权限', 'menu-icon fa fa-users', '用户管理，用户组管理', 1, 11),
 (12, 11, 'user/index', '用户管理', 'menu-icon fa fa-user', '用户列表、新增、编辑、删除管理', 1, 12),
-(13, 11, 'group/index', '分组权限', 'menu-icon fa fa-lock', '权限组列表、新增、编辑、删除管理', 1, 13);
+(13, 11, 'group/index', '分组权限', 'menu-icon fa fa-lock', '权限组列表、新增、编辑、删除管理', 1, 13),
+(14, 0, '#', '个人中心', 'menu-icon fa fa-user', '', 1, 14),
+(15, 14, 'profile/index', '个人资料', 'menu-icon fa fa-user', '用户个人资料修改', 1, 15),
+(16, 14, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 16);
+
 
 -- --------------------------------------------------------
 
@@ -124,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
 --
 
 INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`) VALUES
-(1, 1, 'admin', '', 0, 1465994454, '15881295252', '331349451', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'c0930c8b3f55a38ca1a082a517016ba8', '22abcbe8561172fd476558bc1d979c9c', 'wxfVNZV4xT');
+(1, 1, 'admin', '', 0, 1465994454, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'c0930c8b3f55a38ca1a082a517016ba8', '22abcbe8561172fd476558bc1d979c9c', 'wxfVNZV4xT');
 
 -- --------------------------------------------------------
 
@@ -144,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `cy_user_group` (
 --
 
 INSERT INTO `cy_user_group` (`id`, `title`, `status`, `auth`) VALUES
-(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13');
+(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16');
 
 --
 -- Indexes for dumped tables
@@ -199,7 +203,7 @@ ALTER TABLE `cy_log`
 -- AUTO_INCREMENT for table `cy_menu`
 --
 ALTER TABLE `cy_menu`
-  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `cy_user`
 --
