@@ -66,39 +66,97 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<div class="row">
-									<a class="btn btn-info" href="{:url('index',['act'=>'add'])}" value="">新增</a>
-								</div>
-								<div class="space-4"></div>
-								<div class="row">
-									<form id="form" method="post" action="{:url('index',['act'=>'del'])}">
-										<table class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th class="center"><input class="check-all" type="checkbox" value=""></th>
-												<th>分组名称</th>
-												<th class="center">状态</th>
-												<th class="center">操作</th>
-											</tr>
-										</thead>
-										<tbody>
-										{volist name="list" id="val"}
-											<tr>
-												<td class="center">
-													<input class="ids" type="checkbox" name="ids[]" value="{$val.id}">
-												</td>
-												<td>{$val.title}</td>
-												<td class="center">{if condition="$val.status eq 1"}启用{else /}禁用{/if}</td>
-												<td class="center"><a class="ace-icon fa fa-edit" href="{:url('index',['act'=>'edit','id'=>$val['id']])}">修改</a></td>
-											</tr>
-										{/volist}
-										</tbody>
-									</table>
-									</form>
-								</div>
-								<div class="row">
-									<input id="submit" class="btn btn-info" type="button" value="删除">
-								</div>
+								<form class="form-horizontal" id="form" name="form" action="{:url('index',['act'=>'update'])}" method="post">
+									<input type="hidden" name="id" value="{$group.id ?? 0}">
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="title"> 用户组名 </label>
+										<div class="col-sm-9">
+											<input type="text" name="title" id="title" placeholder="用户组名" class="col-xs-10 col-sm-5" value="{$group.title ?? ''}" required="required">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">用户组名称，不能为空。</span>
+											</span>
+										</div>
+									</div>
+
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="status"> 是否启用 </label>
+										<div class="control-label no-padding-left col-sm-1">
+											<label>
+												<input name="status" id="status" value="1" {notempty name="group.status"}{$group.status == 1 ? 'checked="checked"' : ''}{else /}checked="checked"{/notempty} class="ace ace-switch ace-switch-2" type="checkbox" />
+												<span class="lbl"></span>
+											</label>
+										</div>
+										<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">YES，启用；NO，禁用</span>
+										</span>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right"> 权限选择 </label>
+											<div class="col-sm-9">
+												<div class="col-sm-12">
+													{volist name="auth" id="v"}
+													<div class="row">
+														<div class="widget-box">
+															<div class="widget-header">
+																<h4 class="widget-title">
+																	<label>
+																		<input name="auth[]" class="ace ace-checkbox-2 father" <?php if(in_array($v['id'],$group['auth'])){echo 'checked="checked"';};?> type="checkbox" value="{$v.id}"/>
+																		<span class="lbl"> {$v.title}</span>
+																	</label>
+																</h4>
+																<div class="widget-toolbar">
+																	{notempty name="v.children"}
+																	<a href="#" data-action="collapse">
+																		<i class="ace-icon fa fa-chevron-up"></i>
+																	</a>
+																	{/notempty}
+																</div>
+															</div>
+															{notempty name="v.children"}
+															<div class="widget-body">
+																<div class="widget-main row">
+																	{notempty name="v.children"}
+																	{volist name="v.children" id="vv"}
+																	<label class="col-xs-2" style="width:160px;">
+																		<input name="auth[]" class="ace ace-checkbox-2 children" <?php if(in_array($vv['id'],$group['auth'])){echo 'checked="checked"';};?> type="checkbox" value="{$vv.id}"/>
+																		<span class="lbl"> {$vv.title}</span>
+																	</label>
+																	{notempty name="vv.children"}
+																		{volist name="vv.children" id="vvv"}
+																		<label class="col-xs-2" style="width:160px;">
+																			<input name="auth[]" class="ace ace-checkbox-2 children" <?php if(in_array($vvv['id'],$group['auth'])){echo 'checked="checked"';};?> type="checkbox" value="{$vvv.id}"/>
+																			<span class="lbl"> {$vvv.title}</span>
+																		</label>
+																		{/volist}
+																	{/notempty}
+																	{/volist}
+																	{/notempty}
+																</div>
+															</div>
+															{/notempty}
+														</div>
+													</div>
+													{/volist}
+												</div>
+											</div>
+										</div>
+									<div class="space-4"></div>
+									<div class="col-md-offset-2 col-md-9">
+										<button class="btn btn-info submit" type="button">
+											<i class="icon-ok bigger-110"></i>
+											提交
+										</button>
+
+										&nbsp; &nbsp; &nbsp;
+										<button class="btn" type="reset">
+											<i class="icon-undo bigger-110"></i>
+											重置
+										</button>
+									</div>
+								</form>
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->
@@ -153,39 +211,31 @@
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		$(function(){
-			$(".check-all").click(function(){
-				$(".ids").prop("checked", this.checked);
-			});
-			$(".ids").click(function(){
-				var option = $(".ids");
-				option.each(function(i){
-					if(!this.checked){
-						$(".check-all").prop("checked", false);
-						return false;
-					}else{
-						$(".check-all").prop("checked", true);
-					}
-				});
-			});
-			$("#submit").click(function(){
-				bootbox.confirm({
-					title: "系统提示",
-					message: "确定要删除所选记录？", 
-					callback:function(result){
-						if(result){
-							$("#form").submit();
-						}
-					},
+		$(".children").click(function(){
+			$(this).parent().parent().parent().parent().find(".father").prop("checked", true);
+		})
+		$(".father").click(function(){
+			if(this.checked){
+				$(this).parent().parent().parent().parent().find(".children").prop("checked", true);
+			}else{
+				$(this).parent().parent().parent().parent().find(".children").prop("checked", false);
+			}
+		})
+		$(".submit").click(function(){
+			var title = $("#title").val();
+			if(title==''){
+				bootbox.dialog({
+					message: "用户组名称不能为空。", 
 					buttons: {
-						"cancel" : {"label" : "取消"},
-						"confirm" : {
-								"label" : "确定",
-								"className" : "btn-danger"
-							}
+						"success" : {
+							"label" : "确定",
+							"className" : "btn-danger"
+						}
 					}
 				});
-			});
+				return;
+			}
+			$("#form").submit();
 		})
 		</script>
 	</body>

@@ -11,10 +11,11 @@
 // $Id$
 
 return [
-    'url_route_on' => true,
+    /*'url_route_on' => true,
     'log'          => [
         'type' => 'trace', // 支持 socket trace file
     ],
+	*/
 	'url'=>'http://cyadmin.com',//网站URL
 	//备份配置，一般情况下默认即可
 	'DB_PATH'     => 'db',     //数据库备份目录，框架应用根目录开始。

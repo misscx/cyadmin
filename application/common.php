@@ -8,12 +8,29 @@
 * 功能说明：模块公共文件。
 *
 **/
-///Admin/Upload/uploadpic/Width/'.$width.'/Height/'.$height.'/BackCall/'.$callBack.'/?url='.$url.'
-function UploadImage($name="image",$width=100,$height=100,$url="2"){
-    echo '<iframe scrolling="no" frameborder="0" border="0" onload="this.height=this.contentWindow.document.body.scrollHeight;this.width=this.contentWindow.document.body.scrollWidth;" width='.$width.' height="'.$height.'"  src="'.url('admin/upload/uploadpic',['name'=>$name,'width'=>$width,'height'=>$height,'url'=>$url]).'"></iframe>
-         <input type="hidden" name="'.$name.'" id="'.$name.'">';
+
+/**
+ * 函数：单图上传
+ * @param string            表单名
+ * @param number            宽度
+ * @param number            高度
+ * @param string            高度
+ * @return string           显示图的URL
+ * @return string           上传图的URL
+ */
+function UploadImage($name="image",$width=100,$height=100,$url=''){
+	echo '<iframe scrolling="no" frameborder="0" border="0" onload="this.height=this.contentWindow.document.body.scrollHeight;this.width=this.contentWindow.document.body.scrollWidth;" width='.$width.' height="'.$height.'"  src="'.url('admin/upload/uploadpic',['name'=>$name,'width'=>$width,'height'=>$height]).'?url='.$url.'"></iframe><input type="hidden" name="'.$name.'" id="'.$name.'">';
 }
 
+/**
+ * 函数：多图上传
+ * @param string            表单名
+ * @return string           显示图的URL
+ * @return string           上传图的URL
+ */
+function UploadImages($name="image",$url=""){
+    echo '<iframe scrolling="no" frameborder="0" border="0" onload="this.height=this.contentWindow.document.body.scrollHeight;this.width=this.contentWindow.document.body.scrollWidth;" src="'.url('admin/upload/uploadpics',['name'=>$name]).'?url='.$url.'"></iframe><input type="hidden" name="'.$name.'" id="'.$name.'">';
+}
 
 /**
  * 函数：加密

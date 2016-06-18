@@ -64,7 +64,7 @@ class Common extends Controller{
 		//登录后无需验证的页面
 		$no_need_to_check = [
 			'upload/uploadpic',//上传显示页
-			'upload/upload',//上传页面
+			'upload/uploadpics',//多图上传显示页
 		];
 		
 		$status = false;
