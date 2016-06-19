@@ -2,10 +2,10 @@
 -- version 4.4.15
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: 2016-06-18 17:04:52
--- 服务器版本： 10.1.8-MariaDB
--- PHP Version: 5.4.45
+-- Host: 127.0.0.1
+-- Generation Time: 2016-06-19 20:11:04
+-- 服务器版本： 10.1.9-MariaDB
+-- PHP Version: 7.0.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,6 +23,70 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `cy_article`
+--
+
+CREATE TABLE IF NOT EXISTS `cy_article` (
+  `aid` int(11) NOT NULL,
+  `sid` int(11) NOT NULL COMMENT '分类id',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `keywords` varchar(255) NOT NULL COMMENT '关键词',
+  `description` varchar(255) NOT NULL COMMENT '摘要',
+  `image` varchar(255) NOT NULL COMMENT '缩略图',
+  `content` text NOT NULL COMMENT '内容',
+  `t` int(10) unsigned NOT NULL COMMENT '时间',
+  `n` int(10) unsigned NOT NULL COMMENT '点击'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `cy_banner`
+--
+
+CREATE TABLE IF NOT EXISTS `cy_banner` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `url` varchar(255) NOT NULL COMMENT '网址',
+  `image` varchar(255) NOT NULL COMMENT '图片',
+  `o` int(11) NOT NULL COMMENT '排序',
+  `s` tinyint(1) NOT NULL COMMENT '状态'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `cy_category`
+--
+
+CREATE TABLE IF NOT EXISTS `cy_category` (
+  `id` int(11) NOT NULL,
+  `pid` int(11) NOT NULL COMMENT '父ID',
+  `name` varchar(100) NOT NULL COMMENT '名称',
+  `keywords` varchar(255) NOT NULL COMMENT '关键词',
+  `description` varchar(255) NOT NULL COMMENT '描述',
+  `o` int(11) NOT NULL COMMENT '排序'
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `cy_link`
+--
+
+CREATE TABLE IF NOT EXISTS `cy_link` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL COMMENT '名称',
+  `url` varchar(255) NOT NULL COMMENT '网址',
+  `logo` varchar(255) NOT NULL COMMENT '图标',
+  `o` int(11) NOT NULL COMMENT '排序'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `cy_log`
 --
 
@@ -32,7 +96,9 @@ CREATE TABLE IF NOT EXISTS `cy_log` (
   `log` text NOT NULL,
   `ip` varchar(16) NOT NULL,
   `t` int(10) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
 
 -- --------------------------------------------------------
 
@@ -49,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `cy_menu` (
   `tips` varchar(255) NOT NULL COMMENT '提示语',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1显示，0隐藏',
   `o` tinyint(4) NOT NULL COMMENT '排序'
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `cy_menu`
@@ -69,10 +135,18 @@ INSERT INTO `cy_menu` (`id`, `pid`, `url`, `title`, `icon`, `tips`, `status`, `o
 (11, 0, '#', '用户权限', 'menu-icon fa fa-users', '用户管理，用户组管理', 1, 11),
 (12, 11, 'user/index', '用户管理', 'menu-icon fa fa-user', '用户列表、新增、编辑、删除管理', 1, 12),
 (13, 11, 'group/index', '分组权限', 'menu-icon fa fa-lock', '权限组列表、新增、编辑、删除管理', 1, 13),
-(14, 0, '#', '个人中心', 'menu-icon fa fa-user', '', 1, 14),
-(15, 14, 'profile/index', '个人资料', 'menu-icon fa fa-user', '用户个人资料修改', 1, 15),
-(16, 14, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 16);
-
+(14, 0, '#', '网站管理', 'menu-icon fa fa-desktop', '网站内空管理', 1, 14),
+(15, 14, 'article/index', '文章管理', '', '网站文章管理', 1, 15),
+(16, 14, 'article/add', '新增文章', '', '新增文章', 1, 16),
+(17, 14, 'article/edit', '编辑文章', '', '', 0, 17),
+(18, 14, 'article/save', '文章保存', '', '', 0, 18),
+(19, 14, 'category/index', '分类管理', '', '分类管理', 1, 19),
+(20, 14, 'category/add', '新增分类', '', '新增分类', 1, 20),
+(21, 14, 'category/edit', '编辑文章', '', '', 0, 21),
+(22, 14, 'category/save', '保存分类', '', '', 0, 22),
+(23, 0, '#', '个人中心', 'menu-icon fa fa-user', '', 1, 23),
+(24, 23, 'profile/index', '个人资料', 'menu-icon fa fa-user', '用户个人资料修改', 1, 24),
+(25, 23, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 25);
 
 -- --------------------------------------------------------
 
@@ -128,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
 --
 
 INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`) VALUES
-(1, 1, 'admin', '', 0, 1465994454, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'c0930c8b3f55a38ca1a082a517016ba8', '22abcbe8561172fd476558bc1d979c9c', 'wxfVNZV4xT');
+(1, 1, 'admin', '', 0, 1465994454, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, '83eaa516367bb2e0ffb51ca9cb523d85', '5cf9ad432ae33d7cf955eaa1f5891469', 'P3Wbd3nWCg');
 
 -- --------------------------------------------------------
 
@@ -148,11 +222,40 @@ CREATE TABLE IF NOT EXISTS `cy_user_group` (
 --
 
 INSERT INTO `cy_user_group` (`id`, `title`, `status`, `auth`) VALUES
-(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16');
+(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `cy_article`
+--
+ALTER TABLE `cy_article`
+  ADD PRIMARY KEY (`aid`),
+  ADD KEY `sid` (`sid`);
+
+--
+-- Indexes for table `cy_banner`
+--
+ALTER TABLE `cy_banner`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `o` (`o`),
+  ADD KEY `s` (`s`);
+
+--
+-- Indexes for table `cy_category`
+--
+ALTER TABLE `cy_category`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fsid` (`pid`);
+
+--
+-- Indexes for table `cy_link`
+--
+ALTER TABLE `cy_link`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `o` (`o`);
 
 --
 -- Indexes for table `cy_log`
@@ -195,15 +298,35 @@ ALTER TABLE `cy_user_group`
 --
 
 --
+-- AUTO_INCREMENT for table `cy_article`
+--
+ALTER TABLE `cy_article`
+  MODIFY `aid` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `cy_banner`
+--
+ALTER TABLE `cy_banner`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `cy_category`
+--
+ALTER TABLE `cy_category`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+--
+-- AUTO_INCREMENT for table `cy_link`
+--
+ALTER TABLE `cy_link`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `cy_log`
 --
 ALTER TABLE `cy_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `cy_menu`
 --
 ALTER TABLE `cy_menu`
-  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT for table `cy_user`
 --
