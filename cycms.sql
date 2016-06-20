@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `cy_menu` (
   `tips` varchar(255) NOT NULL COMMENT '提示语',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1显示，0隐藏',
   `o` tinyint(4) NOT NULL COMMENT '排序'
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `cy_menu`
@@ -147,6 +147,7 @@ INSERT INTO `cy_menu` (`id`, `pid`, `url`, `title`, `icon`, `tips`, `status`, `o
 (23, 0, '#', '个人中心', 'menu-icon fa fa-user', '', 1, 23),
 (24, 23, 'profile/index', '个人资料', 'menu-icon fa fa-user', '用户个人资料修改', 1, 24),
 (25, 23, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 25);
+(26, 5, 'search/index', '功能搜索', '', '后台功能搜索', 0, 25);
 
 -- --------------------------------------------------------
 
@@ -222,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `cy_user_group` (
 --
 
 INSERT INTO `cy_user_group` (`id`, `title`, `status`, `auth`) VALUES
-(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25');
+(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26');
 
 --
 -- Indexes for dumped tables
@@ -326,7 +327,7 @@ ALTER TABLE `cy_log`
 -- AUTO_INCREMENT for table `cy_menu`
 --
 ALTER TABLE `cy_menu`
-  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT for table `cy_user`
 --
