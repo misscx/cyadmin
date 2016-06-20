@@ -1,0 +1,13 @@
+(function($ , undefined) {
+	ace.vars['US_STATES'] = {$json};
+	try {
+		$('#nav-search-input').bs_typeahead({
+			source: ace.vars['US_STATES'],
+			updater:function (item) {
+				$('#nav-search-input').focus();
+				return item;
+			}
+		});
+	} catch(e) {}
+
+})(window.jQuery);

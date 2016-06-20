@@ -59,6 +59,7 @@ class Common extends Controller{
 		$no_need_to_login = [
 			'login/index','login/login','login/verify',//登录
 			'logout/index',//登出
+			'js/autocomplete',
 		];
 		
 		//登录后无需验证的页面

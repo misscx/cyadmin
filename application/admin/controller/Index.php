@@ -26,9 +26,6 @@ class Index extends Common {
 		$this->assign('list', $list);
 
         $this->assign('mysql',$mysql[0]['mysql']);
-        $this->assign('nav',array('','',''));//导航
-		$this -> display();
-		
 		return $this->fetch();
     }
 }
