@@ -76,7 +76,8 @@
 								<thead>
 									<tr>
 										<th class="center col-xs-1"><input class="check-all" type="checkbox" value=""></th>
-										<th class="col-xs-7">分类名称</th>
+										<th class="col-xs-5">分类名称</th>
+										<th class="col-xs-2">类型</th>
 										<th class="col-xs-2">排序</th>
 										<th class="col-xs-2">操作</th>
 									</tr>
@@ -86,6 +87,7 @@
 								<tr>
 									<td class="center"><input class="ids" type="checkbox" name="ids[]" value="{$v.id}"></td>
 									<td>{$v.name}</td>
+									<td>{if condition="$v.type eq 0"}文章{/if}{if condition="$v.type eq 1"}外链{/if}</td>
 									<td>{$v.o}</td>
 									<td>
 										<a class="blue" href="{:url('edit',array('id'=>$v.id))}" title="编辑分类"><i class="ace-icon fa fa-plus-circle bigger-100"></i>编辑</a>&nbsp;&nbsp;
@@ -97,6 +99,7 @@
 								<tr>
 									<td class="center"><input class="ids" type="checkbox" name="ids[]" value="{$vv.id}"></td>
 									<td>┣━{$vv.name}</td>
+									<td>{if condition="$vv.type eq 0"}文章{/if}{if condition="$vv.type eq 1"}外链{/if}</td>
 									<td>{$vv.o}</td>
 									<td>
 										<a class="blue" href="{:url('edit',array('id'=>$vv.id))}" title="编辑分类"><i class="ace-icon fa fa-plus-circle bigger-100"></i>编辑</a>&nbsp;&nbsp;
@@ -108,6 +111,7 @@
 								<tr>
 									<td class="center"><input class="ids" type="checkbox" name="ids[]" value="{$vvv.id}"></td>
 									<td>┣━━{$vvv.name}</td>
+									<td>{if condition="$vvv.type eq 0"}文章{/if}{if condition="$vvv.type eq 1"}外链{/if}</td>
 									<td>{$vvv.o}</td>
 									<td>
 										<a class="blue" href="{:url('edit',array('id'=>$vvv.id))}" title="编辑分类"><i class="ace-icon fa fa-plus-circle bigger-100"></i>编辑</a>&nbsp;&nbsp;
@@ -119,6 +123,7 @@
 								<tr>
 									<td class="center"><input class="ids" type="checkbox" name="ids[]" value="{$vvvv.id}"></td>
 									<td>┣━━━{$vvvv.name}</td>
+									<td>{if condition="$vvvv.type eq 0"}文章{/if}{if condition="$vvvv.type eq 1"}外链{/if}</td>
 									<td>{$vvvv.o}</td>
 									<td>
 										<a class="blue" href="{:url('edit',array('id'=>$vvvv.id))}" title="编辑分类"><i class="ace-icon fa fa-plus-circle bigger-100"></i>编辑</a>

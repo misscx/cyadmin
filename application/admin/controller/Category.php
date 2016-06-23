@@ -36,7 +36,7 @@ class Category extends Common {
 			return $this->error('请选择需要删除的分类！');
 		}
 		
-		$category = Db::name('category')->field('id,pid,name,o')->order('o asc')->select();
+		$category = Db::name('category')->field('id,pid,name,o,type')->order('o asc')->select();
 		$category = $this->getMenu($category);
 		$this->assign('category',$category);
 		return $this->fetch();

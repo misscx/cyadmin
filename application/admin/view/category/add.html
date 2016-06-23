@@ -68,6 +68,19 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" action="{:url('save')}" method="post">
 									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="type"> 类型</label>
+										<div class="col-sm-9">
+										<select id="type" name="type" class="col-xs-10 col-sm-5">
+											<option value="0">文章栏目</option>
+											<option value="1">外部链接</option>
+										</select>
+										<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">分类类型。</span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="form-field-0"> 父类</label>
 										<div class="col-sm-9">
 										<select id="pid" name="pid" class="col-xs-10 col-sm-5">
@@ -101,6 +114,18 @@
 											</span>
 										</div>
 									</div>
+									<div id="forurl" class="hidden">
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="url"> 外部连接 </label>
+										<div class="col-sm-9">
+											<input type="text" name="url" id="url" placeholder="外部连接" class="col-xs-10 col-sm-5" value="">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">外部URL</span>
+											</span>
+										</div>
+									</div>
+									</div>
 									<div class="space-4"></div>
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="keywords"> 关键词 </label>
@@ -123,7 +148,7 @@
 									</div>
 									<div class="space-4"></div>
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-2"> 分类排序 </label>
+										<label class="col-sm-1 control-label no-padding-right" for="o"> 分类排序 </label>
 										<div class="col-sm-9">
 											<input type="number" name="o" id="o" placeholder="排序" class="col-xs-10 col-sm-5" value="0">
 											<span class="help-inline col-xs-12 col-sm-7">
@@ -131,7 +156,26 @@
 											</span>
 										</div>
 									</div>
-
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="listtemplate"> 列表模板 </label>
+										<div class="col-sm-9">
+											<input type="text" name="listtemplate" id="listtemplate" placeholder="列表模板" class="col-xs-10 col-sm-5" value="">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">留空使用默认模板。</span>
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="contenttemplate"> 内容模板 </label>
+										<div class="col-sm-9">
+											<input type="text" name="contenttemplate" id="contenttemplate" placeholder="内容模板" class="col-xs-10 col-sm-5" value="">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">留空使用默认模板。</span>
+											</span>
+										</div>
+									</div>
 									<div class="col-md-offset-2 col-md-9">
 										<button class="btn btn-info submit" type="submit">
 											<i class="icon-ok bigger-110"></i>
@@ -198,6 +242,16 @@
 		<script type="text/javascript" src="{$Think.config.url}/admin/js/autocomplete"></script>
 
 		<!-- inline scripts related to this page -->
-
+		<script type="text/javascript">
+		$("#type").on('change',function(){
+			var type = $(this).val();
+			if(type==1){
+				$("#forurl").removeClass('hidden');
+			}else{
+				$("#forurl").addClass('hidden');
+				$("#url").val('');
+			}
+		})
+		</script>
 	</body>
 </html>
