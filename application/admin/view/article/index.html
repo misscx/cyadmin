@@ -76,24 +76,26 @@
 										<thead>
 											<tr>
 												<th class="center col-xs-1"><input class="check-all" type="checkbox" value=""></th>
-												<th class="center col-xs-3">标题</th>
-												<th class="center col-xs-4">图片</th>
-												<th class="center col-xs-1">状态</th>
-												<th class="center col-xs-1">排序</th>
-												<th class="center col-xs-2">操作</th>
+												<th class="center col-xs-5">标题</th>
+												<th class="center col-xs-1">分类</th>
+												<th class="center col-xs-1">置顶</th>
+												<th class="center col-xs-2">时间</th>
+												<th class="center col-xs-1">点击</th>
+												<th class="center col-xs-1">操作</th>
 											</tr>
 										</thead>
 										<tbody>
 										{volist name="list" id="val"}
 											<tr>
 												<td class="center">
-													<input class="ids" type="checkbox" name="ids[]" value="{$val.id}">
+													<input class="aids" type="checkbox" name="aids[]" value="{$val.aid}">
 												</td>
-												<td><a href="{$val.url}" target="_blank">{$val.title}</a></td>
-												<td><a href="{$val.image}" target="_blank">{$val.image}</a></td>
-												<td class="center">{if condition="$val.status eq 1"}<i class="fa fa-eye" title="可见"></i>{else /}<i class="fa fa-eye-slash red" title="已隐藏"></i>{/if}</td>
-												<td>{$val.o}</td>
-												<td class="center"><a class="ace-icon fa fa-edit" href="{:url('edit',['id'=>$val['id']])}">修改</a></td>
+												<td>{$val.title}{if condition="$val.image neq ''"}&nbsp;&nbsp;<a href="{$val.image}" target="_blank" title="点击查看缩略图"><i class="ace-icon glyphicon glyphicon-picture red"></i></a>{/if}</td>
+												<td class="center"><a href="{:url('index',['cid'=>$val.cid])}">{$val.name}</a></td>
+												<td class="center">{eq name="val.stick" value="1"}是{else /}否{/eq}</td>
+												<td class="center">{$val.t|date="Y-m-d H:i:s",###}</td>
+												<td class="center">{$val.n}</td>
+												<td class="center"><a class="ace-icon fa fa-edit" href="{:url('edit',['aid'=>$val['aid']])}">修改</a></td>
 											</tr>
 										{/volist}
 										</tbody>
@@ -162,10 +164,10 @@
 		<script type="text/javascript">
 		$(function(){
 			$(".check-all").click(function(){
-				$(".ids").prop("checked", this.checked);
+				$(".aids").prop("checked", this.checked);
 			});
-			$(".ids").click(function(){
-				var option = $(".ids");
+			$(".aids").click(function(){
+				var option = $(".aids");
 				option.each(function(i){
 					if(!this.checked){
 						$(".check-all").prop("checked", false);

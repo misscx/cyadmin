@@ -17,26 +17,31 @@ use \think\Request;
 
 class Article extends Common {
 
-    public function index($act=null) {
+    public function index($act=null,$cid=null) {
 		if($act=='del'){
 			
 			if (!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$ids = Input::post();
+			$aids = Input::post();
 
-			if(!empty($ids)){
-				$r = Db::name('banner')->delete($ids['ids']);
-				if($r) {
-					addlog('删除横幅，ID：'.implode(',',$ids['ids']),$this->user['username']);
-					return $this->success('恭喜，横幅删除成功！',url('admin/banner/index'));
-				}
+			if(!empty($aids)){
+				$r = Db::name('article')->delete($aids['aids']);
+				Db::name('content')->delete($aids['aids']);
+				addlog('删除文章，AID：'.implode(',',$aids['aids']),$this->user['username']);
+				return $this->success('恭喜，删除成功！',url('admin/article/index'));
 			}
 
 			return $this->error('请选择需要删除的选项！');
 		}
 		
-		$list = Db::name('banner')->order('o asc')->paginate(25);
+		$cid = intval($cid);
+		if($cid) {
+			$where = "a.cid = '{$cid}'";
+		}else{
+			$where = '1=1';
+		}
+		$list = Db::name('article')->alias('a')->join('__CATEGORY__ c','a.cid=c.id')->field('a.*,c.name')->where($where)->order('a.aid desc')->paginate(25);
 		$this->assign('list',$list);
 		return $this->fetch();
     }
