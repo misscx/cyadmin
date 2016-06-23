@@ -47,51 +47,61 @@ class Article extends Common {
     }
 	
 	public function add(){
+		$category = Db::name('category')->field('id,pid,name')->order('o asc')->select();
+		$category = $this->getMenu($category);
+		$this->assign('category',$category);
 		
-		return $this->fetch('form');
+		return $this->fetch();
 	}
 	
-	public function edit($id){
-		$id = intval($id);
-		$banner = Db::name('banner')->where(['id'=>$id])->find();
-		if(!$banner){
+	public function edit($aid=null){
+		$aid = intval($aid);
+		$article = Db::name('article')->where(['aid'=>$aid])->find();
+		if(!$article){
 			return $this->error('参数错误，请重试！');
 		}
-
-		$this->assign('banner',$banner);
-		return $this->fetch('form');
+		$content = Db::name('content')->field('content')->where(['aid'=>$aid])->find();
+		if(!$article){
+			return $this->error('参数错误，请重试！');
+		}
+		$article = array_merge($article,$content);
+		$category = Db::name('category')->field('id,pid,name')->order('o asc')->select();
+		$category = $this->getMenu($category);
+		$this->assign('category',$category);
+		$this->assign('article',$article);
+		return $this->fetch();
 	}
 	
-	public function save(){
+	public function save($aid=null){
 		if (!Request::instance()->isPost()){
 			return $this->error('参数错误，请重试！');
 		}
-		
-		$data = Input::post();
-		if($data['title']==''){
-			return $this->error('标题不能为空！');
+		$aid = intval($aid);
+		$cid = Input::post('cid',0,'intval');
+		if (!$cid){
+			return $this->error('参数错误，请重试！');
 		}
-		
-		$data['id'] = intval($data['id']);
-		$data['o'] = intval($data['o']);
-		if(isset($data['status'])){
-			$data['status'] = intval($data['status']);
+		$title = Input::post('title');
+		$keywords = Input::post('keywords');
+		$description = Input::post('description');
+		$image = Input::post('image');
+		$t = time();
+		$stick = Input::post('stick',0,'intval');
+		$content = Input::post('content');
+		if(!$aid){
+			$aid = Db::name('article')->insert(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick],false,true);
+			if(!$aid){
+				return $this->error('系统错误，请稍后重试！');
+			}
+			Db::name('content')->insert(['aid'=>$aid,'content'=>$content]);
+			addlog('新增文章，AID：'.$aid,$this->user['username']);
+			return $this->success('恭喜，新增文章成功！',url('admin/article/index'));
 		}else{
-			$data['status'] = 0;
+			Db::name('article')->where(['aid'=>$aid])->update(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick]);
+			Db::name('content')->where(['aid'=>$aid])->update(['aid'=>$aid,'content'=>$content]);
+			addlog('编辑文章，AID：'.$aid,$this->user['username']);
+			return $this->success('恭喜，文章编辑成功！',url('admin/article/index'));
 		}
 		
-		if($data['id']){
-			$r = Db::name('banner')->where(['id'=>$data['id']])->update($data);
-			addlog('编辑横幅，ID：'.$data['id'],$this->user['username']);
-		}else{
-			unset($data['id']);
-			$r = Db::name('banner')->insert($data);
-			addlog('新增横幅，标题：'.$data['title'],$this->user['username']);
-		}
-		if($r){
-			return $this -> success('恭喜，操作成功！',url('admin/banner/index'));
-		}else{
-			return $this->error('系统错误，请重试！');
-		}
 	}
 }
