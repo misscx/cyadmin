@@ -146,8 +146,8 @@ INSERT INTO `cy_menu` (`id`, `pid`, `url`, `title`, `icon`, `tips`, `status`, `o
 (22, 14, 'category/save', '保存分类', '', '', 0, 22),
 (23, 0, '#', '个人中心', 'menu-icon fa fa-user', '', 1, 23),
 (24, 23, 'profile/index', '个人资料', 'menu-icon fa fa-user', '用户个人资料修改', 1, 24),
-(25, 23, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 25);
-(26, 5, 'search/index', '功能搜索', '', '后台功能搜索', 0, 25);
+(25, 23, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 25),
+(26, 5, 'search/index', '功能搜索', '', '后台功能搜索', 0, 26);
 
 -- --------------------------------------------------------
 
