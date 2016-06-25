@@ -12,12 +12,9 @@
 
 })(window.jQuery);
 $(function(){
-	$("#sidebar-shortcuts > div > button").click(function(){
-		var skin = $(this).attr('val');
-		$.get("{:url('admin/user/skin')}",{ skin:skin },function(data,status){
-			if(status=='success'){
-				window.location.reload(true);
-			}
-		});
-	});
+	$('#skin-colorpicker').on('change', function() {
+		var skin = $(this).find("option:selected").attr('data-skin');
+		$.get("{:url('admin/user/skin')}",{skin:skin});
+	})
+	
 });

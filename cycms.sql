@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
   `identifier` varchar(32) NOT NULL,
   `token` varchar(32) NOT NULL,
   `salt` varchar(10) NOT NULL,
-  `skin` varchar(10) NOT NULL DEFAULT 'no-skin'
+  `skin` varchar(20) NOT NULL DEFAULT 'no-skin'
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --

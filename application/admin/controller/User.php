@@ -113,7 +113,7 @@ class User extends Common {
 		}elseif($skin=='skin-2') {
 			$skin = 'skin-2';
 		}elseif($skin=='skin-3') {
-			$skin = 'skin-3';
+			$skin = 'skin-3 no-skin';
 		}else{
 			$skin = 'no-skin';
 		}
