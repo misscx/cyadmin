@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2016-06-23 16:03:40
+-- Generation Time: 2016-06-25 17:06:13
 -- 服务器版本： 10.1.8-MariaDB
 -- PHP Version: 5.4.45
 
@@ -214,15 +214,16 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '账户状态，禁用为0   启用为1',
   `identifier` varchar(32) NOT NULL,
   `token` varchar(32) NOT NULL,
-  `salt` varchar(10) NOT NULL
+  `salt` varchar(10) NOT NULL,
+  `skin` varchar(10) NOT NULL DEFAULT 'no-skin'
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `cy_user`
 --
 
-INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`) VALUES
-(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'b4f6bb60a9eec348402bc950b8df4a39', 'a24a680d2df8e8bedcbcc8cc4354d22b', 'fbTKzHtgpW');
+INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`, `skin`) VALUES
+(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, '1fdc06648dff12baaca6dfcd9ac5f3ab', 'f74c0728a87e2c0afb76aaa4563a1bf1', 'vy6EtSQkD4', 'no-skin');
 
 -- --------------------------------------------------------
 
@@ -253,7 +254,7 @@ INSERT INTO `cy_user_group` (`id`, `title`, `status`, `auth`) VALUES
 --
 ALTER TABLE `cy_article`
   ADD PRIMARY KEY (`aid`),
-  ADD KEY `cid` (`cid`);
+  ADD KEY `cid` (`cid`) USING BTREE;
 
 --
 -- Indexes for table `cy_banner`
@@ -268,7 +269,7 @@ ALTER TABLE `cy_banner`
 --
 ALTER TABLE `cy_category`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `pid` (`pid`);
+  ADD KEY `pid` (`pid`) USING BTREE;
 
 --
 -- Indexes for table `cy_content`

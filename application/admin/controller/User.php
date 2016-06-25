@@ -106,4 +106,18 @@ class User extends Common {
 		$this->assign('list', $list);
 		return $this->fetch();
     }
+	
+	public function skin($skin=null){
+		if($skin=='skin-1') {
+			$skin = 'skin-1';
+		}elseif($skin=='skin-2') {
+			$skin = 'skin-2';
+		}elseif($skin=='skin-3') {
+			$skin = 'skin-3';
+		}else{
+			$skin = 'no-skin';
+		}
+		Db::name('user')->where(['uid'=>$this->user['uid']])->update(['skin'=>$skin]);
+		die('1');
+	}
 }

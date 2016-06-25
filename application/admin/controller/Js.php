@@ -15,7 +15,7 @@ use \think\Db;
 
 class Js extends Common {
 
-    public function autocomplete() {
+    public function js() {
 		header('Content-Type: application/x-javascript; charset=utf-8');
 		$json = array();
 		$list = Db::name('menu')->field('title,url')->where(['status'=>1])->select();

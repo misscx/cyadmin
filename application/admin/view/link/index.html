@@ -17,6 +17,7 @@
 
 		<!-- text fonts -->
 		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-fonts.css" />
+		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-skins.css" class="ace-main-stylesheet" id="main-ace-style" />
 
 		<!-- ace styles -->
 		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
@@ -42,7 +43,7 @@
 		<![endif]-->
 	</head>
 
-	<body class="no-skin">
+	<body class="{$user.skin}">
 		<!-- #section:basics/navbar.layout -->
 {include file="common/header" /}
 		<!-- /section:basics/navbar.layout -->
@@ -154,7 +155,7 @@
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.settings-rtl.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.settings-skin.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.widget-on-reload.js"></script>
-		<script type="text/javascript" src="{$Think.config.url}/admin/js/autocomplete"></script>
+		<script type="text/javascript" src="{$Think.config.url}/admin/js/js"></script>
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">

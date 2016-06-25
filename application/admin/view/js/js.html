@@ -1,0 +1,23 @@
+(function($ , undefined) {
+	ace.vars['US_STATES'] = {$json};
+	try {
+		$('#nav-search-input').bs_typeahead({
+			source: ace.vars['US_STATES'],
+			updater:function (item) {
+				$('#nav-search-input').focus();
+				return item;
+			}
+		});
+	} catch(e) {}
+
+})(window.jQuery);
+$(function(){
+	$("#sidebar-shortcuts > div > button").click(function(){
+		var skin = $(this).attr('val');
+		$.get("{:url('admin/user/skin')}",{ skin:skin },function(data,status){
+			if(status=='success'){
+				window.location.reload(true);
+			}
+		});
+	});
+});
