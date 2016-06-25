@@ -64,7 +64,7 @@ class User extends Common {
 				$r = Db::name('user')->insert($data);
 				if($r){
 					addlog('新增用户，用户名：'.$data['username'],$this->user['username']);
-					return $this->success('恭喜，修改用户成功！',url('admin/user/index'));
+					return $this->success('恭喜，新增用户成功！',url('admin/user/index'));
 				}
 				
 				
