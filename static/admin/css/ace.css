@@ -12851,6 +12851,39 @@ tr.detail-row > td {
   background-color: #D2C5C5;
   background-color: rgba(120, 110, 100, 0.4);
 }
+.defautl-login {
+  background-image:url('images/default_bg.jpg'); 
+  -moz-background-size: 100% 100%; 
+  -o-background-size: 100% 100%; 
+  -webkit-background-size: 100% 100%; 
+  background-size: 100% 100%; 
+  -moz-border-image: url('images/default_bg.jpg') 0; 
+  background-repeat:no-repeat\9; 
+  background-image:none\9; 
+  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/default_bg.jpg', sizingMethod='scale')\9; 
+}
+.defautl-login .widget-box {
+  visibility: hidden;
+  position: fixed;
+  z-index: -5;
+  border-bottom: none;
+  box-shadow: none;
+  padding: 6px;
+  background-color: #2F611F;
+  -moz-transform: scale(0,1) translate(-150px);
+  -webkit-transform: scale(0,1) translate(-150px);
+  -o-transform: scale(0,1) translate(-150px);
+  -ms-transform: scale(0,1) translate(-150px);
+  transform: scale(0,1) translate(-150px);
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius:5px;
+  /*
+  filter:alpha(opacity=50);
+  -moz-opacity:0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;*/
+}
 .blur-login {
   background: #394557 url('images/meteorshower2.jpg') repeat;
 }

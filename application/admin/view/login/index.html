@@ -35,7 +35,7 @@
 		<![endif]-->
 	</head>
 
-	<body class="login-layout">
+	<body class="login-layout defautl-login">
 		<div class="main-container">
 			<div class="main-content">
 				<div class="row">
@@ -116,6 +116,10 @@
 							<div class="navbar-fixed-top align-right">
 								<br />
 								&nbsp;
+								<a id="btn-login-default" href="#">Default</a>
+								&nbsp;
+								<span class="blue">/</span>
+								&nbsp;
 								<a id="btn-login-dark" href="#">Dark</a>
 								&nbsp;
 								<span class="blue">/</span>
@@ -155,6 +159,11 @@
 				var target = $(this).data('target');
 				$('.widget-box.visible').removeClass('visible');//hide others
 				$(target).addClass('visible');//show target
+			 });
+			 $('#btn-login-default').on('click', function(e) {
+				$('body').attr('class', 'login-layout defautl-login');
+				
+				e.preventDefault();
 			 });
 			 $('#btn-login-dark').on('click', function(e) {
 				$('body').attr('class', 'login-layout');
