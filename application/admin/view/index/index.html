@@ -110,15 +110,16 @@
 													</div>
 												</div>
 									</div>
-								</div>		
-								<table class="table table-striped table-bordered">
+								</div>
+								<div class="row">
+								<table class="table table-bordered table-hover">
 									<thead>
 										<tr>
 											<th class="center">#</th>
 											<th>用户</th>
 											<th>时间</th>
-											<th>IP</th>
-											<th class="col-xs-7">日志内容</th>
+											<th class="hidden-sm hidden-xs">IP</th>
+											<th>日志内容</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -127,12 +128,35 @@
 											<td>{$val.id}</td>
 											<td>{$val.username}</td>
 											<td>{$val.t|date="Y-m-d H:i:s",###}</td>
-											<td>{$val.ip}</td>
-											<td>{$val.log}</td>
+											<td class="hidden-sm hidden-xs">{$val.ip}</td>
+											<td>
+											<div class="hidden-sm hidden-xs">{$val.log}</div>
+											<div class="hidden-md hidden-lg">
+												<div class="inline pos-rel">
+													<div class="action-buttons">
+															<a href="javascript:;" class="green bigger-140 show-details-btn" title="Show Details">
+																<i class="ace-icon fa fa-angle-double-down"></i>
+																<span class="sr-only">Details</span>
+															</a>
+														</div>
+												</div>
+											</div>
+											</td>
+										</tr>
+										<tr class="detail-row">
+											<td colspan="4">{$val.log}</td>
+										</tr>
+										<tr class="detail-row">
+											<td colspan="5">
+												<div class="table-detail">
+													fff
+												</div>
+											</td>
 										</tr>
 									{/volist}
 									</tbody>
 								</table>
+								</div>
 								<div class="row">
 								{$list->render()}
 								</div>
@@ -206,6 +230,12 @@
 				},
 				dataType: 'json'
 			});
+			$('.show-details-btn').on('click', function(e) {
+				e.preventDefault();
+				$(this).closest('tr').next().toggleClass('open');
+				$(this).find(ace.vars['.icon']).toggleClass('fa-angle-double-down').toggleClass('fa-angle-double-up');
+			});
+
 		})
 		</script>
 	</body>

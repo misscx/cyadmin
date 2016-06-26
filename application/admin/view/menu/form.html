@@ -73,7 +73,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="pid"> 上级菜单 </label>
 										<div class="col-sm-9">
-										<select id="pid" name="pid" class="rcol-xs-10 col-sm-5">
+										<select id="pid" name="pid" class="col-xs-10 col-sm-5">
 											<option value="0">顶级菜单</option>
 											{volist name="list" id="v"}
 											<option {notempty name="current"}{$current.pid == $v.id ? 'selected="selected"' : ''}{/notempty} value="{$v.id}">{$v.title}</option>
@@ -98,7 +98,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="title"> 菜单名称 </label>
 										<div class="col-sm-9">
-											<input type="text" name="title" id="title" class="rcol-xs-10 col-sm-5" value="{$current.title ?? ''}" required="required">
+											<input type="text" name="title" id="title" class="col-xs-10 col-sm-5" value="{$current.title ?? ''}" required="required">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle"></span>
 											</span>

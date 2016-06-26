@@ -80,11 +80,11 @@
 												<th>用户名</th>
 												<th>用户组</th>
 												<th class="center">状态</th>
-												<th class="center">性别</th>
-												<th class="center">生日</th>
-												<th>电话</th>
-												<th>Q&nbsp;Q</th>
-												<th>邮箱</th>
+												<th class="center hidden-sm hidden-xs">性别</th>
+												<th class="center hidden-sm hidden-xs">生日</th>
+												<th class="center hidden-sm hidden-xs">电话</th>
+												<th class="center hidden-sm hidden-xs">Q&nbsp;Q</th>
+												<th class="center hidden-sm hidden-xs">邮箱</th>
 												<th class="center">操作</th>
 											</tr>
 										</thead>
@@ -95,11 +95,11 @@
 												<td>{$val.username}</td>
 												<td>{$val.title}</td>
 												<td class="center">{eq name="val.status" value="1"}启用{else /}<span class="red">禁用</span>{/eq}</td>
-												<td class="center">{$val.sex|sex}</td>
-												<td class="center">{$val.birthday|date='Y-m-d',###}</td>
-												<td>{$val.tel}</td>
-												<td>{$val.qq}</td>
-												<td>{$val.email}</td>
+												<td class="center hidden-sm hidden-xs">{$val.sex|sex}</td>
+												<td class="center hidden-sm hidden-xs">{$val.birthday|date='Y-m-d',###}</td>
+												<td class="center hidden-sm hidden-xs">{$val.tel}</td>
+												<td class="center hidden-sm hidden-xs">{$val.qq}</td>
+												<td class="center hidden-sm hidden-xs">{$val.email}</td>
 												<td class="center"><a href="{:url('index',['act'=>'edit','uid'=>$val.uid])}"><i class="ace-icon fa fa-edit"></i>编辑</a></td>
 											</tr>
 										{/volist}

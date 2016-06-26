@@ -78,9 +78,9 @@
 											<tr>
 												<th class="center col-xs-1"><input class="check-all" type="checkbox" value=""></th>
 												<th class="center col-xs-3">标题</th>
-												<th class="center col-xs-4">图片</th>
+												<th class="center col-xs-4 hidden-sm hidden-xs">图片</th>
 												<th class="center col-xs-1">状态</th>
-												<th class="center col-xs-1">排序</th>
+												<th class="center col-xs-1 hidden-sm hidden-xs">排序</th>
 												<th class="center col-xs-2">操作</th>
 											</tr>
 										</thead>
@@ -91,9 +91,9 @@
 													<input class="ids" type="checkbox" name="ids[]" value="{$val.id}">
 												</td>
 												<td><a href="{$val.url}" target="_blank">{$val.title}</a></td>
-												<td><a href="{$val.image}" target="_blank">{$val.image}</a></td>
+												<td class="hidden-sm hidden-xs"><a href="{$val.image}" target="_blank">{$val.image}</a></td>
 												<td class="center">{if condition="$val.status eq 1"}<i class="fa fa-eye" title="可见"></i>{else /}<i class="fa fa-eye-slash red" title="已隐藏"></i>{/if}</td>
-												<td>{$val.o}</td>
+												<td class="hidden-sm hidden-xs">{$val.o}</td>
 												<td class="center"><a class="ace-icon fa fa-edit" href="{:url('edit',['id'=>$val['id']])}">修改</a></td>
 											</tr>
 										{/volist}

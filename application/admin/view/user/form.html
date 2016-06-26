@@ -74,7 +74,7 @@
 										<label class="col-sm-1 control-label no-padding-right" for="username"> 用户名 </label>
 										<div class="col-sm-9">
 											
-											<input type="text" {notempty name="userinfo"} disabled="disabled" {else /} name="username" {/notempty} id="username" class="rcol-xs-10 col-sm-5" value="{$userinfo.username ?? ''}">
+											<input type="text" {notempty name="userinfo"} disabled="disabled" {else /} name="username" {/notempty} id="username" class="col-xs-10 col-sm-5" value="{$userinfo.username ?? ''}">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">不可修改</span>
 											</span>
@@ -94,7 +94,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="ugid"> 用户组 </label>
 										<div class="col-sm-9">
-										<select id="ugid" name="ugid" class="rcol-xs-10 col-sm-5">
+										<select id="ugid" name="ugid" class="col-xs-10 col-sm-5">
 											{volist name="group" id="val"}
 												<option value="{$val.id}"{notempty name="userinfo"}{eq name="$val.id" value="$userinfo.ugid"} selected="selected"{/eq}{/notempty}>{$val.title}</option>
 											{/volist}
