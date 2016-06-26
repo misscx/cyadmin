@@ -79,9 +79,9 @@
 												<th class="center"><input class="check-all" type="checkbox" value=""></th>
 												<th>菜单名称</th>
 												<th>链接</th>
-												<th class="center">ICON</th>
-												<th class="center">状态</th>
-												<th class="center">排序</th>
+												<th class="center hidden-sm hidden-xs">ICON</th>
+												<th class="center hidden-sm hidden-xs">状态</th>
+												<th class="center hidden-sm hidden-xs">排序</th>
 												<th class="center">操作</th>
 											</tr>
 										</thead>
@@ -93,9 +93,9 @@
 												</td>
 												<td>{$val.title}</td>
 												<td>{$val.url}</td>
-												<td><i class="{$val.icon}"></i></td>
-												<td class="center">{if condition="$val.status eq 1"}<i class="fa fa-eye" title="可见"></i>{else /}<i class="fa fa-eye-slash red" title="已隐藏"></i>{/if}</td>
-												<td>{$val.o}</td>
+												<td class="center hidden-sm hidden-xs"><i class="{$val.icon}"></i></td>
+												<td class="center hidden-sm hidden-xs">{if condition="$val.status eq 1"}<i class="fa fa-eye" title="可见"></i>{else /}<i class="fa fa-eye-slash red" title="已隐藏"></i>{/if}</td>
+												<td class="center hidden-sm hidden-xs">{$val.o}</td>
 												<td class="center"><a class="ace-icon fa fa-edit" href="{:url('index',['act'=>'edit','id'=>$val['id']])}">修改</a></td>
 											</tr>
 										{/volist}
