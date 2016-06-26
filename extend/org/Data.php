@@ -126,13 +126,14 @@ class Data {
         //备份表结构
         if(0 == $start){
             $result = Db::query("SHOW CREATE TABLE `{$table}`");
+			//print_r($result);
             $sql  = "\n";
             $sql .= "-- -----------------------------\n";
             $sql .= "-- Table structure for `{$table}`\n";
             $sql .= "-- -----------------------------\n";
             $sql .= "DROP TABLE IF EXISTS `{$table}`;\n";
-            //$sql .= trim($result[0]['Create Table']) . ";\n\n";
-			 $sql .= trim($result[0]['create table']) . ";\n\n";
+            $sql .= trim($result[0]['Create Table']) . ";\n\n";
+			//$sql .= trim($result[0]['create table']) . ";\n\n";
             if(false === $this->write($sql)){
                 return false;
             }

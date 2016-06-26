@@ -11,6 +11,8 @@
 
 namespace think;
 
+use think\App;
+
 class Log
 {
     const LOG    = 'log';
@@ -40,12 +42,12 @@ class Log
     public static function init($config = [])
     {
         $type         = isset($config['type']) ? $config['type'] : 'File';
-        $class        = (!empty($config['namespace']) ? $config['namespace'] : '\\think\\log\\driver\\') . ucwords($type);
+        $class        = false !== strpos($type, '\\') ? $type : '\\think\\log\\driver\\' . ucwords($type);
         self::$config = $config;
         unset($config['type']);
         self::$driver = new $class($config);
         // 记录初始化信息
-        APP_DEBUG && Log::record('[ LOG ] INIT ' . $type . ': ' . var_export($config, true), 'info');
+        App::$debug && Log::record('[ LOG ] INIT ' . $type . ': ' . var_export($config, true), 'info');
     }
 
     /**
@@ -55,11 +57,11 @@ class Log
     public static function alarm($config = [])
     {
         $type  = isset($config['type']) ? $config['type'] : 'Email';
-        $class = (!empty($config['namespace']) ? $config['namespace'] : '\\think\\log\\alarm\\') . ucwords($type);
+        $class = false !== strpos($type, '\\') ? $type : '\\think\\log\\alarm\\' . ucwords($type);
         unset($config['type']);
         self::$alarm = new $class($config['alarm']);
         // 记录初始化信息
-        APP_DEBUG && Log::record('[ CACHE ] ALARM ' . $type . ': ' . var_export($config, true), 'info');
+        App::$debug && Log::record('[ CACHE ] ALARM ' . $type . ': ' . var_export($config, true), 'info');
     }
 
     /**
@@ -80,9 +82,6 @@ class Log
      */
     public static function record($msg, $type = 'log')
     {
-        if (!is_string($msg)) {
-            $msg = var_export($msg, true);
-        }
         self::$log[$type][] = $msg;
     }
 
@@ -153,9 +152,6 @@ class Log
      */
     public static function write($msg, $type = 'log')
     {
-        if (!is_string($msg)) {
-            $msg = var_export($msg, true);
-        }
         // 封装日志信息
         $log[$type][] = $msg;
 
