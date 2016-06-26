@@ -126,7 +126,7 @@ class Database extends Common {
                 $list = Db::execute("OPTIMIZE TABLE `{$tables}`");
 
                 if($list){
-					addlog("优化数据表：$tables",$this->user['username']);
+					addlog("优化数据表。",$this->user['username']);
                    return $this->success("数据表优化完成！");
                 } else {
                     return $this->error("数据表优化出错请重试！");
@@ -135,9 +135,9 @@ class Database extends Common {
                 $list = Db::execute("OPTIMIZE TABLE `{$tables}`");
                 if($list){
 					addlog("优化数据表：$tables",$this->user['username']);
-                    return $this->success("数据表'{$tables}'优化完成！");
+                    return $this->success("数据表{$tables}优化完成！");
                 } else {
-                    return $this->error("数据表'{$tables}'优化出错请重试！");
+                    return $this->error("数据表{$tables}优化出错请重试！");
                 }
             }
         } else {
@@ -153,7 +153,7 @@ class Database extends Common {
                 $list = Db::execute("REPAIR TABLE `{$tables}`");
 
                 if($list){
-					addlog("修复数据表：$tables",$this->user['username']);
+					addlog("修复数据表。",$this->user['username']);
                    return $this->success("数据表修复完成！");
                 } else {
                    return $this->error("数据表修复出错请重试！");
@@ -162,7 +162,7 @@ class Database extends Common {
                 $list = Db::execute("REPAIR TABLE `{$tables}`");
                 if($list){
 					addlog("修复数据表：$tables",$this->user['username']);
-                   return $this->success("数据表'{$tables}'修复完成！");
+                   return $this->success("数据表{$tables}修复完成！");
                 } else {
                    return $this->error("数据表'{$tables}'修复出错请重试！");
                 }
