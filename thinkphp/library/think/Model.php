@@ -204,7 +204,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     {}
 
     /**
-     * 设置数据对象值（不进行修改器处理）
+     * 设置数据对象值
      * @access public
      * @param mixed $data 数据或者属性名
      * @param mixed $value 值
@@ -212,12 +212,20 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public function data($data, $value = null)
     {
-        if (is_object($data)) {
-            $this->data = get_object_vars($data);
-        } elseif (is_array($data)) {
-            $this->data = $data;
-        } else {
+        if (is_string($data)) {
             $this->data[$data] = $value;
+        } else {
+            if (is_object($data)) {
+                $data = get_object_vars($data);
+            }
+            if (true === $value) {
+                // 数据对象赋值
+                foreach ($data as $key => $value) {
+                    $this->setAttr($key, $value, $data);
+                }
+            } else {
+                $this->data = $data;
+            }
         }
         return $this;
     }
@@ -556,6 +564,9 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
 
         // 检测字段
         if (!empty($this->field)) {
+            if (true === $this->field) {
+                $this->field = $this->db->getTableInfo('', 'fields');
+            }
             foreach ($this->data as $key => $val) {
                 if (!in_array($key, $this->field)) {
                     unset($this->data[$key]);
@@ -673,7 +684,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     /**
      * 设置允许写入的字段
      * @access public
-     * @param bool $update
+     * @param bool|array $field 允许写入的字段 如果为true只允许写入数据表字段
      * @return $this
      */
     public function allowField($field)
@@ -978,25 +989,27 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * 命名范围
      * @access public
      * @param string|array|Closure  $name 命名范围名称 逗号分隔
-     * @param mixed                 $params 参数调用
+     * @param mixed                 ...$params 参数调用
      * @return Model
      */
-    public static function scope($name, $params = [])
+    public static function scope($name)
     {
-        $model = new static();
-        $query = $model->db();
-        if ($name instanceof \Closure) {
-            call_user_func_array($name, [ & $query, $params]);
-        } elseif ($name instanceof Query) {
+        if ($name instanceof Query) {
             return $name;
-        } else {
-            if (is_string($name)) {
-                $names = explode(',', $name);
-            }
-            foreach ($names as $scope) {
+        }
+        $model     = new static();
+        $params    = func_get_args();
+        $params[0] = $model->db();
+        if ($name instanceof \Closure) {
+            call_user_func_array($name, $params);
+        } elseif (is_string($name)) {
+            $name = explode(',', $name);
+        }
+        if (is_array($name)) {
+            foreach ($name as $scope) {
                 $method = 'scope' . trim($scope);
                 if (method_exists($model, $method)) {
-                    $model->$method($query, $params);
+                    call_user_func_array([$model, $method], $params);
                 }
             }
         }

@@ -78,9 +78,9 @@ class Url
         }
 
         // 检测URL绑定
-        $type = Route::bind('type');
+        $type = Route::getBind('type');
         if ($type) {
-            $bind = Route::bind($type);
+            $bind = Route::getBind($type);
             if (0 === strpos($url, $bind)) {
                 $url = substr($url, strlen($bind) + 1);
             }
@@ -240,11 +240,13 @@ class Url
                     }
                 }
                 $match = true;
+            } elseif (empty($pattern) && array_intersect_assoc($param, $array) == $param) {
+                $match = true;
             }
-            if (empty($pattern) && empty($param)) {
-                // 没有任何变量
-                return $url;
-            } elseif ($match && (empty($param) || array_intersect_assoc($param, $array) == $param)) {
+            if ($match && !empty($param) && array_intersect_assoc($param, $array) != $param) {
+                $match = false;
+            }
+            if ($match) {
                 // 存在变量定义
                 $vars = array_diff_key($array, $param);
                 return $url;
@@ -256,6 +258,10 @@ class Url
     // 生成路由映射并缓存
     private static function getRouteAlias()
     {
+        static $item = [];
+        if (!empty($item)) {
+            return $item;
+        }
         if ($item = Cache::get('think_route_map')) {
             return $item;
         }
@@ -322,10 +328,6 @@ class Url
     // 分析路由规则中的变量
     private static function parseVar($rule)
     {
-        // 检测是否设置了参数分隔符
-        if ($depr = Config::get('url_params_depr')) {
-            $rule = str_replace($depr, '/', $rule);
-        }
         // 提取路由规则中的变量
         $var = [];
         foreach (explode('/', $rule) as $val) {
@@ -342,6 +344,9 @@ class Url
                 }
             }
 
+            if ('$' == substr($val, -1, 1)) {
+                $val = substr($val, 0, -1);
+            }
             if (0 === strpos($val, '[:')) {
                 // 可选参数
                 $optional = true;
