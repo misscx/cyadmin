@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Request;
 
 class User extends Common {
@@ -44,7 +43,7 @@ class User extends Common {
 				return $this->error('参数错误，请重试！');
 			}
 			$uid = intval($uid);
-			$data = Input::post();
+			$data = input('post.');
 			$data['birthday'] = strtotime($data['birthday']);
 			if(!isset($data['status'])){
 				$data['status'] = 0;
@@ -88,7 +87,7 @@ class User extends Common {
 			if(!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$uids = Input::post();
+			$uids = input('post.');
 			if(empty($uids)){
 				return $this->error('请选择要删除的用户！');
 			}

@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Config;
 use \think\Request;
 use org\Data;
@@ -24,9 +23,9 @@ class Database extends Common {
 		
 		if($act == 'export'){
 
-			$tables = Input::post();
-			$id = Input::get('id/d');
-			$start = Input::get('start/d');
+			$tables = input('post.');
+			$id = input('get.id/d');
+			$start = input('get.start/d');
 
 			if(!empty($tables)){
 				$tables = $tables['tables'];

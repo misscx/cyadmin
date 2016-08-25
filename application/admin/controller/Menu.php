@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Request;
 
 class Menu extends Common {
@@ -24,7 +23,7 @@ class Menu extends Common {
 			if (!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$ids = Input::post();
+			$ids = input('post.');
 
 			if(!empty($ids)){
 				$r = Db::name('menu')->delete($ids['ids']);
@@ -42,14 +41,14 @@ class Menu extends Common {
 			if(!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$id = Input::post('id',0,'intval');
-			$pid = Input::post('pid',0,'intval');
-			$url = Input::post('url');
-			$title = Input::post('title');
-			$icon = Input::post('icon');
-			$tips = Input::post('tips');
-			$status = Input::post('status',0,'intval');
-			$o = Input::post('o',0,'intval');
+			$id = input('post.id',0,'intval');
+			$pid = input('post.pid',0,'intval');
+			$url = input('post.url');
+			$title = input('post.title');
+			$icon = input('post.icon');
+			$tips = input('post.tips');
+			$status = input('post.status',0,'intval');
+			$o = input('post.o',0,'intval');
 			
 
 			if($id==0){//新增
@@ -69,7 +68,7 @@ class Menu extends Common {
 		
 		if($act=='edit'){
 			
-			$id = Input::get('id/d');
+			$id = input('get.id/d');
 			$this->assign('id',$id);
 			
 			$current = Db::name('menu')->where(['id'=>$id])->find();

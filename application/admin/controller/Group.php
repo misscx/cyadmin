@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Request;
 
 class Group extends Common {
@@ -48,7 +47,7 @@ class Group extends Common {
 			if (!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$data = Input::post();
+			$data = input('post.');
 			if($data['title']==''){
 				return $this->error('用户组名不能为空！');
 			}
@@ -86,7 +85,7 @@ class Group extends Common {
 			if (!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$ids = Input::post();
+			$ids = input('post.');
 
 			if(!empty($ids)){
 				$r = Db::name('user_group')->delete($ids['ids']);

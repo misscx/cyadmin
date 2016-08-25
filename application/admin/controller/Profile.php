@@ -11,7 +11,6 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Input;
 use \think\Db;
 
 class Profile extends Common {
@@ -21,13 +20,13 @@ class Profile extends Common {
 		
 		if($act=='update'){
 			
-			$data['avatar'] = Input::post('avatar');
-			$data['sex'] = Input::post('sex/d');
-			$data['password'] = Input::post('password');
-			$data['birthday'] = strtotime(Input::post('birthday'));
-			$data['tel'] = Input::post('tel');
-			$data['qq'] = Input::post('qq');
-			$data['email'] = Input::post('email');
+			$data['avatar'] = input('post.avatar');
+			$data['sex'] = input('post.sex/d');
+			$data['password'] = input('post.password');
+			$data['birthday'] = strtotime(input('post.birthday'));
+			$data['tel'] = input('post.tel');
+			$data['qq'] = input('post.qq');
+			$data['email'] = input('post.email');
 			if($data['password']==''){
 				unset($data['password']);
 			}else{

@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Request;
 
 class Article extends Common {
@@ -23,16 +22,15 @@ class Article extends Common {
 			if (!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$aids = Input::post();
-
-			if(!empty($aids)){
-				$r = Db::name('article')->delete($aids['aids']);
-				Db::name('content')->delete($aids['aids']);
-				addlog('删除文章，AID：'.implode(',',$aids['aids']),$this->user['username']);
-				return $this->success('恭喜，删除成功！',url('admin/article/index'));
-			}
-
-			return $this->error('请选择需要删除的选项！');
+      $aids = input('post.');
+      if($aids){
+        $where['aid'] = array('in',implode(',',$aids['aids']));
+        Db::name('article')->where($where)->delete();
+        Db::name('content')->where($where)->delete();
+        addlog('删除文章，AID：'.implode(',',$aids['aids']),$this->user['username']);
+        return $this->success('恭喜，删除成功！',url('admin/article/index'));
+      }
+      return $this->error('请选择需要删除的文章！');
 		}
 		
 		$cid = intval($cid);
@@ -77,17 +75,17 @@ class Article extends Common {
 			return $this->error('参数错误，请重试！');
 		}
 		$aid = intval($aid);
-		$cid = Input::post('cid',0,'intval');
+		$cid = input('post.cid',0,'intval');
 		if (!$cid){
 			return $this->error('参数错误，请重试！');
 		}
-		$title = Input::post('title');
-		$keywords = Input::post('keywords');
-		$description = Input::post('description');
-		$image = Input::post('image');
+		$title = input('post.title');
+		$keywords = input('post.keywords');
+		$description = input('post.description');
+		$image = input('post.image');
 		$t = time();
-		$stick = Input::post('stick',0,'intval');
-		$content = Input::post('content');
+		$stick = input('post.stick',0,'intval');
+		$content = input('post.content');
 		if(!$aid){
 			$aid = Db::name('article')->insert(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick],false,true);
 			if(!$aid){

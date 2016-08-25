@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Config;
 use \think\Request;
 
@@ -24,7 +23,7 @@ class Setting extends Common {
 			if(!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$data = Input::post();
+			$data = input('post.');
 
 			foreach($data as $k=>$v){
 				Db::name('setting')->where(['k'=>$k])->update(['v'=>$v]);//循环插入，效率效差

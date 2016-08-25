@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Request;
 
 class Variable extends Common {
@@ -23,7 +22,7 @@ class Variable extends Common {
 			if(!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$ids = Input::post();
+			$ids = input('post.');
 			if(!empty($ids)){
 				$r = Db::name('setting')->where(['type'=>1])->delete($ids['ids']);
 				if($r) {
@@ -35,7 +34,7 @@ class Variable extends Common {
 		}
 		
 		if($act == 'edit'){
-			$k = Input::get('k/s');
+			$k = input('get.k/s');
 			$var = Db::name('setting')->where(['k'=>$k,'type'=>1])->find();
 			if(!$var) {
 				return $this->error('参数错误，请重试！');
@@ -48,12 +47,12 @@ class Variable extends Common {
 			if(!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$k = Input::post('k/s');
-			$var = Input::post('var/s');
-			$v = Input::post('v');
-			$name = Input::post('name');
-			$tips = Input::post('tips');
-			$o = Input::post('o',0,'intval');
+			$k = input('post.k/s');
+			$var = input('post.var/s');
+			$v = input('post.v');
+			$name = input('post.name');
+			$tips = input('post.tips');
+			$o = input('post.o',0,'intval');
 
 			if($var == ''){
 				return $this->error('变量名不能为空！');

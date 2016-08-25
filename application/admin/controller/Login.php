@@ -13,7 +13,6 @@ use app\admin\controller\Common;
 use \think\Controller;
 use \think\Cookie;
 use \think\Db;
-use \think\Input;
 use org\Verify;
 
 class Login extends Common {
@@ -37,14 +36,14 @@ class Login extends Common {
 	
 	public function login(){
 		
-		$verify = Input::post('verify');
+		$verify = input('post.verify');
 		if (!$this->check_verify($verify,'login')) {
 			return $this -> error('验证码错误！',url("login/index"));
 		}
 		
-		$username = Input::post('username');
-		$password = Input::post('password');
-		$remember = Input::post('remember');
+		$username = input('post.username');
+		$password = input('post.password');
+		$remember = input('post.remember');
 		
 		if ($username=='') {
 			return $this -> error('用户名不能为空！',url('login/index'));

@@ -275,7 +275,8 @@ ALTER TABLE `cy_category`
 -- Indexes for table `cy_content`
 --
 ALTER TABLE `cy_content`
-  ADD KEY `aid` (`aid`);
+  ADD KEY `aid` (`aid`),
+  ADD INDEX(`aid`);
 
 --
 -- Indexes for table `cy_link`

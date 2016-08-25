@@ -12,7 +12,6 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use \think\Db;
-use \think\Input;
 use \think\Request;
 
 class Category extends Common {
@@ -23,7 +22,7 @@ class Category extends Common {
 			if (!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
-			$ids = Input::post();
+			$ids = input('post.');
 
 			if(!empty($ids)){
 				$r = Db::name('category')->delete($ids['ids']);
@@ -73,7 +72,7 @@ class Category extends Common {
 		if (!Request::instance()->isPost()){
 			return $this->error('参数错误，请重试！');
 		}
-		$data = Input::post();
+		$data = input('post.');
 		if($data['name']==''){
 			return $this->error('分类名称不能为空！');
 		}
