@@ -21,7 +21,7 @@ class Common extends Controller{
 	protected $url;
 	
 	public function _initialize() {
-
+        
 		$this->auth();//权限验证
 
 		//网站设置
@@ -56,25 +56,25 @@ class Common extends Controller{
 	protected function auth(){
 		
 		//无需登录页面
-		$no_need_to_login = [
-			'login/index','login/login','login/verify',//登录
-			'logout/index',//登出
+		$noNeedLogin = [
+			'Login/index','Login/login','Login/verify',//登录
+			'Logout/index',//登出
 		];
 		
 		//登录后无需验证的页面
 		$no_need_to_check = [
-			'upload/uploadpic',//上传显示页
-			'upload/uploadpics',//多图上传显示页
-			'js/js',
-			'user/skin',//皮肤切换
+			'Upload/uploadpic',//上传显示页
+			'Upload/uploadpics',//多图上传显示页
+			'Js/js',
+			'User/skin',//皮肤切换
 		];
 		
 		$status = false;
 		$request = \think\Request::instance();
 		$this->url = $request->controller().'/'.$request->action();
-		
+
 		//放过无需登录页面
-		if(in_array($this->url,$no_need_to_login)){
+		if(in_array($this->url,$noNeedLogin)){
 			return true;
 		}
 

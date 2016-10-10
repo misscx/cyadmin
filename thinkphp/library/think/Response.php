@@ -11,8 +11,11 @@
 
 namespace think;
 
+use think\Cache;
 use think\Config;
 use think\Debug;
+use think\Env;
+use think\Request;
 use think\response\Json as JsonResponse;
 use think\response\Jsonp as JsonpResponse;
 use think\response\Redirect as RedirectResponse;
@@ -96,7 +99,7 @@ class Response
         $data = $this->getContent();
 
         // Trace调试注入
-        if (Config::get('app_trace')) {
+        if (Env::get('app_trace', Config::get('app_trace'))) {
             Debug::inject($this, $data);
         }
 
@@ -110,11 +113,21 @@ class Response
         }
         echo $data;
 
+        if (200 == $this->code) {
+            $cache = Request::instance()->getCache();
+            if ($cache) {
+                Cache::set($cache[0], $data, $cache[1]);
+                Cache::set($cache[0] . '_header', $this->header['Content-Type']);
+            }
+        }
+
         if (function_exists('fastcgi_finish_request')) {
             // 提高页面响应
             fastcgi_finish_request();
         }
 
+        // 监听response_end
+        Hook::listen('response_end', $this);
     }
 
     /**

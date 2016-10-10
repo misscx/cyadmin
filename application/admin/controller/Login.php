@@ -13,7 +13,6 @@ use app\admin\controller\Common;
 use \think\Controller;
 use \think\Cookie;
 use \think\Db;
-use org\Verify;
 
 class Login extends Common {
 	
@@ -35,12 +34,11 @@ class Login extends Common {
     }
 	
 	public function login(){
-		
+
 		$verify = input('post.verify');
-		if (!$this->check_verify($verify,'login')) {
-			return $this -> error('验证码错误！',url("login/index"));
-		}
-		
+		if (!captcha_check($verify, 'login')) {
+            $this->error('验证码错误');
+        }
 		$username = input('post.username');
 		$password = input('post.password');
 		$remember = input('post.remember');
@@ -70,22 +68,4 @@ class Login extends Common {
 			return $this -> error('用户名或密码错误，请稍后再试！',url('login/index'));
 		}
     }
-	
-	public function verify() {
-		
-		$config = array(
-			'fontSize' => 14, // 验证码字体大小
-			'length' => 4, // 验证码位数
-			'useNoise' => false, // 关闭验证码杂点
-			'imageW'=>100,
-			'imageH'=>32,
-		);
-		$verify = new Verify($config);
-		$verify -> entry('login');
-	}
-	
-	protected function check_verify($code, $id = '') {
-		$verify = new Verify();
-		return $verify -> check($code, $id);
-	}
 }

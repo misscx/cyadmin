@@ -86,7 +86,7 @@
 														</span>
 														</div>
 														<div class="col-xs-5">
-														<img style="cursor:pointer;" id="verifyimg" src="{:url('login/verify')}" width="100" height="32" title="看不清楚？点击刷新">
+														<img style="cursor:pointer;" id="verifyimg" src="{:captcha_src('login')}" width="100" height="32" title="看不清楚？点击刷新">
 														</div>
 														</div>
 													</label>
@@ -187,7 +187,7 @@
 				e.preventDefault();
 			 });
 			 $("#refresh,#verifyimg").on('click',function(e){
-				$("#verifyimg").attr('src','{$Think.config.url}{:url('login/verify')}?'+new Date().getTime());
+				$("#verifyimg").attr('src','{$Think.config.url}{:captcha_src('login')}?'+new Date().getTime());
 			 })
 			});
 		</script>

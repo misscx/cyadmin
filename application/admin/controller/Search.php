@@ -15,11 +15,11 @@ use \think\Db;
 
 class Search extends Common {
 
-    public function index($keyword=null) {
+    public function index() {
 		
-		$keyword = htmlentities(addslashes($keyword));
+        $keyword = Input('post.keyword','','addslashes');
 		$list = Db::name('menu')->where("status=1 and (title like '%{$keyword}%' or url like '%{$keyword}%' or tips like '%{$keyword}%')")->select();
-		$this->assign('list', $list);
+        $this->assign('list', $list);
 		$this->assign('keyword', $keyword);
 		return $this->fetch();
     }

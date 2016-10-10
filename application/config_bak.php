@@ -18,14 +18,18 @@ return [
     'app_namespace'          => 'app',
     // 应用调试模式
     'app_debug'              => true,
+    // 应用Trace
+    'app_trace'              => false,
     // 应用模式状态
     'app_status'             => '',
     // 是否支持多模块
     'app_multi_module'       => true,
+    // 入口自动绑定模块
+    'auto_bind_module'       => false,
     // 注册的根命名空间
     'root_namespace'         => [],
     // 扩展配置文件
-    'extra_config_list'      => ['database', 'route', 'validate'],
+    'extra_config_list'      => ['database', 'validate'],
     // 扩展函数文件
     'extra_file_list'        => [THINK_PATH . 'helper' . EXT],
     // 默认输出类型
@@ -44,8 +48,10 @@ return [
     'default_filter'         => '',
     // 默认语言
     'default_lang'           => 'zh-cn',
-    // 是否启用控制器类后缀
-    'use_controller_suffix'  => false,
+    // 应用类库后缀
+    'class_suffix'           => false,
+    // 控制器类后缀
+    'controller_suffix'      => false,
 
     // +----------------------------------------------------------------------
     // | 模块设置
@@ -82,17 +88,17 @@ return [
     'url_html_suffix'        => 'html',
     // URL普通方式参数 用于自动生成
     'url_common_param'       => false,
-    //url禁止访问的后缀
-    'url_deny_suffix'        => 'ico|png|gif|jpg',
     // URL参数方式 0 按名称成对解析 1 按顺序解析
     'url_param_type'         => 0,
     // 是否开启路由
     'url_route_on'           => true,
+    // 路由配置文件（支持配置多个）
+    'route_config_file'      => ['route'],
     // 是否强制使用路由
     'url_route_must'         => false,
     // 域名部署
     'url_domain_deploy'      => false,
-    // 域名根，如.thinkphp.cn
+    // 域名根，如thinkphp.cn
     'url_domain_root'        => '',
     // 是否自动转换URL中的控制器和操作名
     'url_convert'            => true,
@@ -102,7 +108,7 @@ return [
     'var_method'             => '_method',
 
     // +----------------------------------------------------------------------
-    // | 模板引擎设置
+    // | 模板设置
     // +----------------------------------------------------------------------
 
     'template'               => [
@@ -141,16 +147,28 @@ return [
     'error_message'          => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'         => false,
+    // 异常处理handle类 留空使用 \think\exception\Handle
+    'exception_handle'       => '',
 
     // +----------------------------------------------------------------------
     // | 日志设置
     // +----------------------------------------------------------------------
 
     'log'                    => [
-        // 日志记录方式，支持 file socket trace sae browser
-        'type' => 'File',
+        // 日志记录方式，内置 file socket 支持扩展
+        'type'  => 'File',
         // 日志保存目录
-        'path' => LOG_PATH,
+        'path'  => LOG_PATH,
+        // 日志记录级别
+        'level' => [],
+    ],
+
+    // +----------------------------------------------------------------------
+    // | Trace设置 开启 app_trace 后 有效
+    // +----------------------------------------------------------------------
+    'trace'                  => [
+        // 内置Html Console 支持扩展
+        'type' => 'Html',
     ],
 
     // +----------------------------------------------------------------------
@@ -210,7 +228,23 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
-	//CYAdmin配置
+    'captcha'  => [
+        // 验证码字符集合
+        'codeSet'  => '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY', 
+        // 验证码字体大小(px)
+        'fontSize' => 14, 
+        // 是否画混淆曲线
+        'useCurve' => true, 
+         // 验证码图片高度
+        'imageH'   => 32,
+        // 验证码图片宽度
+        'imageW'   => 100, 
+        // 验证码位数
+        'length'   => 4, 
+        // 验证成功后是否重置        
+        'reset'    => true
+    ],
+    //CYAdmin配置
 	'url'=>'http://cyadmin.com',//网站URL
 	//备份配置
 	'DB_PATH'     => 'db',     //数据库备份目录，框架应用根目录开始。

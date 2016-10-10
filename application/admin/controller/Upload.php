@@ -58,7 +58,7 @@ class Upload extends Common {
 				'image/x-png'
 			);
 
-			$file = Input::file($name);
+			$file = request()->file($name);
 
 			if(in_array($file->getMime(),$accept)){
 				$info = $file->move('static/upload');

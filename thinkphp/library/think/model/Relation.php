@@ -107,7 +107,7 @@ class Relation
                 $result                          = $this->belongsToManyQuery($relation, $this->middle, $foreignKey, $localKey, $condition)->select();
                 foreach ($result as $set) {
                     $pivot = [];
-                    foreach ($set->toArray() as $key => $val) {
+                    foreach ($set->getData() as $key => $val) {
                         if (strpos($key, '__')) {
                             list($name, $attr) = explode('__', $key, 2);
                             if ('pivot' == $name) {
@@ -308,7 +308,7 @@ class Relation
     protected function match($model, $relation, &$result)
     {
         // 重新组装模型数据
-        foreach ($result->toArray() as $key => $val) {
+        foreach ($result->getData() as $key => $val) {
             if (strpos($key, '__')) {
                 list($name, $attr) = explode('__', $key, 2);
                 if ($name == $relation) {
@@ -339,7 +339,10 @@ class Relation
     {
         $foreignKey = $this->foreignKey;
         // 预载入关联查询 支持嵌套预载入
-        $list = $model->where($where)->where($closure)->with($subRelation)->select();
+        if ($closure) {
+            call_user_func_array($closure, [ & $model]);
+        }
+        $list = $model->where($where)->with($subRelation)->select();
 
         // 组装模型数据
         $data = [];
@@ -369,7 +372,7 @@ class Relation
         $data = [];
         foreach ($list as $set) {
             $pivot = [];
-            foreach ($set->toArray() as $key => $val) {
+            foreach ($set->getData() as $key => $val) {
                 if (strpos($key, '__')) {
                     list($name, $attr) = explode('__', $key, 2);
                     if ('pivot' == $name) {
@@ -551,7 +554,7 @@ class Relation
             case self::BELONGS_TO:
             case self::HAS_MANY:
                 if ($data instanceof Model) {
-                    $data = $data->toArray();
+                    $data = $data->getData();
                 }
                 // 保存关联表数据
                 $data[$this->foreignKey] = $this->parent->{$this->localKey};
@@ -601,8 +604,9 @@ class Relation
         if (is_array($data)) {
             // 保存关联表数据
             $model = new $this->model;
-            $id    = $model->save($data);
-        } elseif (is_numeric($data)) {
+            $model->save($data);
+            $id = $model->getLastInsID();
+        } elseif (is_numeric($data) || is_string($data)) {
             // 根据关联表主键直接写入中间表
             $id = $data;
         } elseif ($data instanceof Model) {
@@ -634,7 +638,7 @@ class Relation
     {
         if (is_array($data)) {
             $id = $data;
-        } elseif (is_numeric($data)) {
+        } elseif (is_numeric($data) || is_string($data)) {
             // 根据关联表主键直接写入中间表
             $id = $data;
         } elseif ($data instanceof Model) {
@@ -678,11 +682,14 @@ class Relation
                     $pk           = (new $this->model)->getPk();
                     $throughKey   = $this->throughKey;
                     $modelTable   = $this->parent->getTable();
-                    $result       = $this->query->field($alias . '.*')->alias($alias)
+                    $this->query->field($alias . '.*')->alias($alias)
                         ->join($throughTable, $throughTable . '.' . $pk . '=' . $alias . '.' . $throughKey)
                         ->join($modelTable, $modelTable . '.' . $this->localKey . '=' . $throughTable . '.' . $this->foreignKey)
                         ->where($throughTable . '.' . $this->foreignKey, $this->parent->{$this->localKey});
                     break;
+                case self::BELONGS_TO_MANY:
+                    // TODO
+
             }
             $result = call_user_func_array([$this->query, $method], $args);
             if ($result instanceof \think\db\Query) {

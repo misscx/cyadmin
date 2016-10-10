@@ -80,10 +80,10 @@
 										<tbody>
 										{volist name="list" id="val"}
 											<tr>
-												<td><a href="{:url($val.url)}">{$val.title}</a></td>
+												<td><a class="keyword" href="{:url($val.url)}">{$val.title}</a></td>
 												<td><i class="{$val.icon}"></i></td>
-												<td>{$val.url}</td>
-												<td>{$val.tips}</td>
+												<td class="keyword">{$val.url}</td>
+												<td class="keyword">{$val.tips}</td>
 											</tr>
 										{/volist}
 										</tbody>
@@ -144,7 +144,7 @@
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
 		$(function(){
-			$("#search_result tr td").each(function(){
+			$(".keyword").each(function(){
 				var html = $(this).html();
 				html = html.replace("{$keyword}", "<span class='red'>{$keyword}</span>");
 				$(this).html(html);

@@ -104,6 +104,8 @@ abstract class Connection
         'sql_explain'    => false,
         // Builder类
         'builder'        => '',
+        // Query类
+        'query'          => '\\think\\db\\Query',
     ];
 
     // PDO连接参数
@@ -131,12 +133,14 @@ abstract class Connection
      * 创建指定模型的查询对象
      * @access public
      * @param string $model 模型类名称
+     * @param string $queryClass 查询对象类名
      * @return Query
      */
-    public function model($model)
+    public function model($model, $queryClass = '')
     {
         if (!isset($this->query[$model])) {
-            $this->query[$model] = new Query($this, $model);
+            $class               = $queryClass ?: $this->config['query'];
+            $this->query[$model] = new $class($this, $model);
         }
         return $this->query[$model];
     }
@@ -151,7 +155,8 @@ abstract class Connection
     public function __call($method, $args)
     {
         if (!isset($this->query['database'])) {
-            $this->query['database'] = new Query($this);
+            $class                   = $this->config['query'];
+            $this->query['database'] = new $class($this);
         }
         return call_user_func_array([$this->query['database'], $method], $args);
     }
@@ -412,13 +417,17 @@ abstract class Connection
     {
         if ($bind) {
             foreach ($bind as $key => $val) {
-                $val = $this->quote(is_array($val) ? $val[0] : $val);
+                $value = is_array($val) ? $val[0] : $val;
+                $type  = is_array($val) ? $val[1] : PDO::PARAM_STR;
+                if (PDO::PARAM_STR == $type) {
+                    $value = $this->quote($value);
+                }
                 // 判断占位符
                 $sql = is_numeric($key) ?
-                substr_replace($sql, $val, strpos($sql, '?'), 1) :
+                substr_replace($sql, $value, strpos($sql, '?'), 1) :
                 str_replace(
                     [':' . $key . ')', ':' . $key . ',', ':' . $key . ' '],
-                    [$val . ')', $val . ',', $val . ' '],
+                    [$value . ')', $value . ',', $value . ' '],
                     $sql . ' ');
             }
         }
@@ -701,6 +710,16 @@ abstract class Connection
     }
 
     /**
+     * 获取返回或者影响的记录数
+     * @access public
+     * @return integer
+     */
+    public function getNumRows()
+    {
+        return $this->numRows;
+    }
+
+    /**
      * 获取最近的错误信息
      * @access public
      * @return string
@@ -723,11 +742,12 @@ abstract class Connection
      * SQL指令安全过滤
      * @access public
      * @param string $str SQL字符串
+     * @param bool   $master 是否主库查询
      * @return string
      */
-    public function quote($str)
+    public function quote($str, $master = true)
     {
-        $this->initConnect();
+        $this->initConnect($master);
         return $this->linkID ? $this->linkID->quote($str) : $str;
     }
 

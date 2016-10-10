@@ -4,27 +4,41 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit76875c3d39ab57905506df74681c8ada
+class ComposerStaticInit6fc2042eb19887d6c38d5ea6478f9f84
 {
+    public static $files = array (
+        '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         't' => 
         array (
+            'think\\mongo\\' => 12,
             'think\\composer\\' => 15,
+            'think\\captcha\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'think\\mongo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/topthink/think-mongo/src',
+        ),
         'think\\composer\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-installer/src',
+        ),
+        'think\\captcha\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/topthink/think-captcha/src',
         ),
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit76875c3d39ab57905506df74681c8ada::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit76875c3d39ab57905506df74681c8ada::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6fc2042eb19887d6c38d5ea6478f9f84::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6fc2042eb19887d6c38d5ea6478f9f84::$prefixDirsPsr4;
 
         }, null, ClassLoader::class);
     }

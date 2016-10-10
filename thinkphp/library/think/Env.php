@@ -9,25 +9,23 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-/**
- * Ini配置测试
- * @author    7IN0SAN9 <me@7in0.me>
- */
+namespace think;
 
-namespace tests\thinkphp\library\think\config\driver;
-
-use think\config;
-
-class iniTest extends \PHPUnit_Framework_TestCase
+class Env
 {
-    public function testParse()
+    /**
+     * 获取环境变量值
+     * @param string    $name 环境变量名（支持二级 .号分割）
+     * @param string    $default  默认值
+     * @return mixed
+     */
+    public static function get($name, $default = null)
     {
-        Config::parse('inistring=1', 'ini');
-        $this->assertEquals(1, Config::get('inistring'));
-        Config::reset();
-        Config::parse(__DIR__ . '/fixtures/config.ini');
-        $this->assertTrue(Config::has('inifile'));
-        $this->assertEquals(1, Config::get('inifile'));
-        Config::reset();
+        $result = getenv(ENV_PREFIX . strtoupper(str_replace('.', '_', $name)));
+        if (false !== $result) {
+            return $result;
+        } else {
+            return $default;
+        }
     }
 }
