@@ -187,7 +187,7 @@
 				e.preventDefault();
 			 });
 			 $("#refresh,#verifyimg").on('click',function(e){
-				$("#verifyimg").attr('src','{$Think.config.url}{:captcha_src('login')}?'+new Date().getTime());
+				$("#verifyimg").attr('src','{$Think.config.url}{:captcha_src('login')}?t='+new Date().getTime());
 			 })
 			});
 		</script>
