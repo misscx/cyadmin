@@ -20,7 +20,7 @@ class Menu extends Common {
 		
 		if($act=='del'){
 			
-			if (!Request::instance()->isPost()){
+			if(!Request::instance()->isPost()){
 				return $this->error('参数错误，请重试！');
 			}
 			$ids = input('post.');
@@ -68,7 +68,7 @@ class Menu extends Common {
 		
 		if($act=='edit'){
 			
-			$id = input('get.id/d');
+			$id = Request::instance()->param('id');
 			$this->assign('id',$id);
 			
 			$current = Db::name('menu')->where(['id'=>$id])->find();

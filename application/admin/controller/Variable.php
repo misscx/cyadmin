@@ -34,7 +34,7 @@ class Variable extends Common {
 		}
 		
 		if($act == 'edit'){
-			$k = input('get.k/s');
+			$k = input('param.k/s');
 			$var = Db::name('setting')->where(['k'=>$k,'type'=>1])->find();
 			if(!$var) {
 				return $this->error('参数错误，请重试！');
