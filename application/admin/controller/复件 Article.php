@@ -3,7 +3,7 @@
 *
 * 版权所有：恰维网络<www.qiawei.com>
 * 作    者：寒川<admin@huikon.cn>
-* 日    期：2016-12-10
+* 日    期：2016-10-28
 * 功能说明：文章控制器。
 *
 **/
@@ -57,6 +57,11 @@ class Article extends Common {
         if(!$article){
             return $this->error('参数错误，请重试！');
         }
+        $content = Db::name('content')->field('content')->where(['aid'=>$aid])->find();
+        if(!$article){
+            return $this->error('参数错误，请重试！');
+        }
+        $article = array_merge($article,$content);
         $category = Db::name('category')->field('id,pid,name')->order('o asc')->select();
         $category = $this->getMenu($category);
         $this->assign('category',$category);
@@ -81,14 +86,16 @@ class Article extends Common {
         $stick = input('post.stick',0,'intval');
         $content = input('post.content');
         if(!$aid){
-            $aid = Db::name('article')->insert(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick,'content'=>$content],false,true);
+            $aid = Db::name('article')->insert(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick],false,true);
             if(!$aid){
                 return $this->error('系统错误，请稍后重试！');
             }
+            Db::name('content')->insert(['aid'=>$aid,'content'=>$content]);
             addlog('新增文章，AID：'.$aid,$this->user['username']);
             return $this->success('恭喜，新增文章成功！',url('admin/article/index'));
         }else{
-            Db::name('article')->where(['aid'=>$aid])->update(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick,'content'=>$content]);
+            Db::name('article')->where(['aid'=>$aid])->update(['cid'=>$cid,'title'=>$title,'keywords'=>$keywords,'description'=>$description,'image'=>$image,'t'=>$t,'stick'=>$stick]);
+            Db::name('content')->where(['aid'=>$aid])->update(['aid'=>$aid,'content'=>$content]);
             addlog('编辑文章，AID：'.$aid,$this->user['username']);
             return $this->success('恭喜，文章编辑成功！',url('admin/article/index'));
         }

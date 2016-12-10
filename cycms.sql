@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2016-06-25 17:06:13
+-- Generation Time: 2016-12-10 10:37:09
 -- 服务器版本： 10.1.8-MariaDB
 -- PHP Version: 5.4.45
 
@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `cy_article` (
   `image` varchar(255) NOT NULL COMMENT '缩略图',
   `t` int(10) unsigned NOT NULL COMMENT '时间',
   `stick` tinyint(1) NOT NULL COMMENT '0普通，1置顶',
-  `n` int(10) unsigned NOT NULL COMMENT '点击'
+  `n` int(10) unsigned NOT NULL COMMENT '点击',
+  `content` text NOT NULL COMMENT '内容'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -70,17 +71,6 @@ CREATE TABLE IF NOT EXISTS `cy_category` (
   `o` int(11) NOT NULL COMMENT '排序',
   `listtemplate` varchar(100) NOT NULL COMMENT '列表模板',
   `contenttemplate` varchar(100) NOT NULL COMMENT '内容模板'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `cy_content`
---
-
-CREATE TABLE IF NOT EXISTS `cy_content` (
-  `aid` int(11) NOT NULL,
-  `content` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -223,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
 --
 
 INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`, `skin`) VALUES
-(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, '1fdc06648dff12baaca6dfcd9ac5f3ab', 'f74c0728a87e2c0afb76aaa4563a1bf1', 'vy6EtSQkD4', 'no-skin');
+(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'a5fe3d6b7b5949e7b6cc5803413758c7', '17405243834f518e86d8ded820645c1d', 'ZaaADEqNRD', 'no-skin');
 
 -- --------------------------------------------------------
 
@@ -270,13 +260,6 @@ ALTER TABLE `cy_banner`
 ALTER TABLE `cy_category`
   ADD PRIMARY KEY (`id`),
   ADD KEY `pid` (`pid`) USING BTREE;
-
---
--- Indexes for table `cy_content`
---
-ALTER TABLE `cy_content`
-  ADD KEY `aid` (`aid`),
-  ADD INDEX(`aid`);
 
 --
 -- Indexes for table `cy_link`
