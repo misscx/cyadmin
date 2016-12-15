@@ -16,6 +16,7 @@ use \think\Request;
 class Upload extends Common {
 
     public function uploadpic($name='image',$width='100',$height='100',$url='') {
+        $url = urldecode($url);
         $file = $this->uploadsave($name);
         if($file){
             $url = $file;
@@ -28,9 +29,8 @@ class Upload extends Common {
     }
 
     public function uploadpics($name='images',$url=''){
-
+        $url = urldecode($url);
         $images = array_filter(explode('|',$url));
-
         $file = $this->uploadsave($name);
         if($file){
             array_push($images, $file);
