@@ -75,10 +75,10 @@
 										<label class="col-sm-1 control-label no-padding-right" for="{$val.k}"> {$val.name} </label>
 										<div class="col-sm-9">
 											{egt name="val.v|strlen" value="100"}
-											<textarea name="{$val.k}" id="{$val.k}" placeholder="{$val.name}" class="col-xs-10 col-sm-5" rows="5">{$val.v}</textarea>
+											<textarea name="{$val.k}" id="{$val.k}" placeholder="{$val.name}" class="col-xs-10 col-sm-5" rows="5">{$val.v|htmlspecialchars}</textarea>
 											{/egt}
 											{lt name="val.v|strlen" value="100"}
-											<input type="text" name="{$val.k}" id="{$val.k}" class="col-xs-10 col-sm-5" value="{$val.v}">
+											<input type="text" name="{$val.k}" id="{$val.k}" class="col-xs-10 col-sm-5" value="{$val.v|htmlspecialchars}">
 											{/lt}
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">{$val.tips}</span>
