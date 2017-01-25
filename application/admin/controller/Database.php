@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* 版权所有：恰维网络<www.qiawei.com>
+* 版权所有：春燕网络<www.mychunyan.com>
 * 作    者：寒川<admin@huikon.cn>
 * 日    期：2016-10-28
 * 功能说明：数据备分控制器。
