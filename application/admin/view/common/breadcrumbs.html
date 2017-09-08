@@ -6,7 +6,7 @@
 							</li>
 							{if condition="$current_menu.pid neq 0"}
 							<li>
-								<a href="{$Think.config.url}{:url($current_menu['parent']['url'])}">{$current_menu.parent.title}</a>
+								<a href="{if condition="$current_menu.status eq 0"}javascript:;{else/}{$Think.config.url}{:url($current_menu['parent']['url'])}{/if}">{$current_menu.parent.title}</a>
 							</li>
 							{/if}
 							<li class="active">{$current_menu.title}</li>

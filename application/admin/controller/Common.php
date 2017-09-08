@@ -38,7 +38,7 @@ class Common extends Controller{
             $menu = $this->getMenu($menu);
             $this->assign('menu',$menu);
             //当前菜单
-            $current_menu = Db::name('menu')->field('id,pid,title,url,icon,tips')->where(['url'=>$this->url])->find();
+            $current_menu = Db::name('menu')->field('id,pid,title,url,icon,tips,status')->where(['url'=>$this->url])->find();
             if($current_menu['pid']<>0){
                 //$current_menu['parent'] = Db::name('menu')->field('id,pid,title,url,icon,tips')->where(['id'=>$current_menu['pid']])->find();
                 $current_menu['parent'] = Db::name('menu')->alias('c')->join('__MENU__ p','p.id=c.pid','left')->where("c.id='{$current_menu['pid']}'")->field('c.pid,c.pid,c.title,c.url,c.icon,p.pid as ppid')->find();

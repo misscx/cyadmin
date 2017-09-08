@@ -67,13 +67,14 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" action="{:url('save',['id'=>$current_category.id])}" method="post">
+								<form class="form-horizontal" role="form" action="{:url('save',['id'=>$category.id])}" method="post">
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="type"> 类型</label>
 										<div class="col-sm-9">
 										<select id="type" name="type" class="col-xs-10 col-sm-5">
-											<option value="0"{eq name="current_category.type" value="0"} selected="selected"{/eq}>文章栏目</option>
-											<option value="1"{eq name="current_category.type" value="1"} selected="selected"{/eq}>外部链接</option>
+											<option value="0"{eq name="category.type" value="0"} selected="selected"{/eq}>普通栏目</option>
+											<option value="1"{eq name="category.type" value="1"} selected="selected"{/eq}>单页栏目</option>
+											<option value="2"{eq name="category.type" value="2"} selected="selected"{/eq}>外部链接</option>
 										</select>
 										<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">分类类型。</span>
@@ -85,15 +86,15 @@
 										<label class="col-sm-1 control-label no-padding-right" for="form-field-0"> 父类</label>
 										<div class="col-sm-9">
 										<select id="pid" name="pid" class="col-xs-10 col-sm-5">
-											<option value="0"{eq name="current_category.pid" value="0"} selected="selected"{/eq}>顶级分类</option>
-											{volist name="category" id="v"}
-											<option value="{$v.id}"{eq name="current_category.pid" value="$v.id"} selected="selected"{/eq}>{$v.name}</option>
+											<option value="0"{eq name="category.pid" value="0"} selected="selected"{/eq}>顶级分类</option>
+											{volist name="categories" id="v"}
+											<option value="{$v.id}"{eq name="category.pid" value="$v.id"} selected="selected"{/eq}>{$v.name}</option>
 											{notempty name="v.children"}
 											{volist name="v.children" id="vv"}
-											<option value="{$vv.id}"{eq name="current_category.pid" value="$vv.id"} selected="selected"{/eq}>┣━{$vv.name}</option>
+											<option value="{$vv.id}"{eq name="category.pid" value="$vv.id"} selected="selected"{/eq}>┣━{$vv.name}</option>
 											{notempty name="vv.children"}
 											{volist name="vv.children" id="vvv"}
-											<option value="{$vvv.id}"{eq name="current_category.pid" value="$vvv.id"} selected="selected"{/eq}>┣━━{$vvv.name}</option>
+											<option value="{$vvv.id}"{eq name="category.pid" value="$vvv.id"} selected="selected"{/eq}>┣━━{$vvv.name}</option>
 											{/volist}
 											{/notempty}
 											{/volist}
@@ -109,18 +110,18 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="name"> 分类名称 </label>
 										<div class="col-sm-9">
-											<input type="text" name="name" id="name" placeholder="分类名称" class="col-xs-10 col-sm-5" value="{$current_category.name}" required="required">
+											<input type="text" name="name" id="name" placeholder="分类名称" class="col-xs-10 col-sm-5" value="{$category.name}" required="required">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">分类名称，不能为空。</span>
 											</span>
 										</div>
 									</div>
-									<div id="forurl"{neq name="current_category.type" value="1"} class="hidden"{/neq}>
+									<div id="hide-url"{neq name="category.type" value="2"} class="hidden"{/neq}>
 									<div class="space-4"></div>
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="url"> 外部连接 </label>
 										<div class="col-sm-9">
-											<input type="text" name="url" id="url" placeholder="外部连接" class="col-xs-10 col-sm-5" value="{$current_category.url}">
+											<input type="text" name="url" id="url" placeholder="外部连接" class="col-xs-10 col-sm-5" value="{$category.url}">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">外部URL</span>
 											</span>
@@ -131,7 +132,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="keywords"> 关键词 </label>
 										<div class="col-sm-9">
-											<input type="text" name="keywords" id="keywords" placeholder="关键词" class="col-xs-10 col-sm-5" value="{$current_category.keywords}">
+											<input type="text" name="keywords" id="keywords" placeholder="关键词" class="col-xs-10 col-sm-5" value="{$category.keywords}">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">以逗号（,）隔开。</span>
 											</span>
@@ -141,7 +142,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="description"> 分类描述 </label>
 										<div class="col-sm-9">
-											<textarea name="description" id="description" class="col-xs-10 col-sm-5" rows="5" placeholder="分类描述">{$current_category.description}</textarea>
+											<textarea name="description" id="description" class="col-xs-10 col-sm-5" rows="5" placeholder="分类描述">{$category.description}</textarea>
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle"></span>
 											</span>
@@ -151,7 +152,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="o"> 分类排序 </label>
 										<div class="col-sm-9">
-											<input type="number" name="o" id="o" placeholder="排序" class="col-xs-10 col-sm-5" value="{$current_category.o}">
+											<input type="number" name="o" id="o" placeholder="排序" class="col-xs-10 col-sm-5" value="{$category.o}">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">越小越靠前。</span>
 											</span>
@@ -161,7 +162,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="listtemplate"> 列表模板 </label>
 										<div class="col-sm-9">
-											<input type="text" name="listtemplate" id="listtemplate" placeholder="列表模板" class="col-xs-10 col-sm-5" value="{$current_category.listtemplate}">
+											<input type="text" name="listtemplate" id="listtemplate" placeholder="列表模板" class="col-xs-10 col-sm-5" value="{$category.listtemplate}">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">留空使用默认模板。</span>
 											</span>
@@ -171,12 +172,21 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="contenttemplate"> 内容模板 </label>
 										<div class="col-sm-9">
-											<input type="text" name="contenttemplate" id="contenttemplate" placeholder="内容模板" class="col-xs-10 col-sm-5" value="{$current_category.contenttemplate}">
+											<input type="text" name="contenttemplate" id="contenttemplate" placeholder="内容模板" class="col-xs-10 col-sm-5" value="{$category.contenttemplate}">
 											<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">留空使用默认模板。</span>
 											</span>
 										</div>
 									</div>
+                                    <div id="hide-content""{neq name="category.type" value="1"} class="hidden"{/neq}>>
+                                        <div class="space-4"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label no-padding-right" for="content"> 文章内容 </label>
+                                            <div class="col-sm-9">
+                                                <script id="content" name="content" type="text/plain" style="width:100%;height:400px;">{$category.content}</script>
+                                            </div>
+                                        </div>
+                                    </div>
 									<div class="col-md-offset-2 col-md-9">
 										<button class="btn btn-info submit" type="submit">
 											<i class="icon-ok bigger-110"></i>
@@ -218,7 +228,8 @@
 		<script src="{$Think.config.url}/static/admin/js/bootstrap.js"></script>
 
 		<!-- page specific plugin scripts -->
-
+        <script type="text/javascript" src="{$Think.config.url}/static/ueditor/ueditor.config.js"></script>
+        <script type="text/javascript" src="{$Think.config.url}/static/ueditor/ueditor.all.min.js"></script>
 		<!-- ace scripts -->
 		<script src="{$Think.config.url}/static/admin/js/ace/elements.scroller.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/elements.colorpicker.js"></script>
@@ -244,15 +255,20 @@
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		$("#type").on('change',function(){
-			var type = $(this).val();
-			if(type==1){
-				$("#forurl").removeClass('hidden');
-			}else{
-				$("#forurl").addClass('hidden');
-				$("#url").val('');
-			}
-		})
+        $(function() {
+            var ue = UE.getEditor('content');
+            $("#type").on('change',function(){
+                var val = $(this).val();
+                $("#hide-url").addClass('hidden');
+                $("#hide-content").addClass('hidden');
+                if (val == 1) {
+                    $("#hide-content").removeClass('hidden');
+                }
+                if (val == 2) {
+                    $("#hide-url").removeClass('hidden');
+                }
+            })
+        })
 		</script>
 	</body>
 </html>

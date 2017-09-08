@@ -54,15 +54,15 @@ class Category extends Common {
 
     public function edit($id){
         $id = intval($id);
-        $current_category = Db::name('category')->where(['id'=>$id])->find();
-        if(!$current_category){
+        $category = Db::name('category')->where(['id'=>$id])->find();
+        if(!$category){
             return $this->error('参数错误，请重试！');
         }
-        $category = Db::name('category')->field('id,pid,name')->order('o asc')->select();
+        $categories = Db::name('category')->field('id,pid,name')->order('o asc')->select();
 
-        $category = $this->getMenu($category);
-        $this->assign('current_category',$current_category);
+        $categories = $this->getMenu($categories);
         $this->assign('category',$category);
+        $this->assign('categories',$categories);
         $this->assign('id',$id);
         return $this->fetch();
     }

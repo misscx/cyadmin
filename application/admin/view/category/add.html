@@ -72,8 +72,9 @@
 										<label class="col-sm-1 control-label no-padding-right" for="type"> 类型</label>
 										<div class="col-sm-9">
 										<select id="type" name="type" class="col-xs-10 col-sm-5">
-											<option value="0">文章栏目</option>
-											<option value="1">外部链接</option>
+											<option value="0">普通栏目</option>
+											<option value="1">单页栏目</option>
+											<option value="2">外部链接</option>
 										</select>
 										<span class="help-inline col-xs-12 col-sm-7">
 												<span class="middle">分类类型。</span>
@@ -115,17 +116,17 @@
 											</span>
 										</div>
 									</div>
-									<div id="forurl" class="hidden">
-									<div class="space-4"></div>
-									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="url"> 外部连接 </label>
-										<div class="col-sm-9">
-											<input type="text" name="url" id="url" placeholder="外部连接" class="col-xs-10 col-sm-5" value="">
-											<span class="help-inline col-xs-12 col-sm-7">
-												<span class="middle">外部URL</span>
-											</span>
-										</div>
-									</div>
+									<div id="hide-url" class="hidden">
+                                        <div class="space-4"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label no-padding-right" for="url"> 外部连接 </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="url" id="url" placeholder="外部连接" class="col-xs-10 col-sm-5" value="">
+                                                <span class="help-inline col-xs-12 col-sm-7">
+                                                    <span class="middle">外部URL</span>
+                                                </span>
+                                            </div>
+                                        </div>
 									</div>
 									<div class="space-4"></div>
 									<div class="form-group">
@@ -149,16 +150,6 @@
 									</div>
 									<div class="space-4"></div>
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="o"> 分类排序 </label>
-										<div class="col-sm-9">
-											<input type="number" name="o" id="o" placeholder="排序" class="col-xs-10 col-sm-5" value="0">
-											<span class="help-inline col-xs-12 col-sm-7">
-												<span class="middle">越小越靠前。</span>
-											</span>
-										</div>
-									</div>
-									<div class="space-4"></div>
-									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="listtemplate"> 列表模板 </label>
 										<div class="col-sm-9">
 											<input type="text" name="listtemplate" id="listtemplate" placeholder="列表模板" class="col-xs-10 col-sm-5" value="">
@@ -177,6 +168,25 @@
 											</span>
 										</div>
 									</div>
+                                    <div class="space-4"></div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="o"> 分类排序 </label>
+										<div class="col-sm-9">
+											<input type="number" name="o" id="o" placeholder="排序" class="col-xs-10 col-sm-5" value="0">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">越小越靠前。</span>
+											</span>
+										</div>
+									</div>
+                                    <div id="hide-content" class="hidden">
+                                        <div class="space-4"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label no-padding-right" for="content"> 文章内容 </label>
+                                            <div class="col-sm-9">
+                                                <script id="content" name="content" type="text/plain" style="width:100%;height:400px;"></script>
+                                            </div>
+                                        </div>
+                                    </div>
 									<div class="col-md-offset-2 col-md-9">
 										<button class="btn btn-info submit" type="submit">
 											<i class="icon-ok bigger-110"></i>
@@ -218,7 +228,8 @@
 		<script src="{$Think.config.url}/static/admin/js/bootstrap.js"></script>
 
 		<!-- page specific plugin scripts -->
-
+        <script type="text/javascript" src="{$Think.config.url}/static/ueditor/ueditor.config.js"></script>
+        <script type="text/javascript" src="{$Think.config.url}/static/ueditor/ueditor.all.min.js"></script>
 		<!-- ace scripts -->
 		<script src="{$Think.config.url}/static/admin/js/ace/elements.scroller.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/elements.colorpicker.js"></script>
@@ -240,19 +251,24 @@
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.settings-rtl.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.settings-skin.js"></script>
 		<script src="{$Think.config.url}/static/admin/js/ace/ace.widget-on-reload.js"></script>
-				<script type="text/javascript" src="{:Url('admin/js/js')}"></script>
+		<script type="text/javascript" src="{:Url('admin/js/js')}"></script>
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		$("#type").on('change',function(){
-			var type = $(this).val();
-			if(type==1){
-				$("#forurl").removeClass('hidden');
-			}else{
-				$("#forurl").addClass('hidden');
-				$("#url").val('');
-			}
-		})
+		$(function() {
+            var ue = UE.getEditor('content');
+            $("#type").on('change',function(){
+                var val = $(this).val();
+                $("#hide-url").addClass('hidden');
+                $("#hide-content").addClass('hidden');
+                if (val == 1) {
+                    $("#hide-content").removeClass('hidden');
+                }
+                if (val == 2) {
+                    $("#hide-url").removeClass('hidden');
+                }
+            })
+        })
 		</script>
 	</body>
 </html>
