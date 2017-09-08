@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2016-12-10 10:37:09
+-- Generation Time: 2017-09-08 09:28:25
 -- 服务器版本： 10.1.8-MariaDB
 -- PHP Version: 5.4.45
 
@@ -11,9 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 
 --
 -- Database: `cycms`
@@ -65,8 +62,9 @@ CREATE TABLE IF NOT EXISTS `cy_category` (
   `type` tinyint(1) NOT NULL COMMENT '0文章，1外链',
   `name` varchar(100) NOT NULL COMMENT '名称',
   `keywords` varchar(255) NOT NULL COMMENT '关键词',
-  `url` varchar(255) NOT NULL COMMENT '外链',
   `description` varchar(255) NOT NULL COMMENT '描述',
+  `content` text NOT NULL COMMENT '单页内容',
+  `url` varchar(255) NOT NULL COMMENT '外链',
   `o` int(11) NOT NULL COMMENT '排序',
   `listtemplate` varchar(100) NOT NULL COMMENT '列表模板',
   `contenttemplate` varchar(100) NOT NULL COMMENT '内容模板'
@@ -212,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
 --
 
 INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`, `skin`) VALUES
-(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'a5fe3d6b7b5949e7b6cc5803413758c7', '17405243834f518e86d8ded820645c1d', 'ZaaADEqNRD', 'no-skin');
+(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'e5e90df2c647d58c0c89e4b3e126360c', 'a9ecf808b814e2414470f8bcede8066d', 'F2hsxYtXYa', 'no-skin');
 
 -- --------------------------------------------------------
 
@@ -347,6 +345,4 @@ ALTER TABLE `cy_user`
 --
 ALTER TABLE `cy_user_group`
   MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
