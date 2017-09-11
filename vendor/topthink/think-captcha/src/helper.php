@@ -14,7 +14,7 @@
 \think\Validate::extend('captcha', function ($value, $id = "") {
     return captcha_check($value, $id, (array)\think\Config::get('captcha'));
 });
- 
+
 \think\Validate::setTypeMsg('captcha', '验证码错误!');
 
 

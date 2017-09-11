@@ -290,7 +290,7 @@ class Captcha
      */
     private function _background()
     {
-        $path = __DIR__ . '/../assets/bgs/';
+        $path = dirname(__FILE__) . '/verify/bgs/';
         $dir  = dir($path);
 
         $bgs = [];
