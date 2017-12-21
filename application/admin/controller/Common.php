@@ -40,14 +40,14 @@ class Common extends Controller{
             //当前菜单
             $current_menu = Db::name('menu')->field('id,pid,title,url,icon,tips,status')->where(['url'=>$this->url])->find();
             if($current_menu['pid']<>0){
-                //$current_menu['parent'] = Db::name('menu')->field('id,pid,title,url,icon,tips')->where(['id'=>$current_menu['pid']])->find();
-                $current_menu['parent'] = Db::name('menu')->alias('c')->join('__MENU__ p','p.id=c.pid','left')->where("c.id='{$current_menu['pid']}'")->field('c.pid,c.pid,c.title,c.url,c.icon,p.pid as ppid')->find();
+                //$current_menu['parent'] = Db::name('menu')->alias('c')->join('__MENU__ p','p.id=c.pid','left')->where("c.id='{$current_menu['pid']}'")->field('c.pid,c.pid,c.title,c.url,c.icon,p.pid as ppid')->find();
+                $prefix = Config::get('database.prefix');
+                $current_menu['parent'] = Db::query("SELECT c.pid,c.title,c.url,c.icon,p.pid as ppid FROM `{$prefix}menu` as c LEFT JOIN `{$prefix}menu` as p ON p.id=c.pid WHERE ( c.id='{$current_menu['pid']}' ) LIMIT 1");
+                $current_menu['parent'] = $current_menu['parent'][0];
             }else{
                 $current_menu['parent'] = ['pid'=>false,'ppid'=>false];
             }
             $this->assign('current_menu',$current_menu);
-            //print_r($current_menu);
-            //echo Db::getLastSql();
             $this->assign('user',$this->user);
         }
     }

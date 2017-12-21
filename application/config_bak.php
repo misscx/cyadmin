@@ -244,8 +244,6 @@ return [
         // 验证成功后是否重置        
         'reset'    => true
     ],
-    //CYAdmin配置
-	'url'=>'http://cyadmin.com',//网站URL
 	//备份配置
 	'DB_PATH'     => 'db',     //数据库备份目录，框架应用根目录开始。
 	'DB_PART'     => '20971520',  //该值用于限制压缩后的分卷最大长度。单位：B；建议设置20M
