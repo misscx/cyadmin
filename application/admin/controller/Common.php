@@ -11,6 +11,9 @@
 namespace app\admin\Controller;
 
 use \think\Controller;
+use app\admin\model\User;
+use app\admin\model\Menu;
+use app\admin\model\Setting;
 use \think\Config;
 use \think\Cookie;
 use \think\Db;
@@ -25,25 +28,36 @@ class Common extends Controller{
         $this->auth();//权限验证
 
         //网站设置
-        $setting = Db::name('setting')->field('k,v')->select();
+        $setting = Setting::all();
         $config = array();
         foreach($setting as $k=>$v){
-            $config[$v['k']] = $v['v'];
+            $config[$v->k] = $v->v;
         }
         Config::set($config);
 
-        if($this->user['auth']){
+        if($this->user->group->auth){
             //菜单
-            $menu = Db::name('menu')->field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user['auth']})")->order('o ASC')->select();  
+            $menu = Menu::field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user->group->auth})")->order('o', 'asc')->select()->toArray();
             $menu = $this->getMenu($menu);
             $this->assign('menu',$menu);
             //当前菜单
-            $current_menu = Db::name('menu')->field('id,pid,title,url,icon,tips,status')->where(['url'=>$this->url])->find();
-            if($current_menu['pid']<>0){
-                //$current_menu['parent'] = Db::name('menu')->alias('c')->join('__MENU__ p','p.id=c.pid','left')->where("c.id='{$current_menu['pid']}'")->field('c.pid,c.pid,c.title,c.url,c.icon,p.pid as ppid')->find();
+            $current_menu = Menu::name('menu')->field('id,pid,title,url,icon,tips,status')->where(['url'=>$this->url])->find();
+            if($current_menu->pid){
                 $prefix = Config::get('database.prefix');
                 $current_menu['parent'] = Db::query("SELECT c.pid,c.title,c.url,c.icon,p.pid as ppid FROM `{$prefix}menu` as c LEFT JOIN `{$prefix}menu` as p ON p.id=c.pid WHERE ( c.id='{$current_menu['pid']}' ) LIMIT 1");
                 $current_menu['parent'] = $current_menu['parent'][0];
+                
+                //echo "SELECT c.pid,c.title,c.url,c.icon,p.pid as ppid FROM `{$prefix}menu` as c LEFT JOIN `{$prefix}menu` as p ON p.id=c.pid WHERE ( c.id='{$current_menu['pid']}' ) LIMIT 1";
+/*
+                print_r($current_menu);
+
+                $parent = Menu::get(['id'=>$current_menu->pid])->son();
+                //$current_menu['parent'] = $parent;
+                print_r($parent);
+                exit;
+                
+                */
+                
             }else{
                 $current_menu['parent'] = ['pid'=>false,'ppid'=>false];
             }
@@ -85,12 +99,13 @@ class Common extends Controller{
 
         list($identifier, $token) = explode(',', $auth);
         if (ctype_alnum($identifier) && ctype_alnum($token)) {
-            $this->user = Db::name('user')->alias('u')->join('__USER_GROUP__ g','u.ugid=g.id')->where("u.identifier='{$identifier}' and u.token='{$token}' and u.status=1 and g.status=1")->field('u.*,g.title,g.auth')->find();
-            if($this->user){
-                if($token == $this->user['token'] && $this->user['identifier'] == password($this->user['uid'].md5($this->user['username'].$this->user['salt']))){
+            $user = User::get(['identifier'=>$identifier,'token'=>$token,'status'=>1]);
+            if($user){
+                if($token == $user->token && $user->identifier == password($user->uid . md5($user->username . $user->salt))){
                     $status = true;
                 }
             }
+            $this->user = $user;
         }
         if(!$status){
             return $this -> error('请先登录',url('admin/login/index'));
@@ -100,8 +115,8 @@ class Common extends Controller{
         }
 
         //验证页面权限
-        $current_url_id = Db::name('menu')->field('id')->where(['url'=>$this->url])->find();
-        if(in_array($current_url_id['id'],explode(',',$this->user['auth']))){
+        $current_url_id = Menu::get(['url'=>$this->url]);
+        if(in_array($current_url_id->id,explode(',',$this->user->group->auth))){
             return true;
         }else{
             return $this -> error('您无权访问此页！');
