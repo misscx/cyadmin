@@ -30,7 +30,11 @@ class Upload extends Common {
 
     public function uploadpics($name='images',$url=''){
         $url = base64_decode($url);
-        $images = array_filter(explode('|',$url));
+        if (Request::instance()->isPost()){
+            $images = array_filter(explode('|',input('post.url')));
+        }else{
+            $images = array_filter(explode('|',$url));
+        }
         $file = $this->uploadsave($name);
         if($file){
             array_push($images, $file);
