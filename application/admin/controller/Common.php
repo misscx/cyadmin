@@ -35,33 +35,25 @@ class Common extends Controller{
         }
         Config::set($config);
 
-        if($this->user->group->auth){
+        if($this->user){
             //菜单
-            $menu = Menu::field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user->group->auth})")->order('o', 'asc')->select()->toArray();
-            $menu = $this->getMenu($menu);
-            $this->assign('menu',$menu);
-            //当前菜单
-            $current_menu = Menu::name('menu')->field('id,pid,title,url,icon,tips,status')->where(['url'=>$this->url])->find();
-            if($current_menu->pid){
-                $prefix = Config::get('database.prefix');
-                $current_menu['parent'] = Db::query("SELECT c.pid,c.title,c.url,c.icon,p.pid as ppid FROM `{$prefix}menu` as c LEFT JOIN `{$prefix}menu` as p ON p.id=c.pid WHERE ( c.id='{$current_menu['pid']}' ) LIMIT 1");
-                $current_menu['parent'] = $current_menu['parent'][0];
-                
-                //echo "SELECT c.pid,c.title,c.url,c.icon,p.pid as ppid FROM `{$prefix}menu` as c LEFT JOIN `{$prefix}menu` as p ON p.id=c.pid WHERE ( c.id='{$current_menu['pid']}' ) LIMIT 1";
-/*
-                print_r($current_menu);
-
-                $parent = Menu::get(['id'=>$current_menu->pid])->son();
-                //$current_menu['parent'] = $parent;
-                print_r($parent);
-                exit;
-                
-                */
-                
-            }else{
-                $current_menu['parent'] = ['pid'=>false,'ppid'=>false];
+            $menus = Menu::field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user->group->auth})")->order('o', 'asc')->select();
+            $menu = [];
+            foreach($menus as $key=>$val){
+                $menu[$key]['id'] = $val->id;
+                $menu[$key]['pid'] = $val->pid;
+                $menu[$key]['title'] = $val->title;
+                $menu[$key]['url'] = $val->url;
+                $menu[$key]['icon'] = $val->icon;
+                $menu[$key]['tips'] = $val->tips;
             }
+            $menu = $this->getMenu($menu);
+            
+            $current_menu = Menu::name('menu')->field('id,pid,title,url,icon,tips,status')->where(['url'=>$this->url])->find();
+
             $this->assign('current_menu',$current_menu);
+            $this->assign('current_menu_father',$current_menu?$current_menu->father:'');
+            $this->assign('menu',$menu);
             $this->assign('user',$this->user);
         }
     }

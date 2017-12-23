@@ -9,29 +9,29 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/bootstrap.css" />
-		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/font-awesome.css" />
+		<link rel="stylesheet" href="__STATIC__/admin/css/bootstrap.css" />
+		<link rel="stylesheet" href="__STATIC__/admin/css/font-awesome.css" />
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-fonts.css" />
+		<link rel="stylesheet" href="__STATIC__/admin/css/ace-fonts.css" />
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace.css" />
+		<link rel="stylesheet" href="__STATIC__/admin/css/ace.css" />
 
 		<!--[if lte IE 9]>
-			<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-part2.css" />
+			<link rel="stylesheet" href="__STATIC__/admin/css/ace-part2.css" />
 		<![endif]-->
-		<link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-rtl.css" />
+		<link rel="stylesheet" href="__STATIC__/admin/css/ace-rtl.css" />
 
 		<!--[if lte IE 9]>
-		  <link rel="stylesheet" href="{$Think.config.url}/static/admin/css/ace-ie.css" />
+		  <link rel="stylesheet" href="__STATIC__/admin/css/ace-ie.css" />
 		<![endif]-->
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
 		<!--[if lt IE 9]>
-		<script src="{$Think.config.url}/static/admin/js/html5shiv.js"></script>
-		<script src="{$Think.config.url}/static/admin/js/respond.js"></script>
+		<script src="__STATIC__/admin/js/html5shiv.js"></script>
+		<script src="__STATIC__/admin/js/respond.js"></script>
 		<![endif]-->
 	</head>
 
@@ -140,15 +140,15 @@
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
-		<script src="{$Think.config.url}/static/admin/js/jquery.js"></script>
+		<script src="__STATIC__/admin/js/jquery.js"></script>
 
 		<!-- <![endif]-->
 
 		<!--[if IE]>
-<script src="{$Think.config.url}/static/admin/js/jquery1x.js"></script>
+<script src="__STATIC__/admin/js/jquery1x.js"></script>
 <![endif]-->
 		<script type="text/javascript">
-			if('ontouchstart' in document.documentElement) document.write("<script src='{$Think.config.url}/static/admin/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+			if('ontouchstart' in document.documentElement) document.write("<script src='__STATIC__/admin/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
 
 		<!-- inline scripts related to this page -->
@@ -187,7 +187,7 @@
 				e.preventDefault();
 			 });
 			 $("#refresh,#verifyimg").on('click',function(e){
-				$("#verifyimg").attr('src','{$Think.config.url}{:captcha_src('login')}?t='+new Date().getTime());
+				$("#verifyimg").attr('src','{:captcha_src('login')}?t='+new Date().getTime());
 			 })
 			});
 		</script>

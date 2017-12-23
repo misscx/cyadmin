@@ -27,7 +27,7 @@ class Variable extends Common {
                 $r = Db::name('setting')->where(['type'=>1])->delete($ids['ids']);
                 if($r) {
                     addlog('删除自定义变量，变量名：'.implode(',',$ids['ids']),$this->user['username']);
-                    return $this->success('恭喜，菜单删除成功！',url('admin/variable/index'));
+                    return $this->success('恭喜，变量删除成功！',url('admin/variable/index'));
                 }
             }
             return $this->error('请选择需要删除的选项！');
