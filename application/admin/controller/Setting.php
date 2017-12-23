@@ -15,25 +15,25 @@ use \think\Db;
 use \think\Config;
 use \think\Request;
 
-class Setting extends Common {
-
-    public function index($act=null) {
-        
-        if($act == 'update'){
-            if(!Request::instance()->isPost()){
+class Setting extends Common
+{
+    public function index($act=null)
+    {
+        if ($act == 'update') {
+            if (!Request::instance()->isPost()) {
                 return $this->error('参数错误，请重试！');
             }
-          $data = input('post.');
+            $data = input('post.');
 
-          foreach($data as $k=>$v){
-              Db::name('setting')->where(['k'=>$k])->update(['v'=>$v]);//循环插入，效率效差
-          }
-            addlog('修改网站配置。',$this->user['username']);
-            $this->success('恭喜，网站配置成功！',url('index'));
+            foreach ($data as $k=>$v) {
+                Db::name('setting')->where(['k'=>$k])->update(['v'=>$v]);//循环插入，效率效差
+            }
+            addlog('修改网站配置。', $this->user['username']);
+            $this->success('恭喜，网站配置成功！', url('index'));
         }
 
         $setting = Db::name('setting')->field('k,v,name,tips')->order('o ASC')->select();
-        $this->assign('setting',$setting);
+        $this->assign('setting', $setting);
         return $this->fetch('form');
     }
 }

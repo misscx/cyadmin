@@ -6,5 +6,4 @@ use think\Model;
 
 class Setting extends Model
 {
-    
 }

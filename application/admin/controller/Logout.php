@@ -14,10 +14,11 @@ use app\admin\controller\Common;
 use \think\Controller;
 use \think\Cookie;
 
-class Logout extends Common {
-    
-    public function index(){
+class Logout extends Common
+{
+    public function index()
+    {
         Cookie::delete('auth');
-        return $this->success('恭喜，退出成功！',url('admin/login/index'));
+        return $this->success('恭喜，退出成功！', url('admin/login/index'));
     }
 }

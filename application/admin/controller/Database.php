@@ -16,19 +16,19 @@ use \think\Config;
 use \think\Request;
 use org\Data;
 
-class Database extends Common {
-
-    public function backup($act = null) {
-
-        if($act == 'export'){
+class Database extends Common
+{
+    public function backup($act = null)
+    {
+        if ($act == 'export') {
             $tables = input('post.');
             $id = input('get.id/d');
             $start = input('get.start/d');
-            if(!empty($tables)){
+            if (!empty($tables)) {
                 $tables = $tables['tables'];
             }
             //初始化
-            if(!empty($tables)){
+            if (!empty($tables)) {
                 $config = [
                     'hostname'=>Config::get('database.hostname'),
                     'hostport'=>Config::get('database.hostport'),
@@ -38,17 +38,17 @@ class Database extends Common {
                     'compress' => Config::get('DB_COMPRESS'),  //0:不压缩 1:启用压缩
                     'level'    => Config::get('DB_LEVEL'),  //压缩级别, 1:普通 4:一般  9:最高
                 ];
-                if(!is_dir($config['path'])){
-                    mkdir($config['path'],0777,true);
+                if (!is_dir($config['path'])) {
+                    mkdir($config['path'], 0777, true);
                 }
-                if(!is_writeable($config['path'])){
+                if (!is_writeable($config['path'])) {
                     return $this->error('请检查目录'.$config['path'].'是否具有可写权限。');
                 }
                 //检查是否有正在执行的任务
                 $lock = $config['path']. DIRECTORY_SEPARATOR .'backup.lock';
-                if(is_file($lock)){
+                if (is_file($lock)) {
                     return $this->error('检测到有一个备份任务正在执行，请稍后再试！');
-                }else{
+                } else {
                     //创建锁文件
                     file_put_contents($lock, time());
                 }
@@ -67,38 +67,37 @@ class Database extends Common {
 
                 //创建备份文件
                 $Database = new Data($file, $config);
-                if(false !== $Database->create()){
+                if (false !== $Database->create()) {
                     $tab = array('id' => 0, 'start' => 0);
                     return $this->success('初始化成功！', '', array('tables' => $tables, 'tab' => $tab));
-                }else{
+                } else {
                     return $this->error('初始化失败，备份文件创建失败！');
                 }
-            }elseif (is_numeric($id) && is_numeric($start)) { //备份数据
+            } elseif (is_numeric($id) && is_numeric($start)) { //备份数据
                 $tables = session('backup_tables');
                 //备份指定表
                 $Database = new Data(session('backup_file'), session('backup_config'));
                 $start  = $Database->backup($tables[$id], $start);
-                if(false === $start) { //出错
+                if (false === $start) { //出错
                     $this->error('备份出错！');
-                }elseif(0 === $start) {//下一表
-                    if(isset($tables[++$id])){
+                } elseif (0 === $start) {//下一表
+                    if (isset($tables[++$id])) {
                         $tab = array('id' => $id, 'start' => 0);
                         return $this->success('备份完成！', '', array('tab' => $tab));
-                    }else{ //备份完成，清空缓存
+                    } else { //备份完成，清空缓存
                         unlink(session('backup_config.path') . DIRECTORY_SEPARATOR . 'backup.lock');
                         session('backup_tables', null);
                         session('backup_file', null);
                         session('backup_config', null);
-                        addlog('备份完成！',$this->user['username']);
+                        addlog('备份完成！', $this->user['username']);
                         return $this->success('备份完成！');
                     }
-                }else{
+                } else {
                     $tab  = array('id' => $id, 'start' => $start[0]);
                     $rate = floor(100 * ($start[0] / $start[1]));
                     return $this->success("正在备份...({$rate}%)", '', array('tab' => $tab));
                 }
-
-            }else{ //出错
+            } else { //出错
                 return $this->error('参数错误！');
             }
         }
@@ -108,60 +107,61 @@ class Database extends Common {
         return $this->fetch();
     }
 
-    public function optimize($tables = null){
-
-        if($tables) {
-            if(is_array($tables)){
+    public function optimize($tables = null)
+    {
+        if ($tables) {
+            if (is_array($tables)) {
                 $tables = implode('`,`', $tables);
                 $list = Db::execute("OPTIMIZE TABLE `{$tables}`");
-                if($list){
-                    addlog("优化数据表。",$this->user['username']);
+                if ($list) {
+                    addlog("优化数据表。", $this->user['username']);
                     return $this->success("数据表优化完成！");
-                }else{
+                } else {
                     return $this->error("数据表优化出错请重试！");
                 }
-            }else{
+            } else {
                 $list = Db::execute("OPTIMIZE TABLE `{$tables}`");
-                if($list){
-                    addlog("优化数据表：$tables",$this->user['username']);
+                if ($list) {
+                    addlog("优化数据表：$tables", $this->user['username']);
                     return $this->success("数据表{$tables}优化完成！");
-                }else{
+                } else {
                     return $this->error("数据表{$tables}优化出错请重试！");
                 }
             }
-        }else{
+        } else {
             $this->error("请指定要优化的表！");
         }
     }
 
-    public function repair($tables = null){
-
-        if($tables) {
-            if(is_array($tables)){
+    public function repair($tables = null)
+    {
+        if ($tables) {
+            if (is_array($tables)) {
                 $tables = implode('`,`', $tables);
                 $list = Db::execute("REPAIR TABLE `{$tables}`");
 
-                if($list){
-                    addlog("修复数据表。",$this->user['username']);
+                if ($list) {
+                    addlog("修复数据表。", $this->user['username']);
                     return $this->success("数据表修复完成！");
-                }else{
+                } else {
                     return $this->error("数据表修复出错请重试！");
                 }
-            }else{
+            } else {
                 $list = Db::execute("REPAIR TABLE `{$tables}`");
-                if($list){
-                    addlog("修复数据表：$tables",$this->user['username']);
+                if ($list) {
+                    addlog("修复数据表：$tables", $this->user['username']);
                     return $this->success("数据表{$tables}修复完成！");
-                }else{
+                } else {
                     return $this->error("数据表'{$tables}'修复出错请重试！");
                 }
             }
-        }else{
+        } else {
             $this->error("请指定要修复的表！");
         }
     }
 
-    public function recovery($act=null,$time=null,$part=null,$start=null) {
+    public function recovery($act=null, $time=null, $part=null, $start=null)
+    {
 
         //读取备份配置
         $config = [
@@ -175,37 +175,37 @@ class Database extends Common {
         ];
 
         //判断目录是否存在
-        if(!is_dir($config['path'])){
-            mkdir($config['path'],0777,true);
+        if (!is_dir($config['path'])) {
+            mkdir($config['path'], 0777, true);
         }
-        if(!is_writeable($config['path'])){
+        if (!is_writeable($config['path'])) {
             return $this->error('请检查目录'.$config['path'].'是否具有可写权限。');
         }
 
-        if($act=='del'){
-            if($time){
+        if ($act=='del') {
+            if ($time) {
                 $name  = date('Ymd-His', $time) . '-*.sql*';
                 $path  = $config['path']. DIRECTORY_SEPARATOR . $name;
                 array_map("unlink", glob($path));
-            if(count(glob($path))){
-                return $this->success('备份文件删除失败，请检查权限！');
-            }else{
-                addlog('删除数据备份：'.$path,$this->user['username']);
-                return $this->success('备份文件删除成功！');
-            }
-            }else{
+                if (count(glob($path))) {
+                    return $this->success('备份文件删除失败，请检查权限！');
+                } else {
+                    addlog('删除数据备份：'.$path, $this->user['username']);
+                    return $this->success('备份文件删除成功！');
+                }
+            } else {
                 return $this->error('参数错误！');
             }
         }
 
-        if($act=='import'){      
-            if(is_numeric($time) && is_null($part) && is_null($start)){ //初始化
+        if ($act=='import') {
+            if (is_numeric($time) && is_null($part) && is_null($start)) { //初始化
                 //获取备份文件信息
                 $name  = date('Ymd-His', $time) . '-*.sql*';
                 $path  = $config['path']. DIRECTORY_SEPARATOR . $name;
                 $files = glob($path);
                 $list  = array();
-                foreach($files as $name){
+                foreach ($files as $name) {
                     $basename = basename($name);
                     $match    = sscanf($basename, '%4s%2s%2s-%2s%2s%2s-%d');
                     $gz       = preg_match('/^\d{8,8}-\d{6,6}-\d+\.sql.gz$/', $basename);
@@ -215,13 +215,13 @@ class Database extends Common {
 
                 //检测文件正确性
                 $last = end($list);
-                if(count($list) === $last[0]){
+                if (count($list) === $last[0]) {
                     session('backup_list', $list); //缓存备份列表
                     return $this->success('初始化完成！', '', array('part' => 1, 'start' => 0));
-                }else{
+                } else {
                     return $this->error('备份文件可能已经损坏，请检查！');
                 }
-            }elseif(is_numeric($part) && is_numeric($start)) {
+            } elseif (is_numeric($part) && is_numeric($start)) {
                 $list  = session('backup_list');
                 $db = new Data($list[$part], array(
                     'path' => $config['path']. DIRECTORY_SEPARATOR,
@@ -229,29 +229,28 @@ class Database extends Common {
                 ));
                 $start = $db->import($start);
 
-                if(false === $start){
+                if (false === $start) {
                     return $this->error('还原数据出错！');
-                }elseif(0 === $start){ //下一卷
-                    if(isset($list[++$part])){
+                } elseif (0 === $start) { //下一卷
+                    if (isset($list[++$part])) {
                         $data = array('part' => $part, 'start' => 0);
                         return $this->success("正在还原...#{$part}", '', $data);
-                    }else{
+                    } else {
                         session('backup_list', null);
-                        addlog('还原完成！',$this->user['username']);
+                        addlog('还原完成！', $this->user['username']);
                         return $this->success('还原完成！');
                     }
-                }else{
+                } else {
                     $data = array('part' => $part, 'start' => $start[0]);
-                    if($start[1]){
+                    if ($start[1]) {
                         $rate = floor(100 * ($start[0] / $start[1]));
                         return $this->success("正在还原...#{$part} ({$rate}%)", '', $data);
-                    }else{
+                    } else {
                         $data['gz'] = 1;
                         return $this->success("正在还原...#{$part}", '', $data);
                     }
                 }
-
-            }else{
+            } else {
                 return $this->error('参数错误！');
             }
         }
@@ -259,22 +258,22 @@ class Database extends Common {
 
         //列出备份文件列表
         $flag = \FilesystemIterator::KEY_AS_FILENAME;
-        $glob = new \FilesystemIterator($config['path'],  $flag);
+        $glob = new \FilesystemIterator($config['path'], $flag);
 
         $list = array();
         foreach ($glob as $name => $file) {
-            if(preg_match('/^\d{8,8}-\d{6,6}-\d+\.sql(?:\.gz)?$/', $name)){
+            if (preg_match('/^\d{8,8}-\d{6,6}-\d+\.sql(?:\.gz)?$/', $name)) {
                 $name = sscanf($name, '%4s%2s%2s-%2s%2s%2s-%d');
 
                 $date = "{$name[0]}-{$name[1]}-{$name[2]}";
                 $time = "{$name[3]}:{$name[4]}:{$name[5]}";
                 $part = $name[6];
 
-                if(isset($list["{$date} {$time}"])){
+                if (isset($list["{$date} {$time}"])) {
                     $info = $list["{$date} {$time}"];
                     $info['part'] = max($info['part'], $part);
                     $info['size'] = $info['size'] + $file->getSize();
-                }else{
+                } else {
                     $info['part'] = $part;
                     $info['size'] = $file->getSize();
                 }

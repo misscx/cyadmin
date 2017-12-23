@@ -13,11 +13,11 @@ namespace app\admin\Controller;
 use app\admin\controller\Common;
 use \think\Db;
 
-class Profile extends Common {
-
-    public function index($act=null) {
-        
-        if($act=='update') {
+class Profile extends Common
+{
+    public function index($act=null)
+    {
+        if ($act=='update') {
             $data['avatar'] = input('post.avatar');
             $data['sex'] = input('post.sex/d');
             $data['password'] = input('post.password');
@@ -25,19 +25,18 @@ class Profile extends Common {
             $data['tel'] = input('post.tel');
             $data['qq'] = input('post.qq');
             $data['email'] = input('post.email');
-            if($data['password']==''){
+            if ($data['password']=='') {
                 unset($data['password']);
-            }else{
+            } else {
                 $data['password'] = password($data['password']);
             }
             $r = Db::name('user')->where(['uid'=>$this->user['uid']])->update($data);
-            if($r){
-                addlog('修改个人资料，ID：'.$this->user['uid'],$this->user['username']);
-                return $this->success('恭喜，个人资料修改成功！',url('admin/profile/index'));
-            }else{
+            if ($r) {
+                addlog('修改个人资料，ID：'.$this->user['uid'], $this->user['username']);
+                return $this->success('恭喜，个人资料修改成功！', url('admin/profile/index'));
+            } else {
                 return $this->error('参数错误，请重试！');
             }
-          
         }
         return $this->fetch();
     }

@@ -16,10 +16,9 @@
 * @param  string $name （可选）用户名。
 *
 **/
-function addlog($log,$username=false){
-	
-	if($username){
-		\think\Db::name('log')->insert(['username'=>$username,'log'=>$log,'ip'=>$_SERVER["REMOTE_ADDR"],'t'=>time()]);
-	}
-	
+function addlog($log, $username=false)
+{
+    if ($username) {
+        \think\Db::name('log')->insert(['username'=>$username,'log'=>$log,'ip'=>$_SERVER["REMOTE_ADDR"],'t'=>time()]);
+    }
 }

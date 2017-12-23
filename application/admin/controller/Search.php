@@ -13,11 +13,11 @@ namespace app\admin\Controller;
 use app\admin\controller\Common;
 use \think\Db;
 
-class Search extends Common {
-
-    public function index() {
-
-        $keyword = Input('post.keyword','','addslashes');
+class Search extends Common
+{
+    public function index()
+    {
+        $keyword = Input('post.keyword', '', 'addslashes');
         $list = Db::name('menu')->where("status=1 and (title like '%{$keyword}%' or url like '%{$keyword}%' or tips like '%{$keyword}%')")->select();
         $this->assign('list', $list);
         $this->assign('keyword', $keyword);

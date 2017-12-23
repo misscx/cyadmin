@@ -13,42 +13,45 @@ namespace app\admin\Controller;
 use app\admin\controller\Common;
 use \think\Request;
 
-class Upload extends Common {
-
-    public function uploadpic($name='image',$width='100',$height='100',$url='') {
+class Upload extends Common
+{
+    public function uploadpic($name='image', $width='100', $height='100', $url='')
+    {
         $url = base64_decode($url);
         $file = $this->uploadsave($name);
-        if($file){
+        if ($file) {
             $url = $file;
         }
-        $this->assign('name',$name);
-        $this->assign('width',$width);
-        $this->assign('height',$height);
-        $this->assign('url',$url);
+        $this->assign('name', $name);
+        $this->assign('width', $width);
+        $this->assign('height', $height);
+        $this->assign('url', $url);
         return $this->fetch();
     }
 
-    public function uploadpics($name='images',$url=''){
+    public function uploadpics($name='images', $url='')
+    {
         $url = base64_decode($url);
-        if (Request::instance()->isPost()){
-            $images = array_filter(explode('|',input('post.url')));
-        }else{
-            $images = array_filter(explode('|',$url));
+        if (Request::instance()->isPost()) {
+            $images = array_filter(explode('|', input('post.url')));
+        } else {
+            $images = array_filter(explode('|', $url));
         }
         $file = $this->uploadsave($name);
-        if($file){
+        if ($file) {
             array_push($images, $file);
         }
-        $url = implode('|',$images);
+        $url = implode('|', $images);
 
-        $this->assign('url',$url);
-        $this->assign('images',$images);
-        $this->assign('name',$name);
+        $this->assign('url', $url);
+        $this->assign('images', $images);
+        $this->assign('name', $name);
         return $this->fetch();
     }
 
-    private function uploadsave($name){
-        if(Request::instance()->isPost()){
+    private function uploadsave($name)
+    {
+        if (Request::instance()->isPost()) {
             $accept=array(
                 'image/jpeg',
                 'image/jpg',
@@ -62,15 +65,15 @@ class Upload extends Common {
 
             $file = request()->file($name);
 
-            if(in_array($file->getMime(),$accept)){
+            if (in_array($file->getMime(), $accept)) {
                 $info = $file->move('static/upload');
-                if($info){
-                    return str_replace('\\','/','/'.$info->getPath().'/'.$info->getFilename());
-                }else{
+                if ($info) {
+                    return str_replace('\\', '/', '/'.$info->getPath().'/'.$info->getFilename());
+                } else {
                     //return $file->getError();
                     return false;
                 }
-            }else{
+            } else {
                 return false;
             }
         }

@@ -8,6 +8,6 @@ class User extends Model
 {
     public function group()
     {
-        return $this->hasOne('UserGroup','id','ugid');
+        return $this->hasOne('UserGroup', 'id', 'ugid');
     }
 }

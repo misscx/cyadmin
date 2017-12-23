@@ -13,15 +13,16 @@ namespace app\admin\Controller;
 use app\admin\controller\Common;
 use \think\Db;
 
-class Js extends Common {
-
-    public function js() {
+class Js extends Common
+{
+    public function js()
+    {
         header('Content-Type: application/x-javascript; charset=utf-8');
         $json = array();
         $list = Db::name('menu')->field('title,url')->where(['status'=>1])->select();
-        foreach($list as $k=>$v){
-          $json[] = $v['title'];
-          $json[] = $v['url'];
+        foreach ($list as $k=>$v) {
+            $json[] = $v['title'];
+            $json[] = $v['url'];
         }
         $this->assign('json', json_encode($json));
         return $this->fetch();

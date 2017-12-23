@@ -11,5 +11,5 @@
 // $Id$
 
 return [
-	'NEWS_URL'=>'http://www.mychunyan.com/news/',
+    'NEWS_URL'=>'http://www.mychunyan.com/news/',
 ];
