@@ -11,8 +11,7 @@
 
 namespace org;
 
-use \think\Db;
-use \think\Config;
+use think\Db;
 
 //数据导出模型
 class Data {
