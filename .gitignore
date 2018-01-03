@@ -1,4 +1,4 @@
-/config/database_bak.php
+/config/database.php
 .idea
 composer.lock
 *.log
