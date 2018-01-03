@@ -11,7 +11,7 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Db;
+use think\Db;
 
 class Js extends Common
 {

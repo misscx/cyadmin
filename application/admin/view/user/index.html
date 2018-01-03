@@ -35,7 +35,7 @@
             <td>{$val.title}</td>
             <td class="center">{eq name="val.status" value="1"}启用{else /}<span class="red">禁用</span>{/eq}</td>
             <td class="center hidden-sm hidden-xs">{$val.sex|sex}</td>
-            <td class="center hidden-sm hidden-xs">{$val.birthday|date='Y-m-d',###}</td>
+            <td class="center hidden-sm hidden-xs">{$val.birthday|date='Y-m-d'}</td>
             <td class="center hidden-sm hidden-xs">{$val.tel}</td>
             <td class="center hidden-sm hidden-xs">{$val.qq}</td>
             <td class="center hidden-sm hidden-xs">{$val.email}</td>
@@ -50,7 +50,7 @@
     <input id="submit" class="btn btn-info" type="button" value="删除">
 </div>
 <div class="row">
-{$list->render()}
+{$list->render()|raw}
 </div>
 </div>
 {/block}
@@ -77,7 +77,7 @@ $(function(){
     $("#submit").click(function(){
         bootbox.confirm({
             title: "警告",
-            message: "确定要删除所选用户？请确保至少保留一位超级管理员用户。", 
+            message: "确定要删除所选用户？请确保至少保留一位超级管理员用户。",
             callback:function(result){
                 if(result){
                     $("#form").submit();

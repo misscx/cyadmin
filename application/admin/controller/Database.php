@@ -11,9 +11,9 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Db;
-use \think\Config;
-use \think\Request;
+use think\Db;
+use think\facade\Config;
+use think\facade\Request;
 use org\Data;
 
 class Database extends Common
@@ -33,10 +33,10 @@ class Database extends Common
                     'hostname'=>Config::get('database.hostname'),
                     'hostport'=>Config::get('database.hostport'),
                     'database'=>Config::get('database.database'),
-                    'path'     => ROOT_PATH.Config::get('DB_PATH'),  //路径
-                    'part'     => Config::get('DB_PART'),  //分卷大小 20M
-                    'compress' => Config::get('DB_COMPRESS'),  //0:不压缩 1:启用压缩
-                    'level'    => Config::get('DB_LEVEL'),  //压缩级别, 1:普通 4:一般  9:最高
+                    'path'     => Config::get('cy.db_path'),  //路径
+                    'part'     => Config::get('cy.db_part'),  //分卷大小 20M
+                    'compress' => Config::get('cy.db_compress'),  //0:不压缩 1:启用压缩
+                    'level'    => Config::get('cy.db_level'),  //压缩级别, 1:普通 4:一般  9:最高
                 ];
                 if (!is_dir($config['path'])) {
                     mkdir($config['path'], 0777, true);
@@ -168,10 +168,10 @@ class Database extends Common
             'hostname'=>Config::get('database.hostname'),
             'hostport'=>Config::get('database.hostport'),
             'database'=>Config::get('database.database'),
-            'path'     => ROOT_PATH.Config::get('DB_PATH'),  //路径
-            'part'     => Config::get('DB_PART'),  //分卷大小 20M
-            'compress' => Config::get('DB_COMPRESS'),  //0:不压缩 1:启用压缩
-            'level'    => Config::get('DB_LEVEL'),  //压缩级别, 1:普通 4:一般  9:最高
+            'path'     => Config::get('cy.db_path'),  //路径
+            'part'     => Config::get('cy.db_part'),  //分卷大小 20M
+            'compress' => Config::get('cy.db_compress'),  //0:不压缩 1:启用压缩
+            'level'    => Config::get('cy.db_level'),  //压缩级别, 1:普通 4:一般  9:最高
         ];
 
         //判断目录是否存在

@@ -33,11 +33,11 @@
 
                 <div class="panel-collapse collapse in" id="sysinfo">
                     <div class="panel-body">
-                        <p>PHP版本：<?php echo PHP_VERSION ?>，MySQL版本：{$mysql}</p>
+                        <p>PHP版本：{$Think.PHP_VERSION}，MySQL版本：{$mysql}</p>
                         <p>服务器：<?php echo php_uname('s');?></p>
                         <p>PHP运行方式：<?php echo php_sapi_name();?></p>
                         <p>服务器IP：<?php echo GetHostByName($_SERVER['SERVER_NAME']);?></p>
-                        <p>框架版本：<?php echo THINK_VERSION ?>&nbsp;&nbsp;</p>
+                        <p>框架版本：{$Think.version}&nbsp;&nbsp;</p>
 
                     </div>
                 </div>
@@ -60,7 +60,7 @@
     <tr>
         <td>{$val.id}</td>
         <td>{$val.username}</td>
-        <td>{$val.t|date="Y-m-d H:i:s",###}</td>
+        <td>{$val.t|date="Y-m-d H:i:s"}</td>
         <td class="hidden-sm hidden-xs">{$val.ip}</td>
         <td>
         <div class="hidden-sm hidden-xs">{$val.log}</div>
@@ -84,7 +84,7 @@
 </table>
 </div>
 <div class="row">
-{$list->render()}
+{$list->render()|raw}
 </div>
 {/block}
 {block name="javascript"}
@@ -93,7 +93,7 @@ $(function(){
     $("#officialnews ul").html('<div class="ace-icon fa fa-spinner fa-spin orange"></div>');
     $.ajax({
         type: 'GET',
-        url: '{$Think.CONFIG.NEWS_URL}?callback=?',
+        url: '{$Think.config.news_url}?callback=?',
         success :function(data){
             $("#officialnews ul").html("");
             $.each(data.news, function(i,news){

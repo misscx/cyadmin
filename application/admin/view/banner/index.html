@@ -38,7 +38,7 @@
     <input id="submit" class="btn btn-info" type="button" value="删除">
 </div>
 <div class="row">
-{$list->render()}
+{$list->render()|raw}
 </div>
 {/block}
 {block name="js_file"}
@@ -64,7 +64,7 @@ $(function(){
     $("#submit").click(function(){
         bootbox.confirm({
             title: "系统提示",
-            message: "确定要删除所选记录？", 
+            message: "确定要删除所选记录？",
             callback:function(result){
                 if(result){
                     $("#form").submit();

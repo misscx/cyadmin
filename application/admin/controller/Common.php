@@ -10,20 +10,21 @@
 
 namespace app\admin\Controller;
 
-use \think\Controller;
+use think\Controller;
 use app\admin\model\User;
 use app\admin\model\Menu;
 use app\admin\model\Setting;
-use \think\Config;
-use \think\Cookie;
-use \think\Db;
+use think\facade\Config;
+use think\facade\Cookie;
+use think\facade\Request;
+use think\Db;
 
 class Common extends Controller
 {
     protected $user = false;
     protected $url;
 
-    public function _initialize()
+    public function initialize()
     {
         $this->auth();//权限验证
 
@@ -33,8 +34,7 @@ class Common extends Controller
         foreach ($setting as $k=>$v) {
             $config[$v->k] = $v->v;
         }
-        Config::set($config);
-
+        Config::set('cy', $config);
         if ($this->user) {
             //菜单
             $menus = Menu::field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user->group->auth})")->order('o', 'asc')->select();
@@ -76,8 +76,7 @@ class Common extends Controller
         ];
 
         $status = false;
-        $request = \think\Request::instance();
-        $this->url = $request->controller().'/'.$request->action();
+        $this->url = Request::controller().'/'.Request::action();
 
         //放过无需登录页面
         if (in_array($this->url, $noNeedLogin)) {

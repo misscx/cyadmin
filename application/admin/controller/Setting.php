@@ -11,9 +11,9 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Db;
-use \think\Config;
-use \think\Request;
+use think\Db;
+use think\facade\Config;
+use think\facade\Request;
 
 class Setting extends Common
 {

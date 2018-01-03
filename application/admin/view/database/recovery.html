@@ -16,7 +16,7 @@
 <tbody>
     {volist name="list" id="data"}
         <tr>
-            <td>{$data.time|date='Ymd-His',###}</td>
+            <td>{$data.time|date='Ymd-His'}</td>
             <td class="hidden-sm hidden-xs">{$data.part}</td>
             <td class="hidden-sm hidden-xs">{$data.compress}</td>
             <td>{$data.size|format_bytes}</td>
@@ -43,7 +43,7 @@ $(function(){
         $.get(self.href, success, "json");
         window.onbeforeunload = function(){ return "正在还原数据库，请不要关闭！" }
         return false;
-    
+
         function success(data){
             if(data.code){
                 if(data.gz){
@@ -56,9 +56,9 @@ $(function(){
                 }
                 $(self).parent().prev().text(data.msg);
                 if(data.data.part){
-                    $.get(self.href, 
-                        {"part" : data.data.part, "start" : data.data.start}, 
-                        success, 
+                    $.get(self.href,
+                        {"part" : data.data.part, "start" : data.data.start},
+                        success,
                         "json"
                     );
                 }  else {

@@ -1,4 +1,5 @@
-/application/config.php
-/application/database.php
-/runtime/
+/config/database_bak.php
+.idea
+composer.lock
+*.log
 Thumbs.db

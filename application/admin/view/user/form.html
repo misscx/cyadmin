@@ -9,7 +9,7 @@
 <div class="form-group">
     <label class="col-sm-1 control-label no-padding-right" for="username"> 用户名 </label>
     <div class="col-sm-9">
-        
+
         <input type="text" {notempty name="userinfo"} disabled="disabled" {else /} name="username" {/notempty} id="username" class="col-xs-10 col-sm-5" value="{$userinfo.username ?? ''}">
         <span class="help-inline col-xs-12 col-sm-7">
             <span class="middle">不可修改</span>
@@ -66,7 +66,7 @@
     <label class="col-sm-1 control-label no-padding-right" for="birthday"> 生日 </label>
     <div class="col-xs-9 col-sm-9">
         <div class="input-group col-xs-5">
-            <input class="form-control" id="birthday" name="birthday" value="{notempty name="userinfo"}{$userinfo.birthday|date="Y-m-d",###}{/notempty}" type="text" data-date-format="dd-mm-yyyy" />
+            <input class="form-control" id="birthday" name="birthday" value="{notempty name="userinfo"}{$userinfo.birthday|date="Y-m-d"}{/notempty}" type="text" data-date-format="dd-mm-yyyy" />
             <span class="input-group-addon">
                 <i class="ace-icon fa fa-calendar bigger-110"></i>
             </span>

@@ -11,7 +11,8 @@ namespace app\admin\Controller;
 
 use app\admin\controller\Common;
 use app\admin\model\User;
-use \think\Cookie;
+use think\facade\Cookie;
+use app\admin\validate\LoginValidate;
 
 class Login extends Common
 {
@@ -42,6 +43,7 @@ class Login extends Common
         $remember = input('post.remember');
 
         $result = $this->validate(array('username'=>$username,'password'=>$password), 'LoginValidate');
+
         if ($result !== true) {
             return $this -> error($result, url('login/index'));
         }

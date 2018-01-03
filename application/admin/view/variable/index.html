@@ -27,7 +27,7 @@
                 <td>{$val.name}</td>
                 <td>{$val.k}</td>
                 <td>{$val.v}</td>
-                <td class="hidden-sm hidden-xs">{literal}{$Think.CONFIG.{/literal}{$val.k}}</td>
+                <td class="hidden-sm hidden-xs">{literal}{$Think.config.app.cy.{/literal}{$val.k}}</td>
                 <td class="hidden-sm hidden-xs">{$val.tips}</td>
                 <td><a href="{:url('index',['act'=>'edit','k'=>$val.k])}"><i class="ace-icon fa fa-pencil bigger-100"></i>修改</a></td>
             </tr>
@@ -63,7 +63,7 @@ $(function(){
     $("#submit").click(function(){
         bootbox.confirm({
             title: "系统提示",
-            message: "确定要删除所选记录？", 
+            message: "确定要删除所选记录？",
             callback:function(result){
                 if(result){
                     $("#form").submit();

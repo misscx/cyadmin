@@ -11,8 +11,8 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Controller;
-use \think\Cookie;
+use think\Controller;
+use think\facade\Cookie;
 
 class Logout extends Common
 {

@@ -11,7 +11,7 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Request;
+use think\facade\Request;
 
 class Upload extends Common
 {

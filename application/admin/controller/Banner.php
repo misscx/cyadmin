@@ -11,8 +11,8 @@
 namespace app\admin\Controller;
 
 use app\admin\controller\Common;
-use \think\Db;
-use \think\Request;
+use think\Db;
+use think\facade\Request;
 
 class Banner extends Common
 {

@@ -1,5 +1,5 @@
 (function($ , undefined) {
-	ace.vars['US_STATES'] = {$json};
+	ace.vars['US_STATES'] = {$json|raw};
 	try {
 		$('#nav-search-input').bs_typeahead({
 			source: ace.vars['US_STATES'],
@@ -16,5 +16,5 @@ $(function(){
 		var skin = $(this).find("option:selected").attr('data-skin');
 		$.get("{:url('admin/user/skin')}",{skin:skin});
 	})
-	
+
 });
