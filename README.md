@@ -26,3 +26,9 @@ admin admin
 ## 其它
 
 为什么要做这个？这个项目其实是从ThinkPHP5内测版就开始在弄了，主要是学习ThinkPHP5，之前有个基于3.2.x版的，但没开源出来。
+
+## 演示地址
+
+http://cyadmin.mychunyan.com/admin
+
+admin admin
