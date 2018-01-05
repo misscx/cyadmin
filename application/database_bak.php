@@ -15,11 +15,11 @@ return [
     // 服务器地址
     'hostname'       => 'localhost',
     // 数据库名
-    'database'       => 'cycms',
+    'database'       => '',
     // 用户名
-    'username'       => 'cycms',
+    'username'       => '',
     // 密码
-    'password'       => 'cycms',
+    'password'       => '',
     // 端口
     'hostport'       => '3306',
     // 连接dsn

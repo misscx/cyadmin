@@ -109,7 +109,7 @@ class Common extends Controller
 
         //验证页面权限
         $current_url_id = Menu::get(['url'=>$this->url]);
-        if (in_array($current_url_id->id, explode(',', $this->user->group->auth))) {
+        if ($current_url_id && in_array($current_url_id->id, explode(',', $this->user->group->auth))) {
             return true;
         } else {
             return $this -> error('您无权访问此页！');
