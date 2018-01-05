@@ -18,7 +18,7 @@ PHP 5.4.0+，PDO、CURL扩展，MySQL5.0+
 
 ## 后台地址：
 http://url/admin/
-
+若安装后打不开，请注意ThinkPHP的Rewrite规则在当前服务器是否适用。
 ## 管理员用户及密码：
 
 admin admin
