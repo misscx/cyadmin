@@ -105,7 +105,7 @@ class RuleItem extends Rule
     public function check($request, $url, $depr = '/', $completeMatch = false)
     {
         if ($this->parent && $groupName = $this->parent->getName()) {
-            $this->name = $groupName . '/' . $this->name;
+            $this->name = $groupName . ($this->name ? '/' . $this->name : '');
         }
 
         if ($dispatch = $this->checkCrossDomain($request)) {
@@ -121,6 +121,11 @@ class RuleItem extends Rule
         // 合并分组参数
         $this->mergeGroupOptions();
         $option = $this->option;
+
+        // 是否区分 / 地址访问
+        if (!empty($option['remove_slash']) && '/' != $this->name) {
+            $this->name = rtrim($this->name, '/');
+        }
 
         // 检查前置行为
         if (isset($option['before']) && false === $this->checkBefore($option['before'])) {

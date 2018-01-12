@@ -20,6 +20,7 @@ use think\route\dispatch\Controller as ControllerDispatch;
 use think\route\dispatch\Module as ModuleDispatch;
 use think\route\dispatch\Redirect as RedirectDispatch;
 use think\route\dispatch\Response as ResponseDispatch;
+use think\route\dispatch\View as ViewDispatch;
 
 abstract class Rule
 {
@@ -81,7 +82,7 @@ abstract class Rule
      */
     public function name($name)
     {
-        $this->name = '/' != $name ? trim($name, '/') : '/';
+        $this->name = '/' != $name ? ltrim($name, '/') : '/';
 
         return $this;
     }
@@ -341,6 +342,28 @@ abstract class Rule
     }
 
     /**
+     * 当前路由到一个模板地址 当使用数组的时候可以传入模板变量
+     * @access public
+     * @param  bool|array     $view
+     * @return $this
+     */
+    public function view($view = true)
+    {
+        return $this->option('view', $view);
+    }
+
+    /**
+     * 当前路由为重定向
+     * @access public
+     * @param  bool   $redirect 是否为重定向
+     * @return $this
+     */
+    public function redirect($redirect = true)
+    {
+        return $this->option('redirect', $redirect);
+    }
+
+    /**
      * 设置路由完整匹配
      * @access public
      * @param  bool     $match
@@ -349,6 +372,17 @@ abstract class Rule
     public function completeMatch($match = true)
     {
         return $this->option('complete_match', $match);
+    }
+
+    /**
+     * 是否去除URL最后的斜线
+     * @access public
+     * @param  bool     $remove
+     * @return $this
+     */
+    public function removeSlash($remove = true)
+    {
+        return $this->option('remove_slash', $remove);
     }
 
     /**
@@ -680,7 +714,9 @@ abstract class Rule
             $result = new CallbackDispatch($route);
         } elseif ($route instanceof Response) {
             $result = new ResponseDispatch($route);
-        } elseif (0 === strpos($route, '/') || strpos($route, '://')) {
+        } elseif (isset($option['view']) && false !== $option['view']) {
+            $result = new ViewDispatch($route, is_array($option['view']) ? $option['view'] : []);
+        } elseif (!empty($option['redirect']) || 0 === strpos($route, '/') || strpos($route, '://')) {
             // 路由到重定向地址
             $result = new RedirectDispatch($route, [], isset($option['status']) ? $option['status'] : 301);
         } elseif (false !== strpos($route, '\\')) {
