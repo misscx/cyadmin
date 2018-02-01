@@ -128,6 +128,23 @@ abstract class Rule
     }
 
     /**
+     * 附加路由隐式参数
+     * @access public
+     * @param  array     $append
+     * @return $this
+     */
+    public function append(array $append = [])
+    {
+        if (isset($this->option['append'])) {
+            $this->option['append'] = array_merge($this->option['append'], $append);
+        } else {
+            $this->option['append'] = $append;
+        }
+
+        return $this;
+    }
+
+    /**
      * 设置路由请求类型
      * @access public
      * @param  string     $method
@@ -438,7 +455,7 @@ abstract class Rule
      * @access public
      * @return $this
      */
-    public function crossDomain()
+    public function crossDomainRule()
     {
         if ($this instanceof RuleGroup) {
             $method = '*';
@@ -800,13 +817,13 @@ abstract class Rule
         }
 
         // 伪静态后缀检测
-        if ((isset($option['ext']) && false === stripos('|' . $option['ext'] . '|', '|' . $request->ext() . '|'))
-            || (isset($option['deny_ext']) && false !== stripos('|' . $option['deny_ext'] . '|', '|' . $request->ext() . '|'))) {
+        if ($request->url() != '/' && ((isset($option['ext']) && false === stripos('|' . $option['ext'] . '|', '|' . $request->ext() . '|'))
+            || (isset($option['deny_ext']) && false !== stripos('|' . $option['deny_ext'] . '|', '|' . $request->ext() . '|')))) {
             return false;
         }
 
         // 域名检查
-        if ((isset($option['domain']) && !in_array($option['domain'], [$_SERVER['HTTP_HOST'], $this->subDomain]))) {
+        if ((isset($option['domain']) && !in_array($option['domain'], [$_SERVER['HTTP_HOST'], $request->subDomain()]))) {
             return false;
         }
 
