@@ -19,7 +19,7 @@ class Article extends Common
     public function index($act=null, $cid=null)
     {
         if ($act=='del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $aids = input('post.');
@@ -69,7 +69,7 @@ class Article extends Common
 
     public function save($aid=null)
     {
-        if (!Request::instance()->isPost()) {
+        if (!Request::isPost()) {
             return $this->error('参数错误，请重试！');
         }
         $aid = intval($aid);

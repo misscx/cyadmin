@@ -19,7 +19,7 @@ class Menu extends Common
     public function index($act=null)
     {
         if ($act=='del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $ids = input('post.');
@@ -36,7 +36,7 @@ class Menu extends Common
         }
 
         if ($act=='update') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $id = input('post.id', 0, 'intval');
@@ -64,7 +64,7 @@ class Menu extends Common
         }
 
         if ($act=='edit') {
-            $id = Request::instance()->param('id');
+            $id = Request::param('id');
             $this->assign('id', $id);
 
             $current = Db::name('menu')->where(['id'=>$id])->find();

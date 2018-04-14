@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `cy_user` (
 --
 
 INSERT INTO `cy_user` (`uid`, `ugid`, `username`, `avatar`, `sex`, `birthday`, `tel`, `qq`, `email`, `password`, `status`, `identifier`, `token`, `salt`, `skin`) VALUES
-(1, 1, 'admin', '', 0, 1465920000, '13800138000', '10000', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'e5e90df2c647d58c0c89e4b3e126360c', 'a9ecf808b814e2414470f8bcede8066d', 'F2hsxYtXYa', 'no-skin');
+(1, 1, 'admin', '', 0, 1465920000, '17898159969', '331349451', 'admin@huikon.cn', 'e62e76cff8e27165bbf2eb429506da72', 1, 'e5e90df2c647d58c0c89e4b3e126360c', 'a9ecf808b814e2414470f8bcede8066d', 'F2hsxYtXYa', 'no-skin');
 
 -- --------------------------------------------------------
 

@@ -32,7 +32,7 @@ class Upload extends Common
     public function uploadpics($name='images', $url='')
     {
         $url = base64_decode($url);
-        if (Request::instance()->isPost()) {
+        if (Request::isPost()) {
             $images = array_filter(explode('|', input('post.url')));
         } else {
             $images = array_filter(explode('|', $url));
@@ -51,7 +51,7 @@ class Upload extends Common
 
     private function uploadsave($name)
     {
-        if (Request::instance()->isPost()) {
+        if (Request::isPost()) {
             $accept=array(
                 'image/jpeg',
                 'image/jpg',

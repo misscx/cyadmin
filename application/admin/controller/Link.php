@@ -19,7 +19,7 @@ class Link extends Common
     public function index($act=null)
     {
         if ($act=='del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $ids = input('post.');
@@ -58,7 +58,7 @@ class Link extends Common
 
     public function save()
     {
-        if (!Request::instance()->isPost()) {
+        if (!Request::isPost()) {
             return $this->error('参数错误，请重试！');
         }
 

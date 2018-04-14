@@ -19,7 +19,7 @@ class Category extends Common
     public function index($act=null)
     {
         if ($act=='del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $ids = input('post.');
@@ -70,7 +70,7 @@ class Category extends Common
 
     public function save($id=null)
     {
-        if (!Request::instance()->isPost()) {
+        if (!Request::isPost()) {
             return $this->error('参数错误，请重试！');
         }
         $data = input('post.');

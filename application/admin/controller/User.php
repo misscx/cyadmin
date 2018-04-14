@@ -39,7 +39,7 @@ class User extends Common
         }
 
         if ($act == 'update') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $uid = intval($uid);
@@ -81,7 +81,7 @@ class User extends Common
         }
 
         if ($act == 'del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $uids = input('post.');

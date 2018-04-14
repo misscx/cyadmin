@@ -42,7 +42,7 @@ class Group extends Common
         }
 
         if ($act=='update') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $data = input('post.');
@@ -79,7 +79,7 @@ class Group extends Common
         }
 
         if ($act=='del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $ids = input('post.');

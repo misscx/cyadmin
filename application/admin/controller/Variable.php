@@ -19,7 +19,7 @@ class Variable extends Common
     public function index($act=null)
     {
         if ($act == 'del') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $ids = input('post.');
@@ -44,7 +44,7 @@ class Variable extends Common
         }
 
         if ($act == 'update') {
-            if (!Request::instance()->isPost()) {
+            if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
             $k = input('post.k/s');
