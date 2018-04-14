@@ -29,21 +29,21 @@ class User extends Migrator
      */
     public function up()
     {
-        $table = $this->table('user',array('id'=>'uid','engine'=>'MyISAM'));
-        $table->addColumn('ugid','integer',array('signed'=>false,'limit' => 11,'default'=>0,'comment'=>'用户组ID'))
-            ->addColumn('username', 'string',array('limit' => 100,'default'=>'','comment'=>'用户名'))
-            ->addColumn('password', 'string',array('limit' => 32,'default'=>'','comment'=>'用户密码'))
-            ->addColumn('avatar', 'string',array('limit' => 255,'default'=>'','comment'=>'用户头像'))
-            ->addColumn('sex', 'integer',array('signed'=>false,'limit' => MysqlAdapter::INT_TINY,'default'=>0,'comment'=>'姓别：0保密，1男，2女'))
-            ->addColumn('birthday', 'integer',array('signed'=>false,'limit' => 10,'default'=>0,'comment'=>'生日'))
-            ->addColumn('tel', 'string',array('limit' => 20,'default'=>'','comment'=>'电话号码'))
-            ->addColumn('qq', 'string',array('limit' => 20,'default'=>'','comment'=>'QQ'))
-            ->addColumn('email', 'string',array('limit' => 255,'default'=>'','comment'=>'电子邮箱'))
-            ->addColumn('status', 'boolean',array('limit' => 1,'default'=>1,'comment'=>'用户状态，0禁用，1启用'))
-            ->addColumn('identifier', 'string',array('limit' => 32,'default'=>'','comment'=>'登录标示'))
-            ->addColumn('token', 'string',array('limit' => 32,'default'=>'','comment'=>'登录Token'))
-            ->addColumn('salt', 'string',array('limit' => 10,'default'=>'','comment'=>'密码盐'))
-            ->addColumn('skin', 'string',array('limit' => 20,'default'=>'no-skin','comment'=>'皮肤'))
+        $table = $this->table('user', array('id'=>'uid','engine'=>'MyISAM'));
+        $table->addColumn('ugid', 'integer', array('signed'=>false,'limit' => 11,'default'=>0,'comment'=>'用户组ID'))
+            ->addColumn('username', 'string', array('limit' => 100,'default'=>'','comment'=>'用户名'))
+            ->addColumn('password', 'string', array('limit' => 32,'default'=>'','comment'=>'用户密码'))
+            ->addColumn('avatar', 'string', array('limit' => 255,'default'=>'','comment'=>'用户头像'))
+            ->addColumn('sex', 'integer', array('signed'=>false,'limit' => MysqlAdapter::INT_TINY,'default'=>0,'comment'=>'姓别：0保密，1男，2女'))
+            ->addColumn('birthday', 'integer', array('signed'=>false,'limit' => 10,'default'=>0,'comment'=>'生日'))
+            ->addColumn('tel', 'string', array('limit' => 20,'default'=>'','comment'=>'电话号码'))
+            ->addColumn('qq', 'string', array('limit' => 20,'default'=>'','comment'=>'QQ'))
+            ->addColumn('email', 'string', array('limit' => 255,'default'=>'','comment'=>'电子邮箱'))
+            ->addColumn('status', 'boolean', array('limit' => 1,'default'=>1,'comment'=>'用户状态，0禁用，1启用'))
+            ->addColumn('identifier', 'string', array('limit' => 32,'default'=>'','comment'=>'登录标示'))
+            ->addColumn('token', 'string', array('limit' => 32,'default'=>'','comment'=>'登录Token'))
+            ->addColumn('salt', 'string', array('limit' => 10,'default'=>'','comment'=>'密码盐'))
+            ->addColumn('skin', 'string', array('limit' => 20,'default'=>'no-skin','comment'=>'皮肤'))
             ->addIndex(array('username'), array('unique' => true))
             ->create();
 
@@ -65,11 +65,11 @@ class User extends Migrator
                 'skin'  => 'no-skin',
             );
 
-            $table = $this->table('user');
-            $table->insert($user);
-            $table->saveData();
+        $table = $this->table('user');
+        $table->insert($user);
+        $table->saveData();
     }
-    
+
     public function down()
     {
         $this->dropTable('user');

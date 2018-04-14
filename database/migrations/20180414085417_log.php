@@ -28,11 +28,11 @@ class Log extends Migrator
      */
     public function change()
     {
-        $table = $this->table('log',array('engine'=>'MyISAM'));           
-        $table->addColumn('username', 'string',array('limit' => 100,'default'=>'','comment'=>'用户名'))
-            ->addColumn('log', 'text',array('default'=>'','comment'=>'日志'))
-            ->addColumn('ip', 'string',array('limit' => 16,'default'=>'','comment'=>'IP'))
-            ->addColumn('t', 'integer',array('signed'=>false,'limit' => 10,'default'=>0,'comment'=>'时间'))
+        $table = $this->table('log', array('engine'=>'MyISAM'));
+        $table->addColumn('username', 'string', array('limit' => 100,'default'=>'','comment'=>'用户名'))
+            ->addColumn('log', 'text', array('default'=>'','comment'=>'日志'))
+            ->addColumn('ip', 'string', array('limit' => 16,'default'=>'','comment'=>'IP'))
+            ->addColumn('t', 'integer', array('signed'=>false,'limit' => 10,'default'=>0,'comment'=>'时间'))
             ->create();
     }
 }

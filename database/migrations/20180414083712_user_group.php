@@ -28,24 +28,24 @@ class UserGroup extends Migrator
      */
     public function up()
     {
-        $table = $this->table('user_group',array('engine'=>'MyISAM'));
-        $table->addColumn('title', 'string',array('limit' => 100,'default'=>'','comment'=>'组名'))
-            ->addColumn('status', 'boolean',array('limit' => 1,'default'=>1,'comment'=>'组状态，0禁用，1启用'))
-            ->addColumn('auth', 'text',array('default'=>'','comment'=>'组权限'))
+        $table = $this->table('user_group', array('engine'=>'MyISAM'));
+        $table->addColumn('title', 'string', array('limit' => 100,'default'=>'','comment'=>'组名'))
+            ->addColumn('status', 'boolean', array('limit' => 1,'default'=>1,'comment'=>'组状态，0禁用，1启用'))
+            ->addColumn('auth', 'text', array('default'=>'','comment'=>'组权限'))
             ->create();
 
         $user_group = array(
                 'id'    => 1,
                 'title'    => '超级管理员',
                 'status'  => 1,
-                'auth'  => implode(',',range(1,1000)),
+                'auth'  => implode(',', range(1, 1000)),
             );
 
-            $table = $this->table('user_group');
-            $table->insert($user_group);
-            $table->saveData();
+        $table = $this->table('user_group');
+        $table->insert($user_group);
+        $table->saveData();
     }
-    
+
     public function down()
     {
         $this->dropTable('user_group');

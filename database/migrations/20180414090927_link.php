@@ -28,12 +28,12 @@ class Link extends Migrator
      */
     public function change()
     {
-        $table = $this->table('link',array('engine'=>'MyISAM'));           
-        $table->addColumn('title', 'string',array('limit' => 255,'default'=>'','comment'=>'名称'))
-            ->addColumn('url', 'string',array('limit' => 255,'default'=>'','comment'=>'地址'))
-            ->addColumn('logo', 'string',array('limit' => 255,'default'=>'','comment'=>'站标'))
-            ->addColumn('ip', 'string',array('limit' => 16,'default'=>'','comment'=>'IP'))
-            ->addColumn('o', 'integer',array('limit' => 11,'default'=>0,'comment'=>'排序'))
+        $table = $this->table('link', array('engine'=>'MyISAM'));
+        $table->addColumn('title', 'string', array('limit' => 255,'default'=>'','comment'=>'名称'))
+            ->addColumn('url', 'string', array('limit' => 255,'default'=>'','comment'=>'地址'))
+            ->addColumn('logo', 'string', array('limit' => 255,'default'=>'','comment'=>'站标'))
+            ->addColumn('ip', 'string', array('limit' => 16,'default'=>'','comment'=>'IP'))
+            ->addColumn('o', 'integer', array('limit' => 11,'default'=>0,'comment'=>'排序'))
             ->create();
     }
 }
