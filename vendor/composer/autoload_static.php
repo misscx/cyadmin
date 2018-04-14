@@ -8,11 +8,13 @@ class ComposerStaticInit957e16ec1846e9619e5fc0f5ef39ef23
 {
     public static $files = array (
         '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
+        'ddc3cd2a04224f9638c5d0de6a69c7e3' => __DIR__ . '/..' . '/topthink/think-migration/src/config.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         't' => 
         array (
+            'think\\migration\\' => 16,
             'think\\composer\\' => 15,
             'think\\captcha\\' => 14,
         ),
@@ -20,9 +22,17 @@ class ComposerStaticInit957e16ec1846e9619e5fc0f5ef39ef23
         array (
             'app\\' => 4,
         ),
+        'P' => 
+        array (
+            'Phinx\\' => 6,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'think\\migration\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/topthink/think-migration/src',
+        ),
         'think\\composer\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-installer/src',
@@ -34,6 +44,10 @@ class ComposerStaticInit957e16ec1846e9619e5fc0f5ef39ef23
         'app\\' => 
         array (
             0 => __DIR__ . '/../..' . '/application',
+        ),
+        'Phinx\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/topthink/think-migration/phinx/src/Phinx',
         ),
     );
 
