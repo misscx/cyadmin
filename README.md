@@ -8,47 +8,20 @@ PHP 5.6.0+，PDO扩展，MySQL5.0+
 
 ## 安装说明：
 
-### 手动安装
 
 1、下载本源码至网站根目录。
 
-2、将config/database_bak.php重命名为database.php，并修改数据库配置，主要有服务器地址、数据库名、数据库用户名、数据库密码、数据库连接端口等。
+2、将config/database_bak.php重命名为database.php，并修改数据库配置，主要有服务器地址、数据库名、数据库用户名、数据库密码、数据库连接端口、数据表前辍等配置。
 
-3、将database/cycms.sql文件手动导入数据库。
-
-4、完成安装，打开网站URL查看效果。
-
-### 命令安装
-
-注意：命令安装需git支持。
-
-1、先cd到网站根目录，再执行如下命令：
-
-```
-git clone https://gitee.com/hanchuan/cycms.git ./
-```
-
-2、将database_bak.php重名命为 database.php，命令如下：
-
-```
-mv ./config/database_bak.php ./config/database.php
-```
-
-3、修改数据库配置
-
-```
-vi ./config/database.php
-```
-
-修改数据库名、数据库用户、数据库用户密码、数据库端口、数据表前辍等配置。
-
-4、执行数据迁移，命令如下：
+3、将database/cycms.sql文件手动导入数据库或使用数据迁移命令将数据导入数据库，命令如下：
 
 ```
 php think migrate:run
 ```
+注意，若更改了数据表前辍配置，手动导入cycms.sql之前请批量替换cycms.sql中“cy_”（不含引号）为新的表前辍，使用数据迁移命令则不受此限制。
 
-5、完成安装，打开网站URL查看效果。
+4、完成安装，打开网站URL查看效果。
+
 
 ## 后台地址：
 
