@@ -40,7 +40,7 @@ class User extends Migrator
             ->addColumn('qq', 'string', array('limit' => 20,'default'=>'','comment'=>'QQ'))
             ->addColumn('email', 'string', array('limit' => 255,'default'=>'','comment'=>'电子邮箱'))
             ->addColumn('status', 'boolean', array('limit' => 1,'default'=>1,'comment'=>'用户状态，0禁用，1启用'))
-            ->addColumn('identifier', 'string', array('limit' => 32,'default'=>'','comment'=>'登录标示'))
+            ->addColumn('identifier', 'string', array('limit' => 32,'default'=>'','comment'=>'登录标识'))
             ->addColumn('token', 'string', array('limit' => 32,'default'=>'','comment'=>'登录Token'))
             ->addColumn('salt', 'string', array('limit' => 10,'default'=>'','comment'=>'密码盐'))
             ->addColumn('skin', 'string', array('limit' => 20,'default'=>'no-skin','comment'=>'皮肤'))
