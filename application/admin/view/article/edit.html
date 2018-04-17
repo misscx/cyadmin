@@ -88,7 +88,7 @@
 <div class="form-group">
     <label class="col-sm-1 control-label no-padding-right" for="description"> 文章内容 </label>
     <div class="col-sm-9">
-        <script name="content" id="editor" type="text/plain" class="col-xs-10 col-sm-10 col-md-10 col-lg-12" style="height:500px;">{$article.content}</script>
+        <script name="content" id="editor" type="text/plain" class="col-xs-10 col-sm-10 col-md-10 col-lg-12" style="height:500px;">{$article.content|raw}</script>
         <span class="help-inline col-xs-12 col-sm-7">
             <span class="middle"></span>
         </span>
