@@ -8,9 +8,8 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
 use think\Db;
 use think\facade\Request;
 
@@ -24,7 +23,7 @@ class Article extends Common
             }
             $aids = input('post.');
             if ($aids) {
-                Db::name('article')->where('aid','in',$aids['aids'])->delete();
+                Db::name('article')->where('aid', 'in', $aids['aids'])->delete();
                 addlog('删除文章，AID：'.implode(',', $aids['aids']), $this->user['username']);
                 return $this->success('恭喜，删除成功！', url('admin/article/index'));
             }

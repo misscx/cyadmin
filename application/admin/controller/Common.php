@@ -8,16 +8,16 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
 use think\Controller;
-use app\admin\model\User;
-use app\admin\model\Menu;
-use app\admin\model\Setting;
 use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Request;
 use think\Db;
+use app\admin\model\User;
+use app\admin\model\Menu;
+use app\admin\model\Setting;
 
 class Common extends Controller
 {
