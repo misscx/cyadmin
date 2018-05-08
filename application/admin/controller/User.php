@@ -8,11 +8,10 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
-use \think\Db;
-use \think\Request;
+use think\Db;
+use think\Request;
 
 class User extends Common
 {

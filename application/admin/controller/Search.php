@@ -8,10 +8,9 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
-use \think\Db;
+use think\Db;
 
 class Search extends Common
 {

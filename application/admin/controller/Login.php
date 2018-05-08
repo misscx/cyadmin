@@ -7,11 +7,10 @@
 * 功能说明：后台用户登录控制器。
 *
 **/
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
+use think\Cookie;
 use app\admin\model\User;
-use \think\Cookie;
 
 class Login extends Common
 {

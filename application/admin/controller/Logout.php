@@ -8,11 +8,10 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
-use \think\Controller;
-use \think\Cookie;
+use think\Controller;
+use think\Cookie;
 
 class Logout extends Common
 {

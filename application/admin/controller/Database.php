@@ -8,12 +8,11 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
-use \think\Db;
-use \think\Config;
-use \think\Request;
+use think\Db;
+use think\Config;
+use think\Request;
 use org\Data;
 
 class Database extends Common

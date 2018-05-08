@@ -8,15 +8,15 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use \think\Controller;
+use think\Controller;
+use think\Config;
+use think\Cookie;
+use think\Db;
 use app\admin\model\User;
 use app\admin\model\Menu;
 use app\admin\model\Setting;
-use \think\Config;
-use \think\Cookie;
-use \think\Db;
 
 class Common extends Controller
 {
