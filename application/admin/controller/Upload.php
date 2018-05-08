@@ -8,9 +8,8 @@
 *
 **/
 
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Common;
 use think\facade\Request;
 
 class Upload extends Common
