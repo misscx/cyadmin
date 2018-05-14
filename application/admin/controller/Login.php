@@ -19,7 +19,7 @@ class Login extends Common
     {
         $auth = Cookie::get('auth');
         if ($auth) {
-            list($identifier, $token) = explode(',', $auth);
+            list($identifier, $token) = str_split($auth,32);
             if (ctype_alnum($identifier) && ctype_alnum($token)) {
                 $user = User::get(['identifier'=>$identifier,'token'=>$token,'status'=>1]);
                 if ($user) {
@@ -61,7 +61,7 @@ class Login extends Common
             $token = password(uniqid(rand(), true));
             $salt = random(10);
             $identifier = password($user->uid . md5($user->username . $salt));
-            $auth = $identifier.','.$token;
+            $auth = $identifier.$token;
 
             $user->identifier = $identifier;
             $user->token = $token;

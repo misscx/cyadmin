@@ -89,7 +89,7 @@ class Common extends Controller
             return $this -> error('请先登录', url('admin/login/index'));
         }
 
-        list($identifier, $token) = explode(',', $auth);
+        list($identifier, $token) = str_split($auth,32);
         if (ctype_alnum($identifier) && ctype_alnum($token)) {
             $user = User::get(['identifier'=>$identifier,'token'=>$token,'status'=>1]);
             if ($user) {
