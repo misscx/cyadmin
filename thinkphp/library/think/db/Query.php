@@ -924,7 +924,7 @@ class Query
      * @access public
      * @param string|array $table 数据表
      * @param string|array $field 查询字段
-     * @param string|array $on    JOIN条件
+     * @param mixed        $on    JOIN条件
      * @param string       $type  JOIN类型
      * @return $this
      */
@@ -2944,7 +2944,7 @@ class Query
             }
         }
 
-        if (isset(static::$readMaster['*']) || isset(static::$readMaster[$options['table']])) {
+        if (isset(static::$readMaster['*']) || (is_string($options['table']) && isset(static::$readMaster[$options['table']]))) {
             $options['master'] = true;
         }
 
