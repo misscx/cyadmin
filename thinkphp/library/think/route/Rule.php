@@ -81,7 +81,7 @@ abstract class Rule
      * 需要和分组合并的路由参数
      * @var array
      */
-    protected $mergeOptions = ['after', 'before', 'model', 'header', 'response', 'append', 'middleware'];
+    protected $mergeOptions = ['after', 'model', 'header', 'response', 'append', 'middleware'];
 
     /**
      * 是否需要后置操作
@@ -727,7 +727,6 @@ abstract class Rule
         $url   = array_slice(explode('|', $url), $count + 1);
         $this->parseUrlParams($request, implode('|', $url), $matches);
 
-        $this->route   = $route;
         $this->vars    = $matches;
         $this->option  = $option;
         $this->doAfter = true;
@@ -932,11 +931,11 @@ abstract class Rule
 
     /**
      * 解析URL的pathinfo参数和变量
-     * @access protected
+     * @access public
      * @param  string    $url URL地址
      * @return array
      */
-    protected function parseUrlPath($url)
+    public function parseUrlPath($url)
     {
         // 分隔符替换 确保路由定义使用统一的分隔符
         $url = str_replace('|', '/', $url);
@@ -953,6 +952,7 @@ abstract class Rule
             $path = explode('/', $url);
         } elseif (false !== strpos($url, '=')) {
             // 参数1=值1&参数2=值2...
+            $path = [];
             parse_str($url, $var);
         } else {
             $path = [$url];
