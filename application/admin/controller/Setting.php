@@ -23,16 +23,22 @@ class Setting extends Common
                 return $this->error('参数错误，请重试！');
             }
             $data = input('post.');
-
-            foreach ($data as $k=>$v) {
-                Db::name('setting')->where(['k'=>$k])->update(['v'=>$v]);//循环插入，效率效差
+            if (!isset($data['custom'])) {
+                $data['custom'] = [];
             }
-            addlog('修改网站配置。', $this->user['username']);
-            $this->success('恭喜，网站配置成功！', url('index'));
-        }
+            $config_file='config/cy.php';
+            if (!is_writable($config_file)) {
+                return $this->error('请确保config/cy.php文件可读写');
+            }
 
-        $setting = Db::name('setting')->field('k,v,name,tips')->order('o ASC')->select();
-        $this->assign('setting', $setting);
+            $result = file_put_contents($config_file, "<?php\r\nreturn " . var_export($data, true) . ";");
+            if ($result) {
+                addlog('修改网站配置。', $this->user['username']);
+                return $this->success('恭喜，网站配置成功！', url('index'));
+            } else {
+                return $this->error('参数错误，请重试！');
+            }
+        }
         return $this->fetch('form');
     }
 }

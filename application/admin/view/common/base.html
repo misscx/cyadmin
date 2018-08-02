@@ -3,10 +3,10 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>{$current_menu.title}-{$Think.config.app.cy.sitename}</title>
+		<title>{$current_menu.title}-{$cyConfig.sitename}</title>
 
-		<meta name="keywords" content="{$Think.config.app.cy.keywords}" />
-		<meta name="description" content="{$Think.config.app.cy.description}" />
+		<meta name="keywords" content="{$cyConfig.keywords}" />
+		<meta name="description" content="{$cyConfig.description}" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
@@ -64,7 +64,7 @@
 					<a href="{:url('admin/index/index')}" class="navbar-brand">
 						<small>
 							<i class="fa fa-home"></i>
-							{$Think.config.app.cy.sitename}
+							{$cyConfig.sitename}
 						</small>
 					</a>
 

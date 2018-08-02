@@ -19,17 +19,17 @@
             </tr>
         </thead>
         <tbody>
-            {volist name="vars" id="val"}
+            {volist name="cyConfig.custom" id="val"}
             <tr>
                 <td class="center">
-                    <input class="ids" type="checkbox" name="ids[]" value="{$val.k}">
+                    <input class="ids" type="checkbox" name="ids[]" value="{$key}">
                 </td>
                 <td>{$val.name}</td>
-                <td>{$val.k}</td>
-                <td>{$val.v}</td>
-                <td class="hidden-sm hidden-xs">{literal}{$Think.config.app.cy.{/literal}{$val.k}}</td>
+                <td>{$val.var}</td>
+                <td>{$val.value}</td>
+                <td class="hidden-sm hidden-xs">{literal}{$cyConfig.{/literal}{$val.var}}</td>
                 <td class="hidden-sm hidden-xs">{$val.tips}</td>
-                <td><a href="{:url('index',['act'=>'edit','k'=>$val.k])}"><i class="ace-icon fa fa-pencil bigger-100"></i>修改</a></td>
+                <td><a href="{:url('index',['act'=>'edit','k'=>$key])}"><i class="ace-icon fa fa-pencil bigger-100"></i>修改</a></td>
             </tr>
             {/volist}
         </tbody>

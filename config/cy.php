@@ -1,7 +1,15 @@
 <?php
-return [
-    'db_path'     => 'db',     //数据库备份目录，框架应用根目录开始。
-	'db_part'     => '20971520',  //该值用于限制压缩后的分卷最大长度。单位：B；建议设置20M
-	'db_compress' => '1',         //压缩备份文件需要PHP环境支持gzopen,gzwrite函数  0:不压缩 1:启用压缩
-	'db_level'    => '9',         //压缩级别   1:普通   4:一般   9:最高
-];
+return array (
+  'title' => '春燕网络通用后台管理系统',
+  'sitename' => 'CYAdmin',
+  'keywords' => '关键词',
+  'description' => '网站描述',
+  'footer' => '&copy;2016 春燕网络',
+  'db_path' => 'db',
+  'db_part' => '20971520',
+  'db_compress' => '1',
+  'db_level' => '9',
+  'custom' => 
+  array (
+  ),
+);

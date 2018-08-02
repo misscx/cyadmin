@@ -17,24 +17,18 @@ use think\facade\Request;
 use think\Db;
 use app\admin\model\User;
 use app\admin\model\Menu;
-use app\admin\model\Setting;
 
 class Common extends Controller
 {
     protected $user = false;
     protected $url;
+    public $cyConfig;
 
     public function initialize()
     {
         $this->auth();//权限验证
-
-        //网站设置
-        $setting = Setting::all();
-        $config = array();
-        foreach ($setting as $k=>$v) {
-            $config[$v->k] = $v->v;
-        }
-        Config::set('cy', $config);
+        $this->cyConfig = Config::get('cy.');//获取配置信息
+        $this->assign('cyConfig', $this->cyConfig);
         if ($this->user) {
             //菜单
             $menus = Menu::field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user->group->auth})")->order('o', 'asc')->select();
@@ -89,7 +83,7 @@ class Common extends Controller
             return $this -> error('请先登录', url('admin/login/index'));
         }
 
-        list($identifier, $token) = str_split($auth,32);
+        list($identifier, $token) = str_split($auth, 32);
         if (ctype_alnum($identifier) && ctype_alnum($token)) {
             $user = User::get(['identifier'=>$identifier,'token'=>$token,'status'=>1]);
             if ($user) {

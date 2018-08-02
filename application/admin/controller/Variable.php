@@ -21,24 +21,34 @@ class Variable extends Common
             if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
-            $ids = input('post.');
+            $ids = input('post.ids');
             if (!empty($ids)) {
-                $r = Db::name('setting')->where(['type'=>1])->delete($ids['ids']);
-                if ($r) {
-                    addlog('删除自定义变量，变量名：'.implode(',', $ids['ids']), $this->user['username']);
-                    return $this->success('恭喜，变量删除成功！', url('admin/variable/index'));
+                foreach ($ids as $k=>$v) {
+                    unset($this->cyConfig['custom'][$v]);
+                }
+                sort($this->cyConfig['custom']);
+                $config_file='config/cy.php';
+                if (!is_writable($config_file)) {
+                    return $this->error('请确保config/cy.php文件可读写');
+                }
+
+                $result = file_put_contents($config_file, "<?php\r\nreturn " . var_export($this->cyConfig, true) . ";");
+                if ($result) {
+                    addlog('删除自定义变量。', $this->user['username']);
+                    return $this->success('操作成功', url('index'));
+                } else {
+                    return $this->error('参数错误，请重试！');
                 }
             }
             return $this->error('请选择需要删除的选项！');
         }
 
         if ($act == 'edit') {
-            $k = input('param.k/s');
-            $var = Db::name('setting')->where(['k'=>$k,'type'=>1])->find();
-            if (!$var) {
+            $k = input('param.k/d');
+            if (!isset($this->cyConfig['custom'][$k])) {
                 return $this->error('参数错误，请重试！');
             }
-            $this->assign('var', $var);
+            $this->assign('k', $k);
             return $this->fetch('form');
         }
 
@@ -46,41 +56,34 @@ class Variable extends Common
             if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
-            $k = input('post.k/s');
-            $var = input('post.var/s');
-            $v = input('post.v');
-            $name = input('post.name');
-            $tips = input('post.tips');
-            $o = input('post.o', 0, 'intval');
+            $data = input('post.');
 
-            if ($var == '') {
-                return $this->error('变量名不能为空！');
-            }
-            if ($name == '') {
+            if ($data['name'] == '') {
                 return $this->error('名称不能为空！');
             }
-            if (Db::name('setting')->where(['k'=>$var])->count()>0 && $k <> $var) {
-                return $this->error('变量名称已存在，请重试！');
+            if ($data['var'] == '') {
+                return $this->error('变量名不能为空！');
             }
 
-            if ($k == '') {//新增
-                Db::name('setting')->insert(['k'=>$var,'v'=>$v,'name'=>$name,'tips'=>$tips,'type'=>1,'o'=>$o]);
-                addlog('新增自定义变量，变量名:'.$var, $this->user['username']);
-                return $this->success('恭喜，新增自定义变量成功！', url('admin/variable/index'));
-            } else {//编辑
-                Db::name('setting')->where('k', $k)->update(['k'=>$var,'v'=>$v,'name'=>$name,'tips'=>$tips,'type'=>1,'o'=>$o]);
-                addlog('编辑菜单，变量名:'.$k, $this->user['username']);
-                return $this->success('恭喜，编辑自定义变量成功！', url('admin/variable/index'));
+            $this->cyConfig['custom'] = array_merge($this->cyConfig['custom'], [$data]);
+
+            $config_file='config/cy.php';
+            if (!is_writable($config_file)) {
+                return $this->error('请确保config/cy.php文件可读写');
             }
-            return $this->error('系统错误，请稍后再试！');
+            $result = file_put_contents($config_file, "<?php\r\nreturn " . var_export($this->cyConfig, true) . ";");
+            if ($result) {
+                addlog('新增自定义变量。', $this->user['username']);
+                return $this->success('操作成功', url('index'));
+            } else {
+                return $this->error('参数错误，请重试！');
+            }
         }
 
         if ($act == 'add') {
+            $this->assign('k', false);
             return $this->fetch('form');
         }
-
-        $vars = Db::name('setting')->where(['type'=>1])->select();
-        $this->assign('vars', $vars);
         return $this->fetch();
     }
 }
