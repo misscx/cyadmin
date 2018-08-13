@@ -155,31 +155,6 @@ INSERT INTO `cy_menu` (`id`, `pid`, `url`, `title`, `icon`, `tips`, `status`, `o
 (33, 32, 'profile/index', '个人资料', 'menu-icon fa fa-user', '用户个人资料修改。', 1, 33),
 (34, 32, 'logout/index', '退出登录', 'menu-icon fa fa-power-off', '', 1, 34);
 
--- --------------------------------------------------------
-
---
--- 表的结构 `cy_setting`
---
-
-CREATE TABLE IF NOT EXISTS `cy_setting` (
-  `k` varchar(100) NOT NULL COMMENT '变量',
-  `v` varchar(255) NOT NULL COMMENT '值',
-  `name` varchar(255) NOT NULL,
-  `tips` varchar(255) NOT NULL,
-  `type` tinyint(1) NOT NULL COMMENT '0系统，1自定义',
-  `o` int(11) NOT NULL COMMENT '排序'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- 转存表中的数据 `cy_setting`
---
-
-INSERT INTO `cy_setting` (`k`, `v`, `name`, `tips`, `type`, `o`) VALUES
-('title', '春燕网络通用后台管理系统', '网站名称', '长度255个汉字内', 0, 0),
-('sitename', 'CYAdmin', '短标题', '长度255个汉字内', 0, 0),
-('keywords', '关键词', '关键词', '长度255个汉字内', 0, 0),
-('description', '网站描述', '网站描述', '长度255个汉字内', 0, 0),
-('footer', '©2016 春燕网络', '版权信息', '长度255个汉字内', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -280,13 +255,6 @@ ALTER TABLE `cy_menu`
   ADD KEY `url` (`url`),
   ADD KEY `status` (`status`),
   ADD KEY `o` (`o`);
-
---
--- Indexes for table `cy_setting`
---
-ALTER TABLE `cy_setting`
-  ADD PRIMARY KEY (`k`),
-  ADD KEY `k` (`k`);
 
 --
 -- Indexes for table `cy_user`
