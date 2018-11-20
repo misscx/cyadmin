@@ -43,4 +43,4 @@ http://cyadmin.mychunyan.com/admin
 admin admin
 
 ## QQ群号
-QQ群号：254929907，欢迎加群加流。
+QQ群号：254929907，欢迎加群交流。
