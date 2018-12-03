@@ -56,6 +56,7 @@ class Variable extends Common
             if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
+            $k = input('param.k/d');
             $data = input('post.');
 
             if ($data['name'] == '') {
@@ -65,6 +66,20 @@ class Variable extends Common
                 return $this->error('变量名不能为空！');
             }
 
+            if($k===null){
+                foreach($this->cyConfig['custom'] as $k=>$v){
+                    if($v['var'] == $data['var']){
+                        return $this->error('变量名“'.$data['var'].'”重复');
+                    }
+                }
+            }else{
+                unset($this->cyConfig['custom'][$k]);
+                foreach($this->cyConfig['custom'] as $k=>$v){
+                    if($v['var'] == $data['var']){
+                        return $this->error('变量名“'.$data['var'].'”重复');
+                    }
+                }
+            }
             $this->cyConfig['custom'] = array_merge($this->cyConfig['custom'], [$data]);
 
             $config_file='config/cy.php';
