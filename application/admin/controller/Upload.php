@@ -51,28 +51,12 @@ class Upload extends Common
     private function uploadsave($name)
     {
         if (Request::isPost()) {
-            $accept=array(
-                'image/jpeg',
-                'image/jpg',
-                'image/jpeg',
-                'image/png',
-                'image/pjpeg',
-                'image/gif',
-                'image/bmp',
-                'image/x-png'
-            );
-
             $file = request()->file($name);
-
-            if (in_array($file->getMime(), $accept)) {
-                $info = $file->move('static/upload');
-                if ($info) {
-                    return str_replace('\\', '/', '/'.$info->getPath().'/'.$info->getFilename());
-                } else {
-                    //return $file->getError();
-                    return false;
-                }
-            } else {
+            $info = $file->validate(['size'=>4194304,'ext'=>'bmp,jpg,jpeg,png,tif,gif,svg,webp'])
+                ->move( 'static/upload');
+            if($info){
+                return '/static/upload/'.$info->getSaveName();
+            }else{
                 return false;
             }
         }
