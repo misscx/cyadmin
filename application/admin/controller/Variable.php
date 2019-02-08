@@ -26,12 +26,10 @@ class Variable extends Common
                 foreach ($ids as $k=>$v) {
                     unset($this->cyConfig['custom'][$v]);
                 }
-                sort($this->cyConfig['custom']);
                 $config_file='config/cy.php';
                 if (!is_writable($config_file)) {
                     return $this->error('请确保config/cy.php文件可读写');
                 }
-
                 $result = file_put_contents($config_file, "<?php\r\nreturn " . var_export($this->cyConfig, true) . ";");
                 if ($result) {
                     addlog('删除自定义变量。', $this->user['username']);
@@ -44,7 +42,7 @@ class Variable extends Common
         }
 
         if ($act == 'edit') {
-            $k = input('param.k/d');
+            $k = input('param.k');
             if (!isset($this->cyConfig['custom'][$k])) {
                 return $this->error('参数错误，请重试！');
             }
@@ -56,7 +54,7 @@ class Variable extends Common
             if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
-            $k = input('param.k/d');
+            $k = input('param.k');
             $data = input('post.');
 
             if ($data['name'] == '') {
@@ -66,21 +64,15 @@ class Variable extends Common
                 return $this->error('变量名不能为空！');
             }
 
-            if($k===null){
-                foreach($this->cyConfig['custom'] as $k=>$v){
-                    if($v['var'] == $data['var']){
-                        return $this->error('变量名“'.$data['var'].'”重复');
-                    }
-                }
-            }else{
+            $var[$data['var']] =  $data;
+            if($k){
                 unset($this->cyConfig['custom'][$k]);
-                foreach($this->cyConfig['custom'] as $k=>$v){
-                    if($v['var'] == $data['var']){
-                        return $this->error('变量名“'.$data['var'].'”重复');
-                    }
+            }else{
+                if(isset($this->cyConfig['custom'][$data['var']])){
+                    return $this->error("变量名{$data['var']}已存在！");
                 }
             }
-            $this->cyConfig['custom'] = array_merge($this->cyConfig['custom'], [$data]);
+            $this->cyConfig['custom'] = array_merge($this->cyConfig['custom'], $var);
 
             $config_file='config/cy.php';
             if (!is_writable($config_file)) {

@@ -13,7 +13,7 @@
                 <th class="col-xs-1">名称</th>
                 <th class="col-xs-1">变量名称</th>
                 <th class="col-xs-3">变量值</th>
-                <th class="hidden-sm hidden-xs col-xs-2">后台模板调用</th>
+                <th class="hidden-sm hidden-xs col-xs-2">模板调用</th>
                 <th class="hidden-sm hidden-xs col-xs-3">变量说明</th>
                 <th class="col-xs-1">操作</th>
             </tr>
@@ -27,7 +27,7 @@
                 <td>{$val.name}</td>
                 <td>{$val.var}</td>
                 <td>{$val.value}</td>
-                <td class="hidden-sm hidden-xs">{literal}{$cyConfig.{/literal}{$val.var}}</td>
+                <td class="hidden-sm hidden-xs">{literal}{$cyConfig.custom.{/literal}{$val.var}{literal}.value}{/literal}</td>
                 <td class="hidden-sm hidden-xs">{$val.tips}</td>
                 <td><a href="{:url('index',['act'=>'edit','k'=>$key])}"><i class="ace-icon fa fa-pencil bigger-100"></i>修改</a></td>
             </tr>
