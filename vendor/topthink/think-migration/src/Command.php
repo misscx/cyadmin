@@ -12,8 +12,6 @@ namespace think\migration;
 
 use InvalidArgumentException;
 use Phinx\Db\Adapter\AdapterFactory;
-use think\Db;
-use think\facade\Config;
 
 abstract class Command extends \think\console\Command
 {
@@ -41,9 +39,11 @@ abstract class Command extends \think\console\Command
      * 获取数据库配置
      * @return array
      */
-    protected function getDbConfig()
+    protected function getDbConfig(): array
     {
-        $config = Db::connect()->getConfig();
+        $default = $this->app->config->get('database.default');
+
+        $config = $this->app->config->get("database.connections.{$default}");
 
         if (0 == $config['deploy']) {
             $dbConfig = [
@@ -69,18 +69,14 @@ abstract class Command extends \think\console\Command
             ];
         }
 
-        $dbConfig['default_migration_table'] = $this->getConfig('table', $dbConfig['table_prefix'] . 'migrations');
+        $table = $this->app->config->get('database.migration_table', 'migrations');
+
+        $dbConfig['default_migration_table'] = $dbConfig['table_prefix'] . $table;
 
         return $dbConfig;
     }
 
-    protected function getConfig($name, $default = null)
-    {
-        $config = Config::pull('migration');
-        return isset($config[$name]) ? $config[$name] : $default;
-    }
-
-    protected function verifyMigrationDirectory($path)
+    protected function verifyMigrationDirectory(string $path)
     {
         if (!is_dir($path)) {
             throw new InvalidArgumentException(sprintf('Migration directory "%s" does not exist', $path));

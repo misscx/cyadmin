@@ -28,7 +28,7 @@ class Link extends Migrator
      */
     public function change()
     {
-        $table = $this->table('link', array('engine'=>'MyISAM'));
+        $table = $this->table('link', array('engine'=>'InnoDB'));
         $table->addColumn('title', 'string', array('limit' => 255,'default'=>'','comment'=>'名称'))
             ->addColumn('url', 'string', array('limit' => 255,'default'=>'','comment'=>'地址'))
             ->addColumn('logo', 'string', array('limit' => 255,'default'=>'','comment'=>'站标'))

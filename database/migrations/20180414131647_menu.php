@@ -28,7 +28,7 @@ class Menu extends Migrator
      */
     public function up()
     {
-        $table = $this->table('menu', array('engine'=>'MyISAM'));
+        $table = $this->table('menu', array('engine'=>'InnoDB'));
         $table->addColumn('pid', 'integer', array('signed'=>false,'limit' => 11,'default'=>0,'comment'=>'父级ID'))
             ->addColumn('url', 'string', array('limit' => 255,'default'=>'','comment'=>'链接'))
             ->addColumn('title', 'string', array('limit' => 255,'default'=>'','comment'=>'名称'))

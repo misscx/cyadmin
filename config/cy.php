@@ -4,7 +4,7 @@ return array (
   'sitename' => 'CYAdmin',
   'keywords' => '关键词',
   'description' => '网站描述',
-  'footer' => '&copy;2016 春燕网络',
+  'footer' => '&copy;2019 春燕网络',
   'db_path' => 'db',
   'db_part' => '20971520',
   'db_compress' => '1',

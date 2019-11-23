@@ -28,7 +28,7 @@ class Article extends Migrator
      */
     public function change()
     {
-        $table = $this->table('article', array('id'=>'aid','engine'=>'MyISAM'));
+        $table = $this->table('article', array('id'=>'aid','engine'=>'InnoDB'));
         $table->addColumn('cid', 'integer', array('signed'=>false,'limit' => 11,'default'=>0,'comment'=>'分类ID'))
             ->addColumn('title', 'string', array('limit' => 255,'default'=>'','comment'=>'文章标题'))
             ->addColumn('keywords', 'string', array('limit' => 255,'default'=>'','comment'=>'文章关键词'))

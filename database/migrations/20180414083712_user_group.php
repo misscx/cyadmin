@@ -28,7 +28,7 @@ class UserGroup extends Migrator
      */
     public function up()
     {
-        $table = $this->table('user_group', array('engine'=>'MyISAM'));
+        $table = $this->table('user_group', array('engine'=>'InnoDB'));
         $table->addColumn('title', 'string', array('limit' => 100,'default'=>'','comment'=>'组名'))
             ->addColumn('status', 'boolean', array('limit' => 1,'default'=>1,'comment'=>'组状态，0禁用，1启用'))
             ->addColumn('auth', 'text', array('default'=>'','comment'=>'组权限'))

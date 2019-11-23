@@ -1,17 +1,7 @@
 <?php
-/**
-*
-* 版权所有：春燕网络<www.mychunyan.com>
-* 作    者：寒川<admin@huikon.cn>
-* 日    期：2015-06-13
-* 版    本：1.0.0
-* 功能说明：数据库备份还原。
-*
-**/
-
 namespace org;
 
-use think\Db;
+use think\facade\Db;
 
 //数据导出模型
 class Data {

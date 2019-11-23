@@ -28,7 +28,7 @@ class Banner extends Migrator
      */
     public function change()
     {
-        $table = $this->table('banner', array('engine'=>'MyISAM'));
+        $table = $this->table('banner', array('engine'=>'InnoDB'));
         $table->addColumn('title', 'string', array('limit' => 255,'default'=>'','comment'=>'标题'))
             ->addColumn('url', 'string', array('limit' => 255,'default'=>'','comment'=>'链接地址'))
             ->addColumn('image', 'string', array('limit' => 255,'default'=>'','comment'=>'Banner图'))

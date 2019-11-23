@@ -33,18 +33,16 @@ class Create extends Seed
      *
      * @param Input  $input
      * @param Output $output
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return void
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     protected function execute(Input $input, Output $output)
     {
         $path = $this->getPath();
 
         if (!file_exists($path)) {
-            if ($this->output->confirm($this->input, 'Create seeds directory? [y]/n')) {
-                mkdir($path, 0755, true);
-            }
+            mkdir($path, 0755, true);
         }
 
         $this->verifyMigrationDirectory($path);
@@ -67,7 +65,7 @@ class Create extends Seed
         // inject the class names appropriate to this seeder
         $contents = file_get_contents($this->getTemplate());
         $classes  = [
-            '$className' => $className,
+            'SeederClass' => $className,
         ];
         $contents = strtr($contents, $classes);
 

@@ -29,7 +29,7 @@ class User extends Migrator
      */
     public function up()
     {
-        $table = $this->table('user', array('id'=>'uid','engine'=>'MyISAM'));
+        $table = $this->table('user', array('id'=>'uid','engine'=>'InnoDB'));
         $table->addColumn('ugid', 'integer', array('signed'=>false,'limit' => 11,'default'=>0,'comment'=>'用户组ID'))
             ->addColumn('username', 'string', array('limit' => 100,'default'=>'','comment'=>'用户名'))
             ->addColumn('password', 'string', array('limit' => 32,'default'=>'','comment'=>'用户密码'))
@@ -44,6 +44,7 @@ class User extends Migrator
             ->addColumn('token', 'string', array('limit' => 32,'default'=>'','comment'=>'登录Token'))
             ->addColumn('salt', 'string', array('limit' => 10,'default'=>'','comment'=>'密码盐'))
             ->addColumn('skin', 'string', array('limit' => 20,'default'=>'no-skin','comment'=>'皮肤'))
+            ->addColumn('create_time', 'integer', array('signed'=>false,'limit' => 10,'default'=>0,'comment'=>'创建时间'))
             ->addIndex(array('username'), array('unique' => true))
             ->create();
 
@@ -55,7 +56,7 @@ class User extends Migrator
                 'avatar'  => '',
                 'sex'  => 0,
                 'birthday'  => time(),
-                'tel'  => '17898159969',
+                'tel'  => '15881295252',
                 'qq'  => '331349451',
                 'email'  => 'admin@huikon.cn',
                 'status'  => 1,
@@ -63,6 +64,7 @@ class User extends Migrator
                 'token'  => '',
                 'salt'  => '',
                 'skin'  => 'no-skin',
+                'create_time'  => time(),
             );
 
         $table = $this->table('user');

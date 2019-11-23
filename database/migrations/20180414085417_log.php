@@ -28,7 +28,7 @@ class Log extends Migrator
      */
     public function change()
     {
-        $table = $this->table('log', array('engine'=>'MyISAM'));
+        $table = $this->table('log', array('engine'=>'InnoDB'));
         $table->addColumn('username', 'string', array('limit' => 100,'default'=>'','comment'=>'用户名'))
             ->addColumn('log', 'text', array('default'=>'','comment'=>'日志'))
             ->addColumn('ip', 'string', array('limit' => 16,'default'=>'','comment'=>'IP'))

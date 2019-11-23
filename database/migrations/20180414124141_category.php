@@ -28,7 +28,7 @@ class Category extends Migrator
      */
     public function change()
     {
-        $table = $this->table('category', array('engine'=>'MyISAM'));
+        $table = $this->table('category', array('engine'=>'InnoDB'));
         $table->addColumn('pid', 'integer', array('signed'=>false,'limit' => 11,'default'=>0,'comment'=>'分类ID'))
             ->addColumn('type', 'integer', array('limit' => 8,'default'=>0,'comment'=>'类型：0普通，1单页，2外链'))
             ->addColumn('name', 'string', array('limit' => 100,'default'=>'','comment'=>'分类名称'))
