@@ -19,6 +19,8 @@ PHP 7.1.0+，PDO扩展，MySQL5.0+
 php think migrate:run
 ```
 
+注：虚拟机可以手动导入“database/database.sql”到数据库进行安装。
+
 4、完成安装，打开网站URL查看效果。
 
 
