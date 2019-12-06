@@ -72,7 +72,7 @@ class Common extends BaseController
 
         //登录判断
         $auth = Cookie::get('auth');
-        if (!$auth) {
+        if (!$auth || strlen($auth)<64) {
             return $this -> error('请先登录', url('admin/login/index'));
         }
 
