@@ -135,15 +135,14 @@
                 <label class="col-sm-1 control-label no-padding-right" for="{$val.var}"> {$val.name} </label>
                 <div class="col-sm-9">
                     {egt name="val.value|strlen" value="100"}
-                    <textarea name="custom[{$key}]{$val.var}" id="{$val.var}" placeholder="{$val.name}" class="col-xs-10 col-sm-5" rows="5">{$val.value|htmlspecialchars|raw}
-                    </textarea>
+                    <textarea name="custom[{$key}][value]" id="{$val.value}" placeholder="{$val.name}" class="col-xs-10 col-sm-5" rows="5">{$val.value|htmlspecialchars|raw}</textarea>
                     {/egt}
                     {lt name="val.value|strlen" value="100"}
+                    <input type="text" name="custom[{$key}][value]" id="{$val.value}" class="col-xs-10 col-sm-5" value="{$val.value|htmlspecialchars|raw}">
+                    {/lt}
                     <input name="custom[{$key}][name]" value="{$val.name}" type="hidden" />
                     <input name="custom[{$key}][var]" value="{$val.var}" type="hidden" />
-                    <input type="text" name="custom[{$key}][value]" id="{$val.value}" class="col-xs-10 col-sm-5" value="{$val.value|htmlspecialchars|raw}">
                     <input name="custom[{$key}][tips]" value="{$val.tips}" type="hidden" />
-                    {/lt}
                     <span class="help-inline col-xs-12 col-sm-7">
                         <span class="middle">{$val.tips}</span>
                     </span>
