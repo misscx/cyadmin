@@ -2,4 +2,5 @@
 .idea
 composer.lock
 *.log
+.env
 Thumbs.db
