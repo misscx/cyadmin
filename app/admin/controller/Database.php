@@ -37,7 +37,7 @@ class Database extends Common
                 }
                 //检查是否有正在执行的任务
                 $lock = $config['path']. DIRECTORY_SEPARATOR .'backup.lock';
-                if (is_file($lock)) {
+                if (is_file($lock) && time()-file_get_contents($lock) < 300) {
                     return $this->error('检测到有一个备份任务正在执行，请稍后再试！');
                 } else {
                     //创建锁文件
@@ -272,6 +272,8 @@ class Database extends Common
                 $info['compress'] = ($extension === 'SQL') ? '-' : $extension;
                 $info['time']     = strtotime("{$date} {$time}");
                 $list["{$date} {$time}"] = $info;
+                $list_time = array_column($list,'time');
+                array_multisort($list_time,SORT_DESC,$list);
             }
         }
         View::assign('list', $list);
