@@ -155,8 +155,16 @@ class Data {
 
             //备份数据记录
             $result = Db::query("SELECT * FROM `{$table}` LIMIT {$start}, 1000");
-            foreach ($result as $row) {
-                $sql = "INSERT INTO `{$table}` VALUES ('" . implode("', '", $row) . "');\n";
+            if(!empty($result)){
+                $sql="INSERT INTO `{$table}`  VALUES";
+                foreach ($result as $row) {
+                    $sql .= "\n("; 
+                        foreach($row as $v){
+                            $sql .=is_null($v)?'NULL,':"'".$v."',";
+                        }
+                    $sql = trim($sql,','). '),'; 
+                }
+                $sql = trim($sql,',').";\n";
                 if(false === $this->write($sql)){
                     return false;
                 }
