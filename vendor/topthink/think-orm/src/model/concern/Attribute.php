@@ -411,7 +411,7 @@ trait Attribute
                 if (empty($param)) {
                     $value = (float) $value;
                 } else {
-                    $value = (float) number_format($value, $param, '.', '');
+                    $value = (float) number_format($value, (int) $param, '.', '');
                 }
                 break;
             case 'boolean':
@@ -424,7 +424,7 @@ trait Attribute
                 break;
             case 'datetime':
                 $value = is_numeric($value) ? $value : strtotime($value);
-                $value = $this->formatDateTime('Y-m-d H:i:s.u', $value);
+                $value = $this->formatDateTime('Y-m-d H:i:s.u', $value, true);
                 break;
             case 'object':
                 if (is_object($value)) {
@@ -576,7 +576,7 @@ trait Attribute
                 if (empty($param)) {
                     $value = (float) $value;
                 } else {
-                    $value = (float) number_format($value, $param, '.', '');
+                    $value = (float) number_format($value, (int) $param, '.', '');
                 }
                 break;
             case 'boolean':
